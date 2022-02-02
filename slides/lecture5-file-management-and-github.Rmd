@@ -118,7 +118,7 @@ include_graphics('../images/files_after_github.png')
 ```
 
 # Opening this .Rmd file
-- Navigate the the repository you just created and open this file.
+- Navigate the repository you just created and open this .Rmd file.
 - The file will be located in the following *path*:
     - `~/SOC360/css-spring-2022/slides/lecture5-file-management-and-github.Rmd`
         - The `~` stands in for the location of the `SOC360` directory on your computer. 
@@ -299,7 +299,7 @@ include_graphics('../images/fetch.png')
   - You will each have template repository containing the homework
   - Clone this repository using Github Desktop
   - Submit your homework by pushing your updates
-- Full instruction are contained in the repository
+- Full instructions are contained in the repository
 
 # Github Student Developer Pack
 - If you haven't already, log in and apply for the Github Student Developer pack
