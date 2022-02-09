@@ -95,7 +95,7 @@ include_graphics('../IMAGES/spotify2.png')
 ## Using the Spotify API
 - Open `creds.json` (located in the `slides` folder) and paste the ID and secret into the relevant fields.
   - Storing credentials in a separate file helps to prevent them from getting committed to Github accidentally
-- The file should look ike this:
+- The file should look like this:
 
 ```
 {"id": "328248djkejf298382189du329323c",
@@ -124,6 +124,7 @@ Sys.setenv(SPOTIFY_CLIENT_ID = creds$id) # set creds
 Sys.setenv(SPOTIFY_CLIENT_SECRET = creds$secret)
 
 access_token <- get_spotify_access_token() # retrieve access token
+print(access_token)
 ```
 
 # APIs
@@ -162,8 +163,8 @@ results <- kanye %>%
 # APIs
 ## Using the Spotify API
 ```{r, echo=FALSE, tidy=FALSE, mysize=TRUE, size='\\footnotesize'}
-p <- ggplot(results, aes(x=album_release_year, y=mean.dan))
-p + geom_line() + geom_smooth() + 
+p <- ggplot(kanye, aes(x=album_release_year, y=danceability))
+p + geom_smooth() + 
   labs(title="Danceability of the Kanye West over time", caption = "Data from collect from Spotify API") +
   xlab("") + ylab("Mean danceability") + theme_bw()
 ```
@@ -171,8 +172,8 @@ p + geom_line() + geom_smooth() +
 # APIs
 ## Using the Spotify API
 ```{r, echo=FALSE, tidy=FALSE, mysize=TRUE, size='\\footnotesize'}
-p <- ggplot(results, aes(x=album_release_year, y=mean.ac))
-p + geom_line() + geom_smooth() +
+p <- ggplot(kanye, aes(x=album_release_year, y=acousticness))
+p + geom_smooth() +
   labs(title="Acousticness of the Kanye West over time", caption = "Data from collect from Spotify API")  +
     xlab("") + ylab("Mean acousticness") + theme_bw()
 ```
@@ -202,8 +203,8 @@ r <- both %>%
 ## Using the Spotify API
 Let's compare their danceability.
 ```{r, echo=FALSE, tidy=FALSE, mysize=TRUE, size='\\footnotesize'}
-p <- ggplot(r, aes(x=album_release_year, y=mean.dan, color=artist_name))
-p + geom_smooth() +
+p <- ggplot(both, aes(x=album_release_year, y=danceability, group = artist_name, color = artist_name))
+p + geom_point(alpha=0.1) + geom_smooth() +
   labs(title="Comparing danceability of the Kanye West and Taylor Swift", caption = "Data from collect from Spotify API") +
   xlab("") + ylab("Mean danceability") + theme_bw()
 ```  
@@ -212,17 +213,17 @@ p + geom_smooth() +
 ## Using the Spotify API
 We can do the same for acousticness.
 ```{r, echo=FALSE, tidy=FALSE, mysize=TRUE, size='\\footnotesize'}
-p <- ggplot(r, aes(x=album_release_year, y=mean.ac, color=artist_name))
-p + geom_smooth() +
-  labs(title="Comparing accousticness of the Kanye West and Taylor Swift", caption = "Data from collect from Spotify API") +
-  xlab("") + ylab("Mean accousticness") + theme_bw()
+p <- ggplot(both, aes(x=album_release_year, y=acousticness, group = artist_name, color = artist_name))
+p + geom_point(alpha=0.1) + geom_smooth() +
+  labs(title="Comparing acousticness of the Kanye West and Taylor Swift", caption = "Data from collect from Spotify API") +
+  xlab("") + ylab("Mean acousticness") + theme_bw()
 ```  
 
 # APIs
 ## Using the Spotify API
 Let's try another type of query.
 ```{r, echo=FALSE, tidy=FALSE, mysize=TRUE, size='\\footnotesize'}
-hh <- spotifyr::get_genre_artists("hip-hop", limit = 20) %>%
+hh <- spotifyr::get_genre_artists("pop", limit = 20) %>%
   select(id, name, popularity, followers.total)
 hh %>% slice_max(order_by = followers.total, n=10)
 ```
