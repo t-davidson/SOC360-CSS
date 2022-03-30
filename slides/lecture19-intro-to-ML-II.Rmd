@@ -101,7 +101,8 @@ data <- data %>%
     mutate(sex = as.factor(sex),
             race = as.factor(race),
             degree = as.factor(degree), 
-            bible = as.factor(bible)) %>%
+            bible = as.factor(bible),
+           marital = as.factor(marital)) %>%
     select(!educ)
 ```
 
@@ -154,7 +155,6 @@ rf <-  rand_forest(trees = 1000, mode = "classification") %>%
   fit(degree ~ ., data = data_training)
 ```
 
-
 # Machine learning in R
 ## Making predictions (in-sample)
 ```{r, echo=TRUE, tidy=FALSE, mysize=TRUE, size='\\footnotesize'}
@@ -193,7 +193,7 @@ We can also extract the predicted probabilities by adding an argument to the `pr
 probs <- rf %>%
   predict(data_testing, type = "prob") %>%
   bind_cols(data_testing)
-head(probs %>% select(.pred_0, .pred_1, degree))
+head(probs %>% select(degree, .pred_0, .pred_1) %>% bind_cols(preds))
 ```
 
 # Machine learning in R
