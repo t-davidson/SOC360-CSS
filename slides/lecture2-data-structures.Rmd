@@ -116,8 +116,6 @@ include_graphics('../images/got_network.png')
 ```
 \tiny Characters mentioned in *Game of Thrones* series, annotated with structural information (Beveridge and Shan 2010)
 
-<!-- TODO: Transition here and make simple example for representing networks using ingredients covered -->
-
 # Part II: Data structures
 
 Open RStudio and load `lecture2-data-structures.Rmd`, located in this week's Canvas Module.
