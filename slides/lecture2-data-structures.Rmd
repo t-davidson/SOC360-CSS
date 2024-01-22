@@ -3,7 +3,7 @@ title: "Computational Social Science"
 subtitle: "Data structures"
 author: Dr. Thomas Davidson
 institute: Rutgers University
-date: January 24, 2022
+date: January 22, 2024
 urlcolor: blue
 output:
     beamer_presentation:
@@ -39,22 +39,98 @@ knitr::knit_hooks$set(mysize = function(before, options, envir) {
 
 
 # Plan
-- Basic types
-- Vectors
-- Lists
-- Matrices
-- Data frames and tibbles
+- Part I : Social networks and social network analysis
+    - What are social networks?
+    - Visualizing social networks
+- Part II : Data structures in R
+    - Basic types
+    - Vectors
+    - Lists
+    - Matrices
+    - Data frames
+    
+# Part I: Social networks and social network analysis
+```{r, out.width="70%",out.height="70%", fig.align="center"}
+include_graphics('../images/florentine_network.png')
+```
 
+# Social networks
+- A social network is a set of actors, or people, and the relationships between them
+    - Family structures and kinship networks
+    - Friendship and acquaintanceship networks
+    - Organizations
+    - Online social networks
+    
+# Social network analysis   
+- Social network analysis is the study of social networks using mathematical and computational tools
+- Networks can be represented using concepts from a branch of mathematics called graph theory
+    - People or actors are represented as "nodes"
+    - Relationships are represented as "edges"
+
+# Social network analysis 
+- Social scientists use these representations to study the structure and dynamics of social networks
+    - What does the network look like?
+    - What are the patterns of connectivity?
+    - How does information flow through the network?
+    - How does the network change over time?
+    
+# Social network analysis
+## Visualizing networks: Marriages
+```{r, out.width="70%",out.height="70%", fig.align="center"}
+include_graphics('../images/florentine_network.png')
+```
+\tiny 15th century Florentine marriage network (depicted in Jackson 2008)
+
+# Social network analysis
+## Visualizing networks: Romantic encounters
+```{r, out.width="70%",out.height="70%", fig.align="center"}
+include_graphics('../images/sex_network.png')
+```
+\tiny Six months of relationships in an American high-school, nodes colored by sex (depicted in Jackson 2008)
+
+# Social network analysis
+## Visualizing networks: Friendships
+```{r, out.width="70%",out.height="70%", fig.align="center"}
+include_graphics('../images/friend_network.png')
+```
+\tiny Six months of friendships in an American high-school, nodes colored by race/ethnicity (depicted in Jackson 2008)
+
+# Social network analysis
+## Visualizing networks: Book co-purchases
+```{r, out.width="70%",out.height="70%", fig.align="center"}
+include_graphics('../images/amazon_network.png')
+```
+\tiny Book co-purchases on Amazon, nodes colored by ideology (depicted in Jackson 2008)
+
+# Social network analysis
+## Visualizing networks: Disease transmission
+```{r, out.width="70%",out.height="70%", fig.align="center"}
+include_graphics('../images/tuberculosis_network.png')
+```
+\tiny Spread of tuberculosis in a social network, nodes colored by transmission status (depicted in Easley and Kleinberg 2010)
+
+# Social network analysis
+## Visualizing networks: Game of Thrones
+```{r, out.width="70%",out.height="70%", fig.align="center"}
+include_graphics('../images/got_network.png')
+```
+\tiny Characters mentioned in *Game of Thrones* series, annotated with structural information (Beveridge and Shan 2010)
+
+<!-- TODO: Transition here and make simple example for representing networks using ingredients covered -->
+
+# Part II: Data structures
+
+Open RStudio and load `lecture2-data-structures.Rmd`, located in this week's Canvas Module.
 
 # Basic types
 There are four basic types we will be using throughout the class. Here I used them to record some information about one of my cats. In R, it is convention to use the `<-` operator to assign an object to a name.
-```{r, echo=TRUE, , mysize=TRUE, size='\\footnotesize' }
+```{r, echo=TRUE, , mysize=TRUE, size='\\footnotesize'}
 # Character (also known as "strings")
 name <- "Gary"
-# Numeric ("float" in Python)
+# Numeric
 weight <- 13.2
 # Integer ("int" for short)
-age <- 4L
+age <- 5L
 # Logical
 human <- FALSE
 ```
@@ -76,7 +152,7 @@ typeof(weight) # Shows type of object, not always equal to class
 ```
 
 # Basic types
-We can use the `==` expression to verify the value of an object. We will discuss this in more detail next lecture.
+We can use the `==` expression to verify the value of an object. We will discuss Boolean operations in more detail next lecture.
 ```{r, echo=TRUE, , mysize=TRUE, size='\\footnotesize' }
 name == "Tabitha" 
 age == 3L
@@ -85,7 +161,7 @@ age != 3L # is not
 ```
 
 # Vectors
-A vector is a collection of elements of the *same* type. We can define an empty vector with N elements of a type. Empty vectors assume certain default values depending on the type.
+A vector is a collection of elements of the *same* type. We can define an empty vector with `N` elements of a type. Empty vectors assume certain default values depending on the type.
 ```{r, echo=TRUE, , mysize=TRUE, size='\\footnotesize' }
 N <- 5
 x <- logical(N)
@@ -129,13 +205,12 @@ There are lots of commands for generating special types of numeric vectors. Note
 seq(N) # generates a sequence from 1 to N
 rev(seq(N)) # reverses order
 rnorm(N) # samples N times from a normal distribution
-rbinom(N,1,0.5) # N observations of a single trial with a 0.5 probability of success
 ```
 
 # Vectors
 We can use the help `?` command to find information about each of these commands.
 ```{r, echo=TRUE, , mysize=TRUE, size='\\footnotesize' }
-?rnorm
+?rev
 ```
 
 # Vectors
@@ -144,8 +219,9 @@ We can use the `index` to access the specific elements of a vector. R uses squar
 x <- rnorm(N)
 print(x)
 print(x[1]) # R indexing starts at 1; Python and some others start at 0
+
 x[1] <- 9 # We can combine indexing with assignment to modify elements
-print(x[1])
+print(x)
 ```
 
 # Vectors
@@ -155,13 +231,12 @@ x <- rnorm(10000)
 length(x)
 head(x)
 tail(x)
-head(x, n=10)
 ```
 
 # Vectors
 Retrieve the final element from `x` using indexing.
-```{r, echo=TRUE, , mysize=TRUE, size='\\footnotesize' }
-# Delete this comment and write answer here
+```{r, echo=TRUE, eval = FALSE, mysize=TRUE, size='\\footnotesize' }
+
 ```
 
 
@@ -178,24 +253,24 @@ is.na(x) # The is.na function indicates whether each value is missing.
 A list is an object that can contain different types of elements, including basic types and vectors.
 ```{r, echo=TRUE, , mysize=TRUE, size='\\footnotesize' }
 print(v1)
-v1.l <- list(v1) # We can easily convert the vector v1 into a list.
-print(v1.l)
+l1 <- list(v1) # We can easily convert the vector v1 into a list.
+print(l1)
 ```
 
 # Lists
-Lists have a slightly complex form of indexing. This can be one of the most confusing aspects of R!
+Lists have a slightly different form of indexing. This can be one of the most confusing aspects of R for beginners!
 ```{r, echo=TRUE, , mysize=TRUE, size='\\footnotesize' }
-v1.l[1] # The first element of the list contains the vector
-v1.l[[1]] # Double brackets allows us to access the vector itself
-class(v1.l[1]) # first element is a list
-class(v1.l[[1]]) # double indexing gives us the contents
+l1[1] # The first element of the list contains the vector
+l1[[1]] # Double brackets allows us to access the vector itself
+class(l1[1]) # first element is a list
+class(l1[[1]]) # double indexing gives us the contents
 ```
 
 # Lists
 We can access specific elements of a list by using standard indexing.
 ```{r, echo=TRUE, , mysize=TRUE, size='\\footnotesize' }
-v1.l[[1]][1] # Followed by single brackets to access a specific element
-v1.l[1][1] # If we're not careful, we will just get the entire sublist
+l1[[1]][1] # Followed by single brackets to access a specific element
+l1[1][1] # If we're not careful, we will just get the entire sublist
 ```
 
 # Lists
@@ -221,21 +296,19 @@ v$v2 <- v2
 print(v)
 ```
 
-# Lists
-Combine `$` and square bracket indexing to extract the 5th element of `v1` from `v`.
-```{r, echo=TRUE, , mysize=TRUE, size='\\footnotesize' }
-# Add code here
-```
+# Excercise: Lists
+Combine `$` and square bracket indexing to extract the 5th element of `v1` from the list `v`.
+```{r, echo=TRUE, eval=F, mysize=TRUE, size='\\footnotesize' }
 
+```
 
 
 # Lists
 We can define lists more concisely by providing sublists as named arguments.
 ```{r, echo=TRUE, , mysize=TRUE, size='\\footnotesize' }
-cats <- list(names = c("Gary", "Tabitha"), ages = c(4,2))
+cats <- list(names = c("Gary", "Tabitha"), ages = c(5,2))
 print(cats)
 ```
-\tiny See \href{https://r4ds.had.co.nz/vectors.html}{Chapter 20} of *R4DS* for more on lists and vectors.
 
 # Matrices
 A matrix is a two-dimensional data structure. Like vectors, matrices hold objects of a single type. Here we're defining a matrix using two arguments, the number of rows and columns.
@@ -297,45 +370,57 @@ rownames(M1) <- seq(1, nrow(M1))
 print(M1)
 ```
 
-# Data frames
-*Like its component vectors, a matrix contains data of the same type*. If we have a mix of data types we can use a ``data.frame``. Note how the printed version shows the type of each column.
+# Putting it all together
+## Storing names in vectors
+Let's see how these types of objects can be used to create formal representations of social networks. We can start by defining a vector of names for a fictional friend group.
+
 ```{r, echo=TRUE, , mysize=TRUE, size='\\footnotesize' }
-df <- as.data.frame(M1) # convert matrix to data frame
-class(df)
-df$Z <- c("a","b", "c", "d", "e") # assign new column
-print(df)
+names <- c("Jay", "Amy", "Pete", "Mia")
 ```
 
-# Data frames
-We can use indexing in the same way as lists to extract elements. I recommend always using `$` indexing where possible.
+# Putting it all together
+## Representing relationships in a matrix
+Next, we can define a matrix to store relationship ties. Each person is referenced according to their index in the name vector
+
 ```{r, echo=TRUE, , mysize=TRUE, size='\\footnotesize' }
-data(iris) # The `data` function loads a built in dataset
-head(iris)
-iris$Sepal.Length[1] # explicitly call column name
-iris[[1]][1] # reference column using index
+X <- matrix(0, nrow = length(names), ncol = length(names))
+X[1,2] <- 1 # edge from Jay to Amy.
+X[1,3] <- 1
+X[3,2] <- 1
+X[1,4] <- 1
+X[4,2] <- 1
+
+print(X)
 ```
 
-# Tibbles
-A `tibble` is the `tidyverse` take on a data.frame. We can easily convert any `data.frame` into a `tibble`.
+# Putting it all together
+## Storing information in a list
 ```{r, echo=TRUE, , mysize=TRUE, size='\\footnotesize' }
-library(tidyverse) # the library is required to use the as_tibble function
-iris.t <- as_tibble(iris) # convert to tibble
-class(iris.t)
-```
+network_info <- list(names = names, network = X)
+print(network_info)
+```  
 
-# Tibbles
-Tibbles only show the first ten rows when printing (both look the same in RMarkdown, so we have to use the console to compare.) Tibbles also provide information on the type of each variable.
-```{r, echo=TRUE, , mysize=TRUE, size='\\footnotesize' }
-#print(iris)
-print(iris.t)
-```
-# Tibbles
-Tibbles also tend to provide more warnings when potential issues arise, so they should be less prone to errors than data frames.
-```{r, echo=TRUE, , mysize=TRUE, size='\\footnotesize', warning=T }
-iris$year # data.frame shows null
-iris.t$year # tibble provides a warning
-```
-  
+# Putting it all together
+## Plotting the network
+```{r, echo=FALSE, mysize=TRUE, size='\\footnotesize', out.width="70%",out.height="70%", fig.align="center"}
+require("igraph")
+require("ggnetwork")
+require("ggplot2")
+
+g <- graph_from_adjacency_matrix(X, mode = "directed", diag = F)
+V(g)$name <- names
+net <- ggnetwork(g)
+ggplot(net, aes(x = x, y = y, xend = xend, yend = yend)) +
+  geom_edges(color = "black", arrow = arrow(type = "closed", length = unit(2, "mm"))) +
+  geom_nodes(color = "black", size = 6) +
+  geom_nodelabel_repel(aes(label = name),
+                       fontface = "bold", box.padding = unit(1, "lines")) +
+  theme_void() +
+  theme(legend.position = "none") + 
+  xlim(min(net$x) - 0.2, max(net$x) + 0.2) +  # Adjusting x limits
+  ylim(min(net$y) - 0.2, max(net$y) + 0.2)   # Adjusting y limits
+```  
+
 # Questions?
 
 
