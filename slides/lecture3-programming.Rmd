@@ -3,7 +3,7 @@ title: "Computational Social Science"
 subtitle: "Programming in R"
 author: Dr. Thomas Davidson
 institute: Rutgers University
-date: January 26, 2022
+date: January 25, 2024
 urlcolor: blue
 output:
     beamer_presentation:
@@ -39,8 +39,7 @@ knitr::knit_hooks$set(mysize = function(before, options, envir) {
 
 # Plan
 
-- RStudio overview
-- Programming fundamentals
+- Programming fundamentals in R
   - Boolean logic
   - If-else statements
   - Loops
@@ -49,12 +48,11 @@ knitr::knit_hooks$set(mysize = function(before, options, envir) {
 
 
 # Recap
-## Data structures
+## Data structures in R
 - Basic data types
 - Vectors
 - Lists
 - Matrices
-- Data frames and tibbles
   
 # Boolean logic in R
 ```{r, out.width="70%",out.height="70%", fig.align="center"}
@@ -87,7 +85,7 @@ FALSE | TRUE & FALSE
 # If-else statements
 - We often encounter situations where we want to make a choice contingent upon the value of some information received.
 - If-else statements allow us to chain together one or more conditional actions.
-  - e.g. If time is between 2:00-3:20pm AND day is Monday or Wednesday,  attend Computational Data Science lecture. Else, do something else.
+  - e.g. If time is between 10:20-11:40am AND day is Monday or Thursday,  attend Computational Data Science lecture. Else, do something else.
 
 # If-else statements
 The basic syntax. The ``if`` is followed by a conditional statement in parentheses. If the condition is met, then the code in the braces is executed.
@@ -107,8 +105,6 @@ fruits <- c("apple", "apple",
             "apple")
 
 f <- sample(fruits, 1)
-
-f <- "orange"
 
 if (f == "apple") {print("We selected an apple")}
 ```
@@ -213,12 +209,10 @@ Loops can also easily be *nested*. Here we start a second loop within the first 
 M <- matrix(nrow=5,ncol=5)
 
 for (i in 1:5) {
-  for (j in 1:5)
-  {
+  for (j in 1:5) {
     M[i,j] <- i*j
   }
 }
-
 print(M)
 ```
 
@@ -332,10 +326,19 @@ output/2
 - Implemented in the ``magrittr`` package but loaded in ``tidyverse``
 
 # Pipes
+Pipes can be used to chain together sequences of operations. There are two different versions of the syntax:
+```{r, echo=TRUE, tidy=TRUE, mysize=TRUE, size='\\footnotesize'}
+library(tidyverse)
+x <- 10
+
+x %>% print() # Old style 
+
+x |> print() # New style
+```
+
+# Pipes
 Note how pipes allow us to chain operations from left to right, rather than nesting them from inner to outer. In this case we take a sequence from 1 to 10, get the square root of each value, sum the roots, then print the sum.
 ```{r, echo=TRUE, tidy=TRUE, mysize=TRUE, size='\\footnotesize'}
-library(magrittr)
-
 print(sum(sqrt(seq(1:10)))) # nested functions
 
 seq(1:10) %>% sqrt() %>% sum() %>% print() # using pipes
@@ -344,16 +347,16 @@ seq(1:10) %>% sqrt() %>% sum() %>% print() # using pipes
 # Pipes
 We can also use pipes to do basic arithmetic using pipes. Note again the difference between the nested operations and the pipe operator.
 ```{r, echo=TRUE, tidy=TRUE, mysize=TRUE, size='\\footnotesize'}
+library(magrittr)
 ((1+2)-10)*10
 
 1 %>% add(2) %>% subtract(10) %>% multiply_by(10)
 ```
-\tiny  Note how magrittr provides aliases for certain mathematical operations as shown in the second line. \href{https://stackoverflow.com/questions/27364390/chain-arithmetic-operators-in-dplyr-with-pipe#_=_}{This StackOverflow post has some further discussion}.
+\tiny  Note how `magrittr` provides aliases for certain mathematical operations as shown in the second line. \href{https://stackoverflow.com/questions/27364390/chain-arithmetic-operators-in-dplyr-with-pipe#_=_}{This StackOverflow post has some further discussion}.
 
 # Pipes
 Pipes are particularly useful we're working with tabular data. Here's an example without pipes or nesting. Each line produces an object that is then passed as input to the following line.
 ```{r, echo=TRUE, tidy=TRUE, mysize=TRUE, size='\\footnotesize'}
-library(tidyverse)
 library(nycflights13)
 
 
@@ -379,21 +382,21 @@ q <- flights %>% filter(!is.na(dep_delay), !is.na(arr_delay)) %>%
 q
 ```
 
+# Pipes
+Here we have the same expression using a pipe. Note how much easier this is to read.
+```{r, echo=TRUE, tidy=FALSE, mysize=TRUE, size='\\footnotesize'}
+q <- flights %>% filter(!is.na(dep_delay), !is.na(arr_delay)) %>%
+  group_by(year, month, day) %>% summarize(mean = mean(dep_delay))
+q
+```
 
-# Working with tabular data
-- Often we will be using intermediate objects like lists, vectors, and matrices to produce tabular data
-  - We can then use tables to create visualizations and conduct statistical analysis
-- The ``tidyverse`` contains an entire suite of functions designed for such tasks including
-  - ``dplyr`` contains functions for basic manipulation and merges and joins
-  - ``tidyr`` implements functions for data cleaning and shape transformations
-  - ``purr`` contains methods to easily map functions to lists and data frames.
-- \href{https://www.rstudio.com/resources/cheatsheets/}{RStudio cheatsheets} is an excellent resource.
   
 # Next week
 - Monday
-    - Working with tabular data using the `tidyverse`
+    - Agent-based modeling
+    - Tabular data and the `tidyverse`
     - Visualization using `ggplot2`
-- Wednesday
+- Thursday
     - Data and file management
     - Github and version control
 - Homework 1 released
