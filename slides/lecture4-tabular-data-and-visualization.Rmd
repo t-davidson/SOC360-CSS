@@ -3,7 +3,7 @@ title: "Computational Social Science"
 subtitle: "Tabular data and visualization"
 author: Dr. Thomas Davidson
 institute: Rutgers University
-date: January 31, 2022
+date: January 29, 2024
 output:
     beamer_presentation:
       theme: "Szeged"
@@ -39,9 +39,10 @@ knitr::knit_hooks$set(mysize = function(before, options, envir) {
 # Plan
 
 - Recap
-- Tabular data and the tidyverse
-- Data visualization with ggplot2
-- A primer on Github
+- Part I
+    - Agent-based modeling
+- Part II
+    - Working with tabular data in R
 
 
 # Recap
@@ -51,6 +52,107 @@ knitr::knit_hooks$set(mysize = function(before, options, envir) {
 - Loops
 - Functions
 - Pipes
+
+# Part I
+## Agent-based modeling
+
+# What is agent-based modeling?
+## Agent-based modeling and quantitative social science
+- Most quantitative social science is *variable-centered*. We study the associations and interactions between variables using statistical techniques.
+- For example, what is the association between college attendance and income for adults?
+    - *Dependent variable*: Income
+    - *Independent variable*: College attendance
+    - *Controls*: Test scores, parental education, socioeconomic status, gender, etc.
+    
+# What is agent-based modeling?
+## Agent-based modeling and quantitative social science
+- Agent-based modeling is the study of "social life as interactions among adaptive agents who influence one another in response to the influence they receive." (Macy and Willer 2002)
+  - Rather than interactions between variables, we consider *interactions between interdependent individuals*
+  
+# What is agent-based modeling?
+## Agent-based modeling and quantitative social science  
+- Often we are interested in the *emergent* properties of local interactions between agents and how they aggregate into system-level processes such as diffusion, polarization, and segregation
+  - How do cultural tastes spread through social networks?
+  - Why do people become polarized about politics?
+  - What explains patterns of residential segregation?
+
+# What is agent-based modeling?
+## Key assumptions
+- Macy and Willer 2002 outline four key assumptions that underpin many sociological agent-based models
+  - Agents are *autonomous*
+    - There is no system-wide coordination
+  - Agents are *interdependent*
+    - Agents respond to each other and to their environment
+  - Agents follow *simple rules*
+    - Simple local rules can generate global complexity
+  - Agents are *adaptive* and *backwards looking*
+    - Agents can alter their behavior through processes such as imitation and learning
+
+# What is agent-based modeling?
+## Craig Reynolds *Flocking behavior* (1987)
+```{r, out.width="70%",out.height="70%", fig.align="center"}
+include_graphics('../images/boids.png')
+```
+\tiny \centering Reynolds, Craig W. 1987. “Flocks, Herds and Schools: A Distributed Behavioral Model.” In *Proceedings of the 14th Annual Conference on Computer Graphics and Interactive Techniques*, 25–34.
+
+# What is agent-based modeling?
+## Thomas Schelling *Homophily and segregation*
+```{r, out.width="70%",out.height="70%", fig.align="center"}
+include_graphics('../images/shelling.png')
+```
+\tiny \centering Schelling, Thomas C. 1971. “Dynamic Models of Segregation.” *Journal of Mathematical Sociology* 1: 143–86.
+
+# What is agent-based modeling?
+## Robert Axelrod *Local convergence and global polarization* (1987)
+```{r, out.width="70%",out.height="70%", fig.align="center"}
+include_graphics('../images/axelrod1997.png')
+```
+\tiny \centering Axelrod, Robert. 1997. “The Dissemination of Culture: A Model with Local Convergence and Global Polarization.” *Journal of Conflict Resolution* 41 (2): 203–26.
+
+# What is agent-based modeling?
+## DellaPosta, Shi, and Macy *Why Do Liberals Drink Lattes?* (2015)
+```{r, out.width="70%",out.height="70%", fig.align="center"}
+include_graphics('../images/dellaposta.png')
+```
+\tiny \centering DellaPosta, Daniel, Yongren Shi, and Michael Macy. 2015. “Why Do Liberals Drink Lattes?” *American Journal of Sociology* 120(5): 1473–1511.
+
+
+# What is agent-based modeling?
+## Why use it?
+- Benefits
+    - Test theories that are hard to evaluate using data
+    - Dynamic and flexible
+- Drawbacks
+    - Works best with simple models, intractable with more complex simulations
+    - Difficult to evaluate or benchmark
+
+# Example: Schelling's segregation model
+
+Copy the code at this link and try to run it as an R script in RStudio: \href{http://tinyurl.com/schellingR}{http://tinyurl.com/schellingR}
+
+# Part II
+## Tabular data and data visualization
+
+# Tabular data
+- Often we will be using intermediate objects like lists, vectors, and matrices in conjunction with these different programming techniques to produce tabular data
+
+# Tabular data
+## Data frames
+These data extend some of the functionality of basic types. A data frame is a tabular representation that has a similar structure to a list but allows us to organize the data more neatly.
+```{r, echo=TRUE, , mysize=TRUE, size='\\footnotesize' }
+data(iris) # The `data` function loads a built in dataset
+head(iris)
+iris$Sepal.Length[1] # explicitly call column name
+iris[[1]][1] # reference column using index
+```
+
+# Tabular data
+## The tidyverse
+- The ``tidyverse`` is an R package that contains an entire suite of functions designed for such tasks including
+  - ``dplyr`` contains functions for basic manipulation and merges and joins
+  - ``tidyr`` implements functions for data cleaning and shape transformations
+  - ``purr`` contains methods to easily map functions to lists and data frames.
+- \href{https://www.rstudio.com/resources/cheatsheets/}{RStudio cheatsheets} is an excellent resource.
   
 # Tabular data
 ## The tidyverse
@@ -62,14 +164,36 @@ tidyverse::tidyverse_packages()
 Visit the tidyverse website for more information on the different packages \href{https://tidyverse.tidyverse.org/}{website}
 
 # Tabular data
+## Tibbles
+A `tibble` is the `tidyverse` take on a data.frame. We can easily convert any `data.frame` into a `tibble`.
+```{r, echo=TRUE, , mysize=TRUE, size='\\footnotesize' }
+iris.t <- as_tibble(iris) # convert to tibble
+class(iris.t)
+```
+
+# Tabular data
+## Tibbles
+Tibbles only show the first ten rows when printing (both look the same in RMarkdown, so we have to use the console to compare.) Tibbles also provide information on the type of each variable.
+```{r, echo=TRUE, , mysize=TRUE, size='\\footnotesize' }
+print(iris.t)
+```
+
+# Tabular data
+## Tibbles
+Tibbles also tend to provide more warnings when potential issues arise, so they should be less prone to errors than data frames.
+```{r, echo=TRUE, , mysize=TRUE, size='\\footnotesize', warning=T }
+iris$year # data.frame shows null
+iris.t$year # tibble provides a warning
+```
+
+# Tabular data
 ## Reading data
 We can read data from files or directly from the web using `readr`. Here we're reading in data from the *New York Times* state-level COVID-19 tracker. The `glimpse` command shows us a preview of the table. We can use `View` to open up the data in a new window.
 ```{r, echo=TRUE, tidy=TRUE, mysize=TRUE, size='\\footnotesize'}
 c19 <- read_csv("https://raw.githubusercontent.com/nytimes/covid-19-data/master/us-states.csv")
 dim(c19)
 glimpse(c19)
-head(c19)
-#View(c19)
+tail(c19)
 ```
 
 # Tabular data
@@ -84,10 +208,10 @@ c19 <- c19 %>% select(-fips) # select all except named column, replace dataset
 ## Filtering
 The `filter` command allows us to subset rows that meet one or more conditions.
 ```{r, echo=TRUE, tidy=TRUE, mysize=TRUE, size='\\footnotesize'}
-c19 %>% filter(cases > 10000) # conditional filtering
+c19 %>% filter(cases > 1000) # conditional filtering
 c19 %>% filter(str_detect(state, "New")) # str_detect function from stringr package
-c19 %>% filter(str_detect(state, "New") & cases > 10000)
-c19 %>% filter(date >= as.Date("2021-11-01")) # using as.Date to case string to date
+c19 %>% filter(str_detect(state, "New") & cases > 1000)
+c19 %>% filter(date >= as.Date("2023-03-23")) # using as.Date to case string to date
 ```
 
 # Tabular data
@@ -114,7 +238,7 @@ c19 <- c19 %>% mutate(deaths_per_case = deaths / cases)
 colnames(c19)
 ```
 
-# Tabular date
+# Tabular data
 ## Mutate
 Although these data are cumulative, we can recover the new cases and deaths each day by using the `lag` operator.
 ```{r, echo=TRUE, tidy=TRUE, mysize=TRUE, size='\\footnotesize'}
@@ -151,17 +275,17 @@ c19 %>% summarize_all(mean) # Map a summary function to all valid columns
 
 # Tabular data
 ## Grouping
-Often we want to group our data before summarizing. What do these two examples tell us?
+Often we want to group our data before summarizing. What does this example tell us?
 ```{r, echo=TRUE, tidy=TRUE, mysize=TRUE, size='\\footnotesize'}
 c19 %>% group_by(state) %>% summarise(mean(deaths_per_case))
-c19 %>% group_by(date) %>% summarise(mean(cases))
 ```
 
 # Tabular data
 ## Grouping
 Sometimes we might want to create a group-level variable then revert back to the original dataset. We can do this using the `ungroup` command. What does this new column represent?
 ```{r, echo=TRUE, tidy=TRUE, mysize=TRUE, size='\\footnotesize'}
-c19 %>% group_by(date) %>% mutate(daily_mean = mean(cases)) %>% ungroup()
+c19 %>% group_by(date) %>% mutate(daily_mean = mean(new_cases)) %>% ungroup() %>%
+    tail()
 ```
 
 # Tabular data
@@ -176,7 +300,7 @@ include_graphics('https://d33wubrfki0l68.cloudfront.net/aeab386461820b029b7e7606
 ## Joins
 The `left_join` is the most commonly used type of join. We keep all rows in our left dataset and the rows on the right dataset with valid matches. Here we're download a dataset about state governors and joining it on state. The `by` argument defines the columns we should join on.
 ```{r, echo=TRUE, tidy=TRUE, mysize=TRUE, size='\\footnotesize'}
-gov <- read_csv("https://raw.githubusercontent.com/CivilServiceUSA/us-governors/master/us-governors/data/us-governors.csv")
+gov <- read_csv("https://raw.githubusercontent.com/OpenGovDataMirror/F_CivilServiceUSA_us-governors/master/us-governors/data/us-governors.csv")
 gov <- gov %>% select(state_name, party) # just select two columns
 
 c19 <- c19 %>% left_join(gov, by = c("state" = "state_name")) # We can pipe c19 into the left_join function.
@@ -275,17 +399,17 @@ ggplot(c19, # data
 We can easily group by other variables.
 ```{r, echo=FALSE, tidy=TRUE, mysize=TRUE, size='\\footnotesize'}
 ggplot(c19, # data
-       aes(x = date, y= cases, group=party, color=party)) + # aesthetic mapping
-    geom_smooth(method='loess') # plot type
+       aes(x = date, y= cases, group=state, color=party)) + # aesthetic mapping
+    geom_smooth(method='lm') # plot type
 ```
 
 # Data visualization
 ## ggplot2
-Why might the previous plot be misleading? Is there a better way to look at how cases vary by partisanship of the governor? Note: The plot is now rendered as an object `p` before plotting. This allows us to modify it later on.
+Why might the previous plot be misleading? Is there a better way to look at how cases vary by partisanship of the governor? Note: The plot is now stored as an object `p` before plotting. This allows us to modify it later on.
 ```{r, echo=FALSE, tidy=TRUE, mysize=TRUE, size='\\footnotesize'}
 c19 <- c19 %>% mutate(case_rate = cases / pop)
 p <- ggplot(c19, # data
-       aes(x = date, y= case_rate, group=party, color=party)) + # aesthetic mapping
+       aes(x = date, y= case_rate, group=state, color=party)) + # aesthetic mapping
     geom_smooth(method='lm') # plot type
 p
 ```
@@ -296,8 +420,8 @@ Now we have a plot, let's make it look a bit nicer. We can easily add labels and
 ```{r, echo=FALSE, tidy=TRUE, mysize=TRUE, size='\\footnotesize'}
 p + # previous plot
     theme_minimal() + # themes change the overall look of a plot
-    labs(x = "", y = "Infection rate", title = "Cumulative COVID-19 cases per capita by governor type, 2020-2021",
-         color = "Governor affiliation", caption = "COVID-19 data from the New York Times. Updated September 15, 2021.") + 
+    labs(x = "", y = "Infection rate", title = "Cumulative COVID-19 cases per capita by governor type, 2020-2023",
+         color = "Governor affiliation", caption = "COVID-19 data from the New York Times. Updated March 23, 2023.") + 
     theme(axis.text.x = element_text(angle = 90))
 ```
 
@@ -310,21 +434,21 @@ ggplot(c19, # data
        aes(x = date, y= daily_case_rate, group=party, color=party)) + # aesthetic mapping
     geom_smooth(method='lm') + # plot type
 theme_minimal() + # themes change the overall look of a plot
-    labs(x = "", y = "Daily infection rate", title = "Daily COVID-19 cases per capita by governor type, 2020-2021",
-         color = "Governor affiliation", caption = "COVID-19 data from the New York Times. Updated September 15, 2021.") + 
+    labs(x = "", y = "Infection rate", title = "Cumulative COVID-19 cases per capita by governor type, 2020-2023",
+         color = "Governor affiliation", caption = "COVID-19 data from the New York Times. Updated March 23, 2023.") +  
     theme(axis.text.x = element_text(angle = 90))
 ```
 
 # Data visualization
 ## ggplot2
-What could we change to include separate lines for each state while maintaining the color.
+Based on these results, we might want to go back to a non-linear fit and allow each state to have its own line to better see the trends.
 ```{r, echo=FALSE, tidy=TRUE, mysize=TRUE, size='\\footnotesize'}
 ggplot(c19, # data
        aes(x = date, y= daily_case_rate, group=state, color=party)) + # aesthetic mapping
     geom_smooth(method='loess') + # plot type
 theme_minimal() + # themes change the overall look of a plot
-    labs(x = "", y = "Daily infection rate", title = "Daily COVID-19 cases per capita by governor type, 2020-2021",
-         color = "Governor affiliation", caption = "COVID-19 data from the New York Times. Updated September 15, 2021.") + 
+    labs(x = "", y = "Daily infection rate", title = "Daily COVID-19 cases per capita by governor type, 2020-2023",
+         color = "Governor affiliation", caption = "COVID-19 data from the New York Times. Updated March 23, 2023.") + 
     theme(axis.text.x = element_text(angle = 90))
 ```
 
@@ -333,7 +457,7 @@ theme_minimal() + # themes change the overall look of a plot
 The `ggplot` package can be used to produce many different types of visualizations. For example, we can use it to produce maps. Here we load the package `maps` to get the shapefile for each state. The example 
 ```{r, echo=FALSE, tidy=TRUE, mysize=TRUE, size='\\footnotesize'}
 #install.packages("maps")
-library(maps)
+require(maps)
 us_states <- map_data("state")
 
 # We can plot an empty map
@@ -349,7 +473,7 @@ ggplot(data = us_states,
 ## ggplot2
 We have to merge our data with the shapefile in order to plot it on the map.
 ```{r, echo=FALSE, tidy=TRUE, mysize=TRUE, size='\\footnotesize'}
-c19.map <- c19 %>% filter(date == as.Date("2022-01-28")) %>% # select date
+c19.map <- c19 %>% filter(date == as.Date("2023-03-22")) %>% # select date
     mutate(state_lower = tolower(state)) %>% # set to lowercase
     left_join(us_states, by = c("state_lower" = "region"))
 
@@ -366,7 +490,7 @@ p + geom_polygon(color = "gray90", size = 0.1) +
 Let's try to do something more interesting.
 ```{r, echo=FALSE, tidy=TRUE, mysize=TRUE, size='\\footnotesize'}
 #install.packages("ggthemes")
-library(ggthemes)
+require(ggthemes)
 
 c19.map <- c19.map %>% mutate(cases_per_100k = new_cases / (pop/100000)) # a more interpretable metric
 
@@ -380,52 +504,13 @@ p + geom_polygon(color = "gray90", size = 0.1) +
                                 mid = scales::muted("purple"),
                                 high = "red") +
   theme_map() + # A theme for making maps
-  labs(title = "COVID-19 new infection rate, January 28 2022", 
+  labs(title = "COVID-19 new infection rate, March 23 2023", 
                      caption = "COVID-19 data from the New York Times. \n 2019 population estimates from the Census Bureau.",
                      fill = "Infections per \n 100k population")
-```
-# Some very preliminary data science
-## What predicts the state-level daily infection rate?
-We can use linear regression to predict the number of new cases given information about the state.
-```{r, echo=TRUE, tidy=TRUE, mysize=TRUE, size='\\footnotesize'}
-c19$new_cases.lag <- lag(c19$new_cases)
-summary(lm(new_cases ~ new_cases.lag + pop + as.numeric(date), data = c19))
-```
-
-# Some very preliminary data science
-## What predicts the state-level daily infection rate?
-We can use linear regression to predict the number of new cases given information about the state.
-```{r, echo=TRUE, tidy=TRUE, mysize=TRUE, size='\\footnotesize'}
-summary(lm(new_cases ~ new_cases.lag + pop + party + pop*party + as.numeric(date), data = c19))
-```
-
-# Some very preliminary data science
-## What predicts the state-level daily infection rate?
-We can use linear regression to predict the number of new cases given information about the state.
-```{r, echo=TRUE, tidy=TRUE, mysize=TRUE, size='\\footnotesize'}
-summary(lm(new_cases ~ new_cases.lag + pop + party + pop*party + as.numeric(date), data = c19 %>% filter(date <= as.Date("2020-2-29"))))
-```
-
-
-# Some very preliminary data science
-## What predicts the state-level daily infection rate?
-We can use linear regression to predict the number of new cases given information about the state.
-```{r, echo=TRUE, tidy=TRUE, mysize=TRUE, size='\\footnotesize'}
-summary(lm(new_cases ~ new_cases.lag + pop + party + pop*party + as.numeric(date), data = c19 %>% filter(date <= as.Date("2020-12-31"))))
-```
-
-# Some very preliminary data science
-## What predicts the state-level daily infection rate?
-We can use linear regression to predict the number of new cases given information about the state.
-```{r, echo=TRUE, tidy=TRUE, mysize=TRUE, size='\\footnotesize'}
-summary(lm(new_cases ~ new_cases.lag + pop + party + pop*party + as.numeric(date), data = c19 %>% filter(date > as.Date("2020-12-31"))))
 ```
 
 # Next lecture
 - File management
 - Github
-
-    
-    
 
 
