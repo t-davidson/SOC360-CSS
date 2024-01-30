@@ -9,7 +9,7 @@ There are several benefits of these tools. First, it is a convenient way to shar
 
 Github is not intended for storage of large files. You should use another service like Google Drive or Box for this purpose. And be careful what you share. By default, most repositories are public, so ensure not to share sensitive data or credentials.
 
-## Setting up Git and Github
+## Setting up Git, Github, and RStudio integration
 
 Follow these steps to get a Github account, install and set up Git on your computer, integrate it with RStudio, and verify that it is working. The process should take approximately 15 minutes to complete (assuming nothing goes wrong).
 
@@ -66,10 +66,9 @@ You can learn more about projects in the *R for Data Science* book: https://r4ds
 
 ## Resources
 
-There are a ton of videos on YouTube, from short explainers to multi-hour marathons
-Some of the instructions here are part of detailed guide to all you could every want to know about RStudio and Github https://happygitwithr.com/index.html
-Github provides guides and lots of documentation on its website https://github.com/git-guides
-Github cheatsheet (multilingual) https://training.github.com/
+Some of the instructions here are part of detailed guide to all you could every want to know about RStudio and Github: https://happygitwithr.com/index.html
+Github provides guides and lots of documentation on its website: https://github.com/git-guides
+Github cheatsheet (multilingual): https://training.github.com/
 
-## Student developer pack
+### Student developer pack
 Students can get free access to some premium features by signing up for the Student Developer Pack: https://education.github.com/pack. It is not essential for our purposes, but I highly recommend doing so. The most obvious perk is the ability to create private repositories.
