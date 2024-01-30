@@ -3,7 +3,7 @@ title: "Computational Social Science"
 subtitle: "File management and Github"
 author: Dr. Thomas Davidson
 institute: Rutgers University
-date: February 2, 2022
+date: February 1, 2024
 output:
     beamer_presentation:
       theme: "Szeged"
@@ -38,16 +38,10 @@ knitr::knit_hooks$set(mysize = function(before, options, envir) {
 
 # Plan
 
-- Course updates
-- File management and Github
+- File management
+- Github
+- Homework 1
 
-
-# Course updates
-- Homework 1 released on Github Classroom
-    - Follow link on Canvas in the Module for this week
-        - Select your Rutgers NetID
-        - This will take you to a Github repository
-- I will show you how to download it at the end of the lecture
         
 # File management
 ```{r, out.width="70%",out.height="60%", fig.align="center"}
@@ -56,8 +50,11 @@ include_graphics('../images/file_not_found.png')
 \tiny Source: \href{https://www.theverge.com/22684730/students-file-folder-directory-structure-education-gen-z}{The Verge, 2021.}
 
 # File management
-- Organizing the class materials
-- Navigating files using RStudio
+- File management in this class
+    - Keeping track of course materials
+    - Working on homework assignments
+    - Organizing final projects
+    - Reproducibility!
 
 # Organizing your files
 - Make a directory to contain all materials for this class
@@ -87,246 +84,160 @@ include_graphics('../images/directory_structure.png')
 - Github repositories exist online and you can *clone* them to your local computer
 
 # Using Github
-- You can interact with Github in several different ways
-  - Github Desktop (recommended)
-  - Through your browser (not recommended)
-  - Using the command line
-  - RStudio integration
-    - See https://happygitwithr.com/index.html for a guide
+- You can interact with Github in several different ways:
+    - RStudio integration (recommended)
+    - Github Desktop (redundant if using RStudio)
+    - Through your browser (not recommended, but viewing is fine)
+    - Using the command line (recommended for advanced users)
 
-# Install Github Desktop
-- Install Github Desktop by using this link: https://desktop.github.com/
+# Using Github
+Follow the instructions on the course website to set up Github with RStudio: \url{https://github.com/t-davidson/SOC360-CSS/}
 
-# Using Github Desktop
+1. Register for a Github account
+2. Install Git
+3. Sync your Github account with RStudio
+  
+# Cloning the course materials
+- Once you have this set up, navigate to the course website on Github and copy the URL:
+    - \url{https://github.com/t-davidson/SOC360-CSS}
+  
+# Cloning the course materials
+- In RStudio, click `File > New Project > Version Control > Git`
 ```{r, out.width="70%",out.height="60%", fig.align="center"}
-include_graphics('../images/github_desktop1.png')
+include_graphics('../images/add_course_github.png')
 ```
 
-# Using Github Desktop
+# Cloning the course materials
+
+- Paste the URL into the `Repository URL` field
+- Write a suitable name in the `Project directory name` field
+    - This will be the name of the folder that is created on your computer
+- Choose a location to store the repository on your computer
+    - Recommend using the folder we created earlier
+- Then click `Create Project`
+
+# Cloning the course materials
 ```{r, out.width="70%",out.height="60%", fig.align="center"}
-include_graphics('../images/github_desktop2.png')
+include_graphics('../images/github_loading.png')
 ```
 
-# Using Github Desktop
+# Cloning the course materials
 ```{r, out.width="70%",out.height="60%", fig.align="center"}
-include_graphics('../images/github_desktop3.png')
+include_graphics('../images/updated_file_structure.png')
 ```
 
-# Using Github Desktop
+# Cloning the course materials
 ```{r, out.width="70%",out.height="60%", fig.align="center"}
-include_graphics('../images/files_after_github.png')
+include_graphics('../images/inside_the_directory.png')
+```
+
+# Navigating files using RStudio
+You can also use the `Files` pane in RStudio to navigate folders.
+```{r, out.width="70%",out.height="60%", fig.align="center"}
+include_graphics('../images/cd_point_and_click_1.png')
 ```
 
 # Opening this .Rmd file
-- Navigate the repository you just created and open this .Rmd file.
-- The file will be located in the following *path*:
-    - `~/SOC360/css-spring-2022/slides/lecture5-file-management-and-github.Rmd`
-        - The `~` stands in for the location of the `SOC360` directory on your computer. 
+- Navigate to `slides/` and open `lecture5-file-management-and-github.Rmd` by double-clicking the file
 
 # Navigating files using RStudio
 Run the `getwd()` command to show the current working directory in R. 
-```{r, echo=TRUE, tidy=TRUE, mysize=TRUE, size='\\footnotesize'}
+```{r, echo=TRUE,eval=F, tidy=TRUE, mysize=TRUE, size='\\footnotesize'}
 getwd()
 ```
 
 # Navigating files using RStudio
-Run the `setwd()` command to change your working directory. You can then run `getwd()` to verify it has changed.
-```{r, echo=TRUE, tidy=TRUE, mysize=TRUE, size='\\footnotesize'}
-setwd("/Users/davidson/Desktop/")
+Run the `setwd()` command to change your working directory. Try going one step back from the current directory using `..`. You can then run `getwd()` to verify it has changed.
+```{r, echo=TRUE,eval=F, tidy=TRUE, mysize=TRUE, size='\\footnotesize', warning=F}
+setwd("..")
 getwd()
 ```
 
 # Navigating files using RStudio
-- RMarkdown defaults to the directory where the `.Rmd` file is contained.
+- When a `.Rmd` file is opened RStudio defaults to the directory where the file is contained.
     - If you run `setwd()` it will change within a chunk, but other chunks will revert back to the working directory.
     
 # Navigating files using RStudio
-You can also use the `Files` pane in RStudio to navigate folders and set a working directory.
-```{r, out.width="70%",out.height="60%", fig.align="center"}
-include_graphics('../images/rstudio_file_viewer.png')
-```
-
-    
-# Navigating files using RStudio
-The working directory is important when considering loading files. You can use the `list.files` function to see a list of the files in the current directory.
-```{r, echo=TRUE, tidy=TRUE, mysize=TRUE, size='\\footnotesize'}
-setwd("/Users/davidson/Desktop/Classes/css-spring-2022/")
+The working directory is important when considering loading files. Navigate to the `code` directory. You can use the `list.files` function to see a list of the files in the current directory.
+```{r, echo=TRUE,eval=F, tidy=TRUE, mysize=TRUE, size='\\footnotesize'}
+setwd("../code/")
 list.files()
 ```
     
 # Using file paths
-- The working directory is important because it defines a path we need to use to load files. Different files will fall into one of three groups:
-    - File contained in the working directory.
-    - Files contained in outer directories.
-    - Files contained in inner, nested directories.
+- The working directory is critical because it defines a path we need to use to load files. Different files will fall into one of three groups:
+    1. File contained in the working directory.
+    2. Files contained in outer directories.
+    3. Files contained in inner, nested directories.
     
 # Files contained in the working directory
 If a file exists in the working directory, you will see it when running `list.files`. It can be loaded by using the file name.
-```{r, echo=TRUE, tidy=TRUE, mysize=TRUE, size='\\footnotesize'}
+```{r, echo=TRUE,eval=F, tidy=TRUE, mysize=TRUE, size='\\footnotesize', message=F}
 library("tidyverse")
-f <- read_file("file.txt")
-print(f)
+read_file("file.txt") %>% print()
 ```  
 
 # Files contained in an outer directory
 If a file is contained in an upper level directory, you need to use the `..` to escape the current directory. For each step out from the current directory you need to add another `/..` to the file path. In this case, the file is contained one level above the current directory.
-```{r, echo=TRUE, tidy=TRUE, mysize=TRUE, size='\\footnotesize'}
-f <- read_file("../file_outer.txt")
-print(f)
+```{r, echo=TRUE,eval=F, tidy=TRUE, mysize=TRUE, size='\\footnotesize'}
+read_file("../file_outer.txt") %>% print()
 ```  
 
 # Files contained in an inner directory
 If a file is contained in an inner directory, you need to add the name of the directory to the file path.
-```{r, echo=TRUE, tidy=TRUE, mysize=TRUE, size='\\footnotesize'}
-f <- read_file("nested/file_nested.txt")
-print(f)
+```{r, echo=TRUE,eval=F, tidy=TRUE, mysize=TRUE, size='\\footnotesize'}
+read_file("nested/file_nested.txt") %>% print()
 ```  
 
 # Files contained in an inner directory
 If a file is contained in an inner directory, you need to add the name of the directory to the file path.
-```{r, echo=TRUE, tidy=TRUE, mysize=TRUE, size='\\footnotesize'}
-f <- read_file("nested/nested2/file_nested2.txt")
-print(f)
+```{r, echo=TRUE, eval=F, tidy=TRUE, mysize=TRUE, size='\\footnotesize'}
+read_file("nested/nested2/file_nested2.txt") %>% print()
 ```  
 
-# Errors
+# Exercise
+Modify the path below to find and print the contents of the hidden file in the course repository.
+```{r, echo=T, eval=F, tidy=TRUE, mysize=TRUE, size='\\footnotesize'}
+read_file("") %>% print()
+```  
+
+# File navigation
+## Common errors
 - It is common to get errors if you misspecify a path when trying to load a file. You will get an error like the following:
     - `Error: 'filename' does not exist in the current working directory ('directory').`
 - If this happens, check whether the file is in your current working directory.
     - You can always use your `Files` tab or your normal file viewer to verify the location.
 
-# Making a new Github repository
-Go to Github and click the `New` button in the top-left corner.
-```{r, out.width="40%",out.height="30%", fig.align="center"}
-include_graphics('../images/gitnew.png')
-```  
+# Homework 1
+## Github classroom
+- Homework 1 released on Github Classroom
+    - Follow link on Canvas in the Module for this week
+        - Select your Rutgers NetID
+        - This will take you to a Github repository
+        
+# Homework 1
+## Cloning the repository
+- Clone the repository using the same process as above and store within the class folder
+    - Copy the URL
+    - Start a new project and paste the URL
+    - Store it somewhere sensible
+        - DO NOT store this inside the repository for the course materials
+    
+# Homework 1
+## Working on the homework
+- The homework is contained in a `.Rmd` file. All instructions are located in this file.
 
-# Making a new Github repository
-Give the repository and informative name.
-```{r, out.width="70%",out.height="60%", fig.align="center"}
-include_graphics('../images/gitnew2.png')
-```  
-
-# Making a new Github repository
-Check the `Add .gitignore` box and select `R` from the dropdown. This will prevent unnecessary files from being committed (more later).
-```{r, out.width="40%",out.height="30%", fig.align="center"}
-include_graphics('../images/gitnew3.png')
-``` 
-
-# Making a new Github repository
-When you're ready, click `Create repository`.
-```{r, out.width="40%",out.height="30%", fig.align="center"}
-include_graphics('../images/gitnew4.png')
-``` 
-
-# Making a new Github repository
-You will be taken to the Github page for your repository.
-```{r, out.width="70%",out.height="60%", fig.align="center"}
-include_graphics('../images/gitnew5.png')
-``` 
-
-# Cloning a new repository
-- You can `clone` this repository to your computer by copying the URL at the top, e.g. `https://github.com/t-davidson/test-repository`
-- Cloning creates a local version of the repository.
-
-# Cloning a new repository
-Go to Github Desktop and click the `Add` dropdown and select `Clone Repository...`
-```{r, out.width="70%",out.height="60%", fig.align="center"}
-include_graphics('../images/clone_new.png')
-``` 
-
-# Cloning a new repository
-Paste the URL into the relevant box and select the path. In this case, the repository will be contained within the `SOC360` folder.
-```{r, out.width="70%",out.height="60%", fig.align="center"}
-include_graphics('../images/clone_new2.png')
-``` 
-
-
-# Editing the repository
-- Navigate to the directory and open the `README.md` file
-- Add some new text to this file
-- Return to Github Desktop
-
-
-# Committing a change
-You can see the file has changed. Click `Commit to main` to prepare to update the online version using a *commit*.
-```{r, out.width="70%",out.height="60%", fig.align="center"}
-include_graphics('../images/push1.png')
-``` 
-
-# Committing a change
-You will now see that there are `no uncommitted changes`.
-```{r, out.width="70%",out.height="60%", fig.align="center"}
-include_graphics('../images/push2.png')
-``` 
-
-# Pushing a change
-Finally, click `Push origin` to *push* the changes
-```{r, out.width="70%",out.height="60%", fig.align="center"}
-include_graphics('../images/push3.png')
-``` 
-
-# Verifying the update
-Refresh the Github page in your browser. You should now be able to see the update.
-```{r, out.width="70%",out.height="60%", fig.align="center"}
-include_graphics('../images/push4.png')
-```
-
-# Pulling changes
-- Just like you use `push` to send your changes  from your computer to the internet, you need to use `pull` to bring changes from the internet to the local version.
-- Before each lecture, navigate to the class Github repository and click `Fetch origin`. This will allow you to download the new slides and other files.
-```{r, out.width="40%",out.height="30%", fig.align="center"}
-include_graphics('../images/fetch.png')
-```
-
-
-# Github in the command line
-- Let's say you want to make changes to a repository, in this case adding a single file called ``myfile.txt``:
- -  Make changes to ``myfile.txt`` and save the file.
- - ``git status`` will show information about the status of your repo.
- - ``git add myfile.txt`` will stage the file to be added to the online repo.
-    - Avoid using ``git add *`` (only check files you want in Github Desktop)
- - ``git commit -m "Adding a new file"`` commits the file to the repo, along with an informative message.
-
-# Github in the command line
-- ``git push origin main`` then tells Github to push the local changes to the main branch of the online repository
-    - Conversely, ``git pull origin main`` will pull the latest updates from your main branch to your local machine
-- Now visit the web page for your repository and you should see the changes.
-
-
-# Github Classroom and homework assignments
-- We will be using *Github Classroom* for the homework assignments
-  - You will each have template repository containing the homework
-  - Clone this repository using Github Desktop
-  - Submit your homework by pushing your updates
-- Full instructions are contained in the repository
-
-# Github Student Developer Pack
-- If you haven't already, log in and apply for the Github Student Developer pack
-  - https://education.github.com/pack
-- This allows you to make unlimited private repositories and gives access to many other tools
+# Homework 1
+## Submitting the homework
+- Submission instructions are included at the bottom of the homework file
+- There is also a guide on the Github wiki on the course website
 
 # Next week
 - Application Programming Interfaces (APIs)
 - Collecting and analyzing data from Spotify and other platforms
+    - If you don't have Spotify, please make a free account before class
     
 
-# Advanced Github
-## Branches and merging
-- A *branch* consists of a particular version of the repo
-    - All repos start with a single branch called *main* (formerly *master*)
-    - You can create separate branches for particular tasks
-        - This is particularly useful for collaboration
-    - You can then *merge* the branch back into main
-        - But be careful of *merge conflicts*
-- A *pull request* is a mechanism for merging content into a repository
-    - This can enable the code to be reviewed before it is integrated
-- The *issue* function can be used to note any issues with the code and to bring them to the repo owner's attention (e.g. https://github.com/tidyverse/ggplot2)
-
-# Advanced Github
-## Forks
-- A *fork* is a copy of another repository (usually from another user)
-    - This allows you to easily copy the repository and modify it without changing the original content
     
 
     
