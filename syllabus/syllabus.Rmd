@@ -32,7 +32,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 E-mail: ``thomas.davidson@rutgers.edu``.
 
-Website: \href{https://github.com/t-davidson/css-spring-2022}{https://github.com/t-davidson/css-spring-2022} and Canvas.
+Website: \href{https://github.com/t-davidson/SOC360-CSS}{https://github.com/t-davidson/SOC360-CSS} and Canvas.
 
 Class meetings: Monday & Thursday 10:20-11:40am, Allison Road Classroom 204, Busch Campus.
 
@@ -149,7 +149,7 @@ Please see the bottom of the syllabus for information on additional information 
 - Thursday 2/1: 
     - *R4DS*: C6-8
     
-## *Assignment 1 released: Using R to Analyze and Model Social Dynamics.*
+## *Assignment 1 released: Programming in R.*
     
 ## Week 4
 ### Data Collection I: Collecting Data Using Application Programming Interfaces
