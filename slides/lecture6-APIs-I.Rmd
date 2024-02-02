@@ -3,7 +3,7 @@ title: "Computational Social Science"
 subtitle: "Observational Data and Application Programming Interfaces"
 author: Dr. Thomas Davidson
 institute: Rutgers University
-date: February 7, 2022
+date: February 5, 2024
 output:
     beamer_presentation:
       theme: "Szeged"
@@ -49,10 +49,10 @@ set.seed(08901)
 
 # Course updates
 ## Homework
-- Homework 1 released, due Friday at 5pm Eastern.
+- Homework 1 released last week, due Wednesday at 5pm.
   - Don't leave it until the last minute!
-  - Office hours Wednesday after class
   - Please push your final version to Github with the appropriate commit message.
+  - Make sure to also submit the URL on Canvas
 
 
 # Digital trace data
@@ -324,7 +324,7 @@ p
   - Much of Reddit is available via Pushshift
     
 # Next lecture
-- Interacting with APIs using R
+- Using the Spotify API in R
     
 
     
