@@ -3,7 +3,7 @@ title: "Computational Social Science"
 subtitle: "Observational Studies and Application Programming Interfaces II"
 author: Dr. Thomas Davidson
 institute: Rutgers University
-date: February 9, 2022
+date: February 8, 2024
 output:
     beamer_presentation:
       theme: "Szeged"
@@ -44,14 +44,7 @@ set.seed(08901)
 - Using the Spotify API in R
 - Exercise
 
-# Course updates
-## Homework
-- Homework due Friday at 5pm ET.
-  - Please push your final version to Github with the appropriate commit message
-  - Office hours today 5-6pm, 109 Davison Hall or Zoom (link in Canvas announcement)
-
 # Recap
-## APIs
 - Online data sources for social science
   - Big data, observational data, digital trace data
 - Application Programming Interfaces allow us to easily collect these kinds of data
@@ -60,28 +53,29 @@ set.seed(08901)
   - Rate-limiting
 - Interacting with the Github API in R
 
-# APIs
-## Using the Spotify API
+# Using the Spotify API
+## Documentation
 - It's always good to start by reading the documentation
   - https://developer.spotify.com/documentation/web-api/
 - This provides information on the API, endpoints, rate-limits, etc.
 
-# APIs
-## Using the Spotify API
+# Using the Spotify API
+## Signing up
 This API requires authentication. Let's log in to use the API.
 ```{r, out.width="70%",out.height="70%", fig.align="center"}
-include_graphics('../IMAGES/spotify1.png')
+include_graphics('../IMAGES/spotify_develop2.png')
 ```  
 \tiny https://developer.spotify.com/dashboard/
 
-# APIs
-## Using the Spotify API
+# Using the Spotify API
+## Creating an app
 Accept the terms of service then click on this button to create a new app.
 ```{r, out.width="40%",out.height="30%", fig.align="center"}
-include_graphics('../IMAGES/spotify2.png')
+include_graphics('../IMAGES/spotify_create_app2.png')
 ```  
-# APIs
-## Using the Spotify API
+
+# Using the Spotify API
+## Creating an app
 - Add a name and a short description
     - e.g. "Computational Social Science", "App for class"
 - Click on the app in Dashboard
@@ -91,9 +85,9 @@ include_graphics('../IMAGES/spotify2.png')
     - Copy Client ID and Client Secret
 
 
-# APIs
-## Using the Spotify API
-- Open `creds.json` (located in the `slides` folder) and paste the ID and secret into the relevant fields.
+# Using the Spotify API
+## Storing credentials
+- Open `creds.json` (located in the `credentials` folder) and paste the ID and secret into the relevant fields.
   - Storing credentials in a separate file helps to prevent them from getting committed to Github accidentally
 - The file should look like this:
 
@@ -102,8 +96,8 @@ include_graphics('../IMAGES/spotify2.png')
 "secret": "jw7329889d37f7798383e8d29ew2d"}
 ```
 
-# APIs
-## Using the Spotify API
+# Using the Spotify API
+## Loading packages
 We're going to be using `spotifyr`, a *wrapper* around the spotify API. This allows us to make use of the functionality without needing to write the API calls, make requests, or convert the results to JSON/tabular format.
 ```{r, echo=TRUE, tidy=TRUE, mysize=TRUE, size='\\footnotesize'}
 # install.packages("spotifyr") # uncomment and run to install
@@ -114,83 +108,80 @@ library(lubridate)
 ```
 \tiny  You can read more about the library \href{https://www.rcharlie.com/spotifyr/}{here}.
 
-# APIs
-## Using the Spotify API
+# Using the Spotify API
+## Authentication
 Now let's read in the credentials and create a token.
 ```{r, echo=TRUE, tidy=TRUE, mysize=TRUE, size='\\footnotesize'}
-creds <- read_json("creds.json") # read creds
+creds <- read_json("../credentials/creds.json") # read creds
 
 Sys.setenv(SPOTIFY_CLIENT_ID = creds$id) # set creds
 Sys.setenv(SPOTIFY_CLIENT_SECRET = creds$secret)
 
 access_token <- get_spotify_access_token() # retrieve access token
-print(access_token)
 ```
 
-# APIs
-## Using the Spotify API
+# Using the Spotify API
+## API functions
 Now we're authorized, we can use the package to retrieve information from the API. Let's take a look at one of the functions. Rather than writing all the query code ourselves, we can just pass query parameters to the function.
 ```{r, echo=TRUE, eval=FALSE, tidy=TRUE, mysize=TRUE, size='\\footnotesize'}
 ?get_artist_audio_features
 print(get_artist_audio_features)
 ```
 
-# APIs
-## Using the Spotify API
+# Using the Spotify API
+## Querying the API
 Now we're authorized, we can use the package to retrieve information from the API. Let's take a look at one of the functions.
 ```{r, echo=TRUE, tidy=FALSE, mysize=TRUE, size='\\footnotesize'}
-kanye <- get_artist_audio_features("Kanye West") %>% as_tibble()
-head(kanye)
+drake <- get_artist_audio_features("Drake") %>% as_tibble()
+head(drake)
 ```
 
-# APIs
-## Using the Spotify API
+# Using the Spotify API
+## Inspecting the data
 ```{r, echo=TRUE, tidy=FALSE, mysize=TRUE, size='\\footnotesize'}
-head(kanye$track_name, n=10)
+head(drake$track_name, n=10)
 ```
 
-# APIs
-## Using the Spotify API
+# Using the Spotify API
+## Creating a summary
 Let's calculate some statistics using this table.
 ```{r, echo=TRUE, tidy=FALSE, mysize=TRUE, size='\\footnotesize'}
-results <- kanye %>%
+results <- drake %>%
             group_by(album_release_year) %>% 
   summarize(mean.dan = mean(danceability), 
             mean.ac = mean(acousticness))
 ``` 
 
 
-# APIs
-## Using the Spotify API
+# Using the Spotify API
+## Visualizing the data
 ```{r, echo=FALSE, tidy=FALSE, mysize=TRUE, size='\\footnotesize'}
-p <- ggplot(kanye, aes(x=album_release_year, y=danceability))
+p <- ggplot(drake, aes(x=album_release_year, y=danceability))
 p + geom_smooth() + 
-  labs(title="Danceability of the Kanye West over time", caption = "Data from collect from Spotify API") +
+  labs(title="Danceability of Drake over time", caption = "Data from collect from Spotify API") +
   xlab("") + ylab("Mean danceability") + theme_bw()
 ```
 
-# APIs
-## Using the Spotify API
+# Using the Spotify API
+## Visualizing the data
 ```{r, echo=FALSE, tidy=FALSE, mysize=TRUE, size='\\footnotesize'}
-p <- ggplot(kanye, aes(x=album_release_year, y=acousticness))
+p <- ggplot(drake, aes(x=album_release_year, y=acousticness))
 p + geom_smooth() +
-  labs(title="Acousticness of the Kanye West over time", caption = "Data from collect from Spotify API")  +
+  labs(title="Acousticness of Drake over time", caption = "Data from collect from Spotify API")  +
     xlab("") + ylab("Mean acousticness") + theme_bw()
 ```
 
-# APIs
-## Using the Spotify API
+# Using the Spotify API
+## Collecting more data
 Let's collect the same data for Taylor Swift and combine it.
 ```{r, echo=TRUE, tidy=FALSE, mysize=TRUE, size='\\footnotesize'}
 taylor <- get_artist_audio_features("Taylor Swift") %>% as_tibble()
-both <- bind_rows(kanye, taylor) # adding TS to the same tibble
-
-head(both)
-tail(both)
+both <- bind_rows(drake, taylor) # adding TS to the same tibble
+both %>% sample_n(5) %>% select(artist_name)
 ```  
 
-# APIs
-## Using the Spotify API
+# Using the Spotify API
+## Creating a new summary
 Repeating the summary operation for both artists. Note how we now group by `artist_name` in addition to `album_release_year`.
 ```{r, echo=TRUE, tidy=FALSE, mysize=TRUE, size='\\footnotesize'}
 r <- both %>%
@@ -199,37 +190,35 @@ r <- both %>%
             mean.ac = mean(acousticness))
 ```
 
-# APIs
-## Using the Spotify API
-Let's compare their danceability.
+# Using the Spotify API
+## Comparing the artists
 ```{r, echo=FALSE, tidy=FALSE, mysize=TRUE, size='\\footnotesize'}
 p <- ggplot(both, aes(x=album_release_year, y=danceability, group = artist_name, color = artist_name))
 p + geom_point(alpha=0.1) + geom_smooth() +
-  labs(title="Comparing danceability of the Kanye West and Taylor Swift", caption = "Data from collect from Spotify API") +
+  labs(title="Comparing danceability of Drake and Taylor Swift", caption = "Data from collect from Spotify API") +
   xlab("") + ylab("Mean danceability") + theme_bw()
 ```  
 
-# APIs
-## Using the Spotify API
-We can do the same for acousticness.
+# Using the Spotify API
+## Comparing the artists
 ```{r, echo=FALSE, tidy=FALSE, mysize=TRUE, size='\\footnotesize'}
 p <- ggplot(both, aes(x=album_release_year, y=acousticness, group = artist_name, color = artist_name))
 p + geom_point(alpha=0.1) + geom_smooth() +
-  labs(title="Comparing acousticness of the Kanye West and Taylor Swift", caption = "Data from collect from Spotify API") +
+  labs(title="Comparing acousticness of Drake and Taylor Swift", caption = "Data from collect from Spotify API") +
   xlab("") + ylab("Mean acousticness") + theme_bw()
 ```  
 
-# APIs
-## Using the Spotify API
+# Using the Spotify API
+## Collecting more data
 Let's try another type of query.
 ```{r, echo=FALSE, tidy=FALSE, mysize=TRUE, size='\\footnotesize'}
-hh <- spotifyr::get_genre_artists("pop", limit = 20) %>%
+hh <- spotifyr::get_genre_artists("hip-hop", limit = 20) %>%
   select(id, name, popularity, followers.total)
 hh %>% slice_max(order_by = followers.total, n=10)
 ```
 
-# APIs
-## Using the Spotify API
+# Using the Spotify API
+## Programming complex queries
 Now we have a list of artists, let's use this information as input for another query.
 ```{r, echo=FALSE, tidy=FALSE, mysize=TRUE, size='\\footnotesize'}
 albums <- tibble() # empty tibble to store results
@@ -243,9 +232,9 @@ for (artist.id in hh$id) {
 }
 ```
 
-# APIs
-## Using the Spotify API
-Let's create a summary of the data. In this case, let's count the number of albums each artist released each year. Why is `n_distinct` useful here?
+# Using the Spotify API
+## Creating a summary
+Let's count the number of albums each artist released each year. Why is `n_distinct` useful here?
 ```{r, echo=FALSE, tidy=FALSE, mysize=TRUE, size='\\footnotesize'}
 album.year.count <- albums %>% group_by(artist,
                                year = year(as.Date(release_date))) %>%
@@ -253,20 +242,18 @@ album.year.count <- albums %>% group_by(artist,
   drop_na()
 ```
 
-# APIs
-## Using the Spotify API
-We can represent these data using a scatterplot.
+# Using the Spotify API
+## Visualizing the data
 ```{r, echo=FALSE, tidy=FALSE, mysize=TRUE, size='\\footnotesize'}
 ggplot(album.year.count, aes(x = year, 
                              y = n_albums, 
                              color = artist)) + 
   geom_point() +
-  geom_text(aes(label=ifelse(n_albums >= 5, artist, ""))) + theme(legend.position = "none")
+  geom_text(aes(label=ifelse(n_albums >= 4, artist, ""))) + theme(legend.position = "none")
 ```
 
-# APIs
-## Using the Spotify API
-Let's try to make this plot look a little better.
+# Using the Spotify API
+## Improving the visualization
 ```{r, echo=FALSE, tidy=FALSE, mysize=TRUE, size='\\footnotesize'}
 # install.packages("ggrepel")
 # install.packages("viridis")
@@ -277,29 +264,28 @@ ggplot(album.year.count, aes(x = year,
                              y = n_albums, 
                              color = artist)) + 
   geom_jitter(width = 0.3, height=0.05) +
-  geom_label_repel(aes(label=ifelse(n_albums >= 5, artist, "")))  +
+  geom_label_repel(aes(label=ifelse(n_albums >= 4, artist, "")))  +
   scale_color_viridis_d() + 
   theme_minimal() + theme(legend.position = "none") + 
   labs(title = "Number of albums released each year by artist", 
-       caption = "Top 20 hip-hop artists on Spotify, 2/9/22",
+       caption = "Top 20 hip-hop artists on Spotify, February 2024",
        x = "", y = "Number of albums")
 ```
 
 
-# APIs
-## Using the Spotify API
-We could also plot the overall values using a histogram.
+# Using the Spotify API
+## Creating a histogram
 ```{r, echo=FALSE, tidy=FALSE, mysize=TRUE, size='\\footnotesize'}
 ggplot(album.year.count, aes(x = year)) + 
   geom_histogram(bins = max(album.year.count$year)-min(album.year.count$year),
                  fill = "blue") +
   theme_light() + labs(title = "Number of albums released each year by top 20 hip-hop artists \n on Spotify", 
-       caption = "Data from Spotify, 9/22/21",
+       caption = "Data from Spotify, February 2024",
        x = "", y = "Number of albums")
 ```
 
-# APIs
-## Using the Spotify API
+# Using the Spotify API
+## More advanced visualizations
 There are other extensions of `ggplot` that can create even more sophisticated plots. The `ggridges` package allows us to represent multiple artists' trends as overlaid histograms.
 ```{r, echo=FALSE, tidy=FALSE, mysize=TRUE, size='\\footnotesize'}
 # install.packages("ggridges")
@@ -308,43 +294,53 @@ library(ggridges)
 ggplot(album.year.count, aes(x = year, y = artist, height = n_albums,
                              fill=artist)) +
   geom_density_ridges(stat="identity") +
-  theme_ridges() + theme(legend.position = "none") + labs(title = "Album releases by year for top 20 most popular \n hip-hop artists on Spotify", caption = "Data collected 2/9/22 using Spotify API")
+  theme_ridges() + theme(legend.position = "none") + labs(title = "Album releases by year for top 20 most popular \n hip-hop artists on Spotify", caption = "Data collected February 2024 using Spotify API")
 ```
 
-# APIs
+# Using the Spotify API
 ## Exercise
 1. Use the Spotify API to collect your own data.
 2. Use tidyverse functions to select relevant columns and summarize (as necessary)
 3. Product a plot using ggplot.
 4. Share the plot in this Google Doc: https://bit.ly/3rAG7Uk
 
-# APIs
+# Using the Spotify API
 ## Exercise
 ```{r, echo=FALSE, tidy=FALSE, mysize=TRUE, size='\\footnotesize', include=FALSE, eval = FALSE}
 # Your code here
 ```
 
-# APIs
-## Accessing your Spotify information
-- Some features require a Spotify login
+# Using the Spotify API
+## Accessing your personal data
+- Some features require more setup and authentication
   - You can only use these features if you have set `http://localhost:1410/` in Redirect URIs and authorized your app
   - This tells the API to open up authentication on port 1410 of your computer
   - Note: You may need to install the package `httpuv` for this to work
 
-# APIs
-## Accessing your Spotify information
-To access your personal data, you can run this code to look at your most recently played tracks. There are many other functions you can use to get and even modify your own data (so use these carefully!). You will have to type `1` into the console after running the chunk.
+# Using the Spotify API
+## Finding your recently played tracks
+To access your personal data, you can run this code to look at your most recently played tracks. There are many other functions you can use to get and even modify your own data (so use these carefully!). You will have to type `1` into the console after running the chunk and may need to approve access in your browser. Note how we need to request additional authorization for this action.
 ```{r, echo=TRUE, eval=FALSE, tidy=FALSE, mysize=TRUE, size='\\footnotesize'}
-get_my_recently_played(limit = 5) %>% 
-    mutate(artist.name = map_chr(track.artists, function(x) x$name[1]),
-           played_at = as_datetime(played_at)) %>% 
-    select(track.name, artist.name, track.album.name, played_at) %>% as_tibble()
+recents <- get_my_recently_played(limit = 10,
+                       authorization = get_spotify_authorization_code(scope = 'user-read-recently-played'))
 ```
 \tiny Example from the `spotifyr` documentation. 
 
+# Using the Spotify API
+## Inspecting the results
+```{r, echo=TRUE, eval=FALSE, tidy=FALSE, mysize=TRUE, size='\\footnotesize'}
+recents %>% mutate(artist.name = map_chr(track.artists, function(x) x$name[1]),
+           played_at = as_datetime(played_at)) %>% 
+    select(track.name, artist.name, track.album.name, played_at) %>% as_tibble()
+```
+
+# Summary
+- Application programming interfaces provide programmatic access to data stored on websites and social media platforms, making them an ideal source of digital trace data for social scientific research
+- APIs can be queried using web requests or custom R packages, making them relatively easy to use
+- But major social media platforms have cut back access to APIs and smaller websites do not have them
     
 # Next week
-- Webscraping
+- Collecting data from websites using webscraping
     
 
     
