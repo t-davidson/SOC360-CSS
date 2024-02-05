@@ -156,17 +156,6 @@ include_graphics('../IMAGES/api.png')
   - https://api.github.com/users/t-davidson/followers?per_page=100&page=2
   - https://api.github.com/users/t-davidson/followers?page=3
 
-
-# APIs
-## Credentials
-- Often APIs will use credentials to control access
-  - A *key* (analogous to a user name)
-  - A *secret* (analogous to a password)
-  - An *access token* (grants access based on key and password)
-  - Generally the access token is provided as part of the call
-- Keep credentials private
-  - Avoid accidentally sharing them on Github
-
 # APIs
 ## Rate-limiting
 - APIs use rate-limiting to control usage
@@ -176,13 +165,6 @@ include_graphics('../IMAGES/api.png')
 - APIs sometimes show you your rate limits
   - e.g., `https://api.github.com/rate_limit`
   - Beware: sometimes there will be rate limits on the rate limit endpoint!
-  
-
-# APIs
-## JSON
-- An API will commonly return data in JSON (JavaScript Object Notation) format
-  - JSON files consist of key-value pairs, enclosed in braces as such: `{"key": "value"}`
-  - JSON files are structured in a way that makes them relatively easy to parse to retrieve relevant data
 
 # APIs
 ## Calling an API in R
