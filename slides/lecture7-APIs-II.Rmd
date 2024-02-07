@@ -39,7 +39,6 @@ set.seed(08901)
 
 # Plan
 
-- Course updates
 - Recap on APIs
 - Using the Spotify API in R
 - Exercise
@@ -83,7 +82,22 @@ include_graphics('../IMAGES/spotify_create_app2.png')
     - Add  http://localhost:1410/ to the Redirect URIs and click Save
 - Click "SHOW CLIENT SECRET"
     - Copy Client ID and Client Secret
-
+    
+# APIs
+## Access credentials
+- Often APIs will use credentials to control access
+  - A *key* (analogous to a user name)
+  - A *secret* (analogous to a password)
+  - An *access token* (grants access based on key and password)
+  - Generally the access token is provided as part of the call
+- Keep credentials private
+  - Avoid accidentally sharing them on Github
+  
+# APIs
+## JSON
+- An API will commonly return data in JSON (JavaScript Object Notation) format
+  - JSON files consist of key-value pairs, enclosed in braces as such: `{"key": "value"}`
+  - JSON files are structured in a way that makes them relatively easy to parse to retrieve relevant data
 
 # Using the Spotify API
 ## Storing credentials
@@ -131,22 +145,22 @@ print(get_artist_audio_features)
 # Using the Spotify API
 ## Querying the API
 Now we're authorized, we can use the package to retrieve information from the API. Let's take a look at one of the functions.
-```{r, echo=TRUE, tidy=FALSE, mysize=TRUE, size='\\footnotesize'}
-drake <- get_artist_audio_features("Drake") %>% as_tibble()
-head(drake)
+```{r, echo=TRUE, tidy=FALSE, mysize=TRUE, size='\\footnotesize', eval = F}
+artist1 <- get_artist_audio_features("") %>% as_tibble() # Add artist name inside quotes
+head(artist1)
 ```
 
 # Using the Spotify API
 ## Inspecting the data
-```{r, echo=TRUE, tidy=FALSE, mysize=TRUE, size='\\footnotesize'}
-head(drake$track_name, n=10)
+```{r, echo=TRUE, tidy=FALSE, mysize=TRUE, size='\\footnotesize', eval = F}
+head(artist1$track_name, n=10)
 ```
 
 # Using the Spotify API
 ## Creating a summary
 Let's calculate some statistics using this table.
-```{r, echo=TRUE, tidy=FALSE, mysize=TRUE, size='\\footnotesize'}
-results <- drake %>%
+```{r, echo=TRUE, tidy=FALSE, mysize=TRUE, size='\\footnotesize', eval = F}
+results <- artist1 %>%
             group_by(album_release_year) %>% 
   summarize(mean.dan = mean(danceability), 
             mean.ac = mean(acousticness))
@@ -155,35 +169,37 @@ results <- drake %>%
 
 # Using the Spotify API
 ## Visualizing the data
-```{r, echo=FALSE, tidy=FALSE, mysize=TRUE, size='\\footnotesize'}
-p <- ggplot(drake, aes(x=album_release_year, y=danceability))
+```{r, echo=TRUE, tidy=FALSE, mysize=TRUE, size='\\footnotesize', eval = F}
+p <- ggplot(artist1, aes(x=album_release_year, y=danceability))
 p + geom_smooth() + 
-  labs(title="Danceability of Drake over time", caption = "Data from collect from Spotify API") +
+  labs(title="Danceability over time", 
+       caption = "Data from collect from Spotify API") +
   xlab("") + ylab("Mean danceability") + theme_bw()
 ```
 
 # Using the Spotify API
 ## Visualizing the data
-```{r, echo=FALSE, tidy=FALSE, mysize=TRUE, size='\\footnotesize'}
-p <- ggplot(drake, aes(x=album_release_year, y=acousticness))
+```{r, echo=TRUE, tidy=FALSE, mysize=TRUE, size='\\footnotesize', eval = F}
+p <- ggplot(artist1, aes(x=album_release_year, y=acousticness))
 p + geom_smooth() +
-  labs(title="Acousticness of Drake over time", caption = "Data from collect from Spotify API")  +
+  labs(title="Acousticness over time", 
+       caption = "Data from collect from Spotify API")  +
     xlab("") + ylab("Mean acousticness") + theme_bw()
 ```
 
 # Using the Spotify API
 ## Collecting more data
-Let's collect the same data for Taylor Swift and combine it.
-```{r, echo=TRUE, tidy=FALSE, mysize=TRUE, size='\\footnotesize'}
-taylor <- get_artist_audio_features("Taylor Swift") %>% as_tibble()
-both <- bind_rows(drake, taylor) # adding TS to the same tibble
+Let's collect the same data for a second artist and combine it.
+```{r, echo=TRUE, tidy=FALSE, mysize=TRUE, size='\\footnotesize', eval = F}
+artist2 <- get_artist_audio_features("") %>% as_tibble()
+both <- bind_rows(artist1, artist2) # adding 2nd artist to the same tibble
 both %>% sample_n(5) %>% select(artist_name)
 ```  
 
 # Using the Spotify API
 ## Creating a new summary
 Repeating the summary operation for both artists. Note how we now group by `artist_name` in addition to `album_release_year`.
-```{r, echo=TRUE, tidy=FALSE, mysize=TRUE, size='\\footnotesize'}
+```{r, echo=TRUE, tidy=FALSE, mysize=TRUE, size='\\footnotesize', eval = F}
 r <- both %>%
   group_by(album_release_year, artist_name) %>%
   summarize(mean.dan = mean(danceability), 
@@ -192,19 +208,23 @@ r <- both %>%
 
 # Using the Spotify API
 ## Comparing the artists
-```{r, echo=FALSE, tidy=FALSE, mysize=TRUE, size='\\footnotesize'}
-p <- ggplot(both, aes(x=album_release_year, y=danceability, group = artist_name, color = artist_name))
+```{r, echo=TRUE, tidy=FALSE, mysize=TRUE, size='\\footnotesize', eval = F}
+p <- ggplot(both, aes(x=album_release_year, y=danceability, 
+                      group = artist_name, color = artist_name))
 p + geom_point(alpha=0.1) + geom_smooth() +
-  labs(title="Comparing danceability of Drake and Taylor Swift", caption = "Data from collect from Spotify API") +
+  labs(title="Comparing danceability", 
+       caption = "Data from collect from Spotify API") +
   xlab("") + ylab("Mean danceability") + theme_bw()
 ```  
 
 # Using the Spotify API
 ## Comparing the artists
-```{r, echo=FALSE, tidy=FALSE, mysize=TRUE, size='\\footnotesize'}
-p <- ggplot(both, aes(x=album_release_year, y=acousticness, group = artist_name, color = artist_name))
+```{r, echo=TRUE, tidy=FALSE, mysize=TRUE, size='\\footnotesize', eval = F}
+p <- ggplot(both, aes(x=album_release_year, y=acousticness, 
+                      group = artist_name, color = artist_name))
 p + geom_point(alpha=0.1) + geom_smooth() +
-  labs(title="Comparing acousticness of Drake and Taylor Swift", caption = "Data from collect from Spotify API") +
+  labs(title="Comparing acousticness", 
+       caption = "Data from collect from Spotify API") +
   xlab("") + ylab("Mean acousticness") + theme_bw()
 ```  
 
@@ -322,7 +342,7 @@ ggplot(album.year.count, aes(x = year, y = artist, height = n_albums,
 To access your personal data, you can run this code to look at your most recently played tracks. There are many other functions you can use to get and even modify your own data (so use these carefully!). You will have to type `1` into the console after running the chunk and may need to approve access in your browser. Note how we need to request additional authorization for this action.
 ```{r, echo=TRUE, eval=FALSE, tidy=FALSE, mysize=TRUE, size='\\footnotesize'}
 recents <- get_my_recently_played(limit = 10,
-                       authorization = get_spotify_authorization_code(scope = 'user-read-recently-played'))
+    authorization = get_spotify_authorization_code(scope = 'user-read-recently-played'))
 ```
 \tiny Example from the `spotifyr` documentation. 
 
