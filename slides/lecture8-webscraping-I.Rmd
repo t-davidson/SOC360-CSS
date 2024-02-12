@@ -3,7 +3,7 @@ title: "Computational Social Science"
 subtitle: "Scraping the web I"
 author: Dr. Thomas Davidson
 institute: Rutgers University
-date: February 14, 2022
+date: February 12, 2024
 output:
     beamer_presentation:
       theme: "Szeged"
@@ -372,3 +372,7 @@ We can now easily run all the code to extract information using a single functio
 results <- get.posts(thread)
 head(results)
 ```
+
+# Next lecture
+- Webscraping II
+    - Systematically collecting data across multiple threads and pages
