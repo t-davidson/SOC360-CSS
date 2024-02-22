@@ -10,5 +10,5 @@ rsconnect::setAccountInfo(name='', # Add shinyapps username
 # Warning: Do not publish these credentials publicly (e.g. on Github)
 
 # Run to deploy app to the web
-rsconnect::deployApp(appDir="path/to/app", # Replace with path to app folder
+rsconnect::deployApp(appDir="/app", # Replace with path to app folder
                      appName = "test") # Replace with app name
