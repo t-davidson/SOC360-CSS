@@ -3,7 +3,7 @@ title: "Computational Social Science"
 subtitle: "Introduction to Natural Language Processing I"
 author: Dr. Thomas Davidson
 institute: Rutgers University
-date: February 28, 2022
+date: February 26, 2024
 output:
     beamer_presentation:
       theme: "Szeged"
@@ -43,10 +43,11 @@ knitr::knit_hooks$set(mysize = function(before, options, envir) {
 
 
 # Course updates
-- Homework 2 due Friday  at 5pm
+- Homework 2 due Wednesday  at 5pm
   - Submit homework via Github
-- Project proposals due next week
+- Project proposals due next week Wednesday at 5pm
   - Identify a suitable topic, data, and plan for analysis
+  - Submit via Canvas
 
 # Introduction to NLP
 ## What is natural language processing?
@@ -400,11 +401,12 @@ freq_by_rank <- words %>%
 
 # Working with text: Zipf's law
 ```{r, echo=FALSE, fig.width=6, fig.height=4,tidy=FALSE, mysize=TRUE, size='\\footnotesize'}
+library(scales)
 freq_by_rank %>% 
   ggplot(aes(rank, `term frequency`, color =title)) + 
   geom_line(size = 1.1, alpha = 1, show.legend = F) + 
   scale_x_log10() +
-  scale_y_log10() + theme_minimal() +
+  scale_y_log10(labels = scales::label_number()) + theme_minimal() +
   labs(y='Term frequency', x="Rank", caption='Log-log axes')
 ```
 
