@@ -170,7 +170,7 @@ that may merit sociological consideration and theorization." - James Evans and P
 - We often want to reduce sparsity by reducing words to a common root
   - e.g. ("school", schools", "schooling", "schooled") $\Rightarrow$ "school"
 - Stemming is a simple, heuristic-based approach
-- Lemmatization is a more rigorous approach based on morhology, but is more computationally-intensive and often unnecessary
+- Lemmatization is a more rigorous approach based on morphology, but is more computationally-intensive and often unnecessary
 
 # Working with text
 ## Stop-word removal
@@ -216,7 +216,7 @@ am & 1
 
 # Working with text
 ## Frequency distributions
-- *Zipf's law*: A word's frequency is inversely proportional to its rank order in the frequency distribution.
+- \textbf{Zipf's law}: *A word's frequency is inversely proportional to its rank order in the frequency distribution*.
   - "the" is the most common word in the English language, accounting for 7% of all words in the *Brown Corpus of American English*
   - "and" and "of" compete for second place, each accounting for ~3.5% of words in the corpus
   - The most frequent 135 words account for approximately half the 1 million words in the corpus
