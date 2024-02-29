@@ -3,7 +3,7 @@ title: "Computational Social Science"
 subtitle: "Introduction to Natural Language Processing II"
 author: Dr. Thomas Davidson
 institute: Rutgers University
-date: March 2, 2022
+date: February 29, 2024
 output:
     beamer_presentation:
       theme: "Szeged"
@@ -40,13 +40,12 @@ knitr::knit_hooks$set(mysize = function(before, options, envir) {
 1. Course updates
 2. TF-IDF weighting
 3. Vector representations of texts
-4. Document-similarity measures
+4. Cosine similarity
 
 # Course updates
-- Homework 2 due Friday at 5pm
-  - Office hours today at 5pm (open office hours, usual Zoom link)
-- Project proposals due next Friday at 5pm
-    - Quiz will be posted on Canvas
+- Homework 2 grades
+- Project proposals due next Wednesday at 5pm
+    - Complete quiz on Canvas
 
 # Working with text
 ## Recap
@@ -86,25 +85,23 @@ knitr::knit_hooks$set(mysize = function(before, options, envir) {
   - If a word occurs in all documents $df_{t} = N$, thus $idf_{t} = log\frac{N}{N} = log(1) = 0$ .
 - We then use these values to calculate $TF\-IDF_{t,d} = tf_{t,d}*idf_{t}$
 
-# Working with text: TF-IDF
+# Working with text
 ## Loading data
 Loading the word frequency objects created last lecture using `tidytext`.
-```{r, echo=TRUE, tidy=FALSE, mysize=TRUE, size='\\footnotesize'}
+```{r, echo=FALSE, tidy=TRUE, mysize=TRUE, size='\\footnotesize'}
 library(tidyverse)
 library(ggplot2)
 library(stringr)
 library(tidytext)
 library(gutenbergr)
-#install.packages("tm") # Dependency for tidytext, throws error if not installed when calling cast_dtm
+#install.packages("tm") # Dependency for tidytext, required for cast_dtm
 
-texts <- read_csv('marxdurkheim.csv') # Original texts
-words <- read_csv('words.csv') # Word counts and totals
-head(texts)
-head(words)
+texts <- read_csv('../data/marxdurkheim.csv') # Original texts
+words <- read_csv('../data/words.csv') # Word counts and totals
 ```
 
 
-# Working with text: TF-IDF
+# Working with text
 ## Computing TF-IDF in `tidytext`
 We can easily compute TF-IDF weights using `tidy.text` by using the word-count object we created last lecture.  Note the two document example is quite trivial. Many words have IDF scores equal to zero because they occur in both documents.
 ```{r, echo=TRUE, tidy=FALSE, mysize=TRUE, size='\\footnotesize'}
@@ -112,25 +109,25 @@ tidy.tfidf <- words %>% bind_tf_idf(word, title, n)
 head(tidy.tfidf)
 ```
 
-# Working with text: TF-IDF
+# Working with text
 Take the stem "countri" for example (short for country, country's, countries). 
 ```{r, echo=FALSE, fig.width=6, fig.height=4,tidy=FALSE, mysize=TRUE, size='\\footnotesize'}
 tidy.tfidf %>% filter(word == "countri")
 ```
 
-# Working with text: TF-IDF
+# Working with text
 The term "australia" has a relatively low term frequency but a higher IDF score, since it only occurs in *Elementary Forms*.
 ```{r, echo=FALSE, fig.width=6, fig.height=4,tidy=FALSE, mysize=TRUE, size='\\footnotesize'}
 tidy.tfidf %>% filter(word == "australia")
 ```
 
-# Working with text: TF-IDF
+# Working with text
 In this case *all* words unique to one document will have the same IDF score, $\sim log(2/1)$.
 ```{r, echo=FALSE, fig.width=6, fig.height=4,tidy=FALSE, mysize=TRUE, size='\\footnotesize'}
 head(tidy.tfidf %>% filter(round(idf,2) == 0.69))
 ```
 
-# Working with text: TF-IDF
+# Working with text
 ```{r, echo=FALSE, fig.width=6, fig.height=4,tidy=FALSE, mysize=TRUE, size='\\footnotesize'}
 tidy.tfidf %>% filter(title == "Communist Manifesto") %>%
   arrange(desc(tf_idf)) %>%
@@ -138,10 +135,10 @@ tidy.tfidf %>% filter(title == "Communist Manifesto") %>%
   head(10) %>%
   ggplot(aes(tf_idf, word)) +
   geom_col(color='red') +
-  labs(y = NULL, x='TF-IDF weight', title="10 stems with highest TF-IDF weight in The Communist Manifesto", caption="Stopwords removed+, stemmed")
+  labs(y = NULL, x='TF-IDF weight', title="10 stems with highest TF-IDF in The Communist Manifesto", caption="Stopwords removed+, stemmed")
 ```
 
-# Working with text: TF-IDF
+# Working with text
 ```{r, echo=FALSE, fig.width=6, fig.height=4,tidy=FALSE, mysize=TRUE, size='\\footnotesize'}
 tidy.tfidf %>% filter(title == "Elementary Forms") %>%
   arrange(desc(tf_idf)) %>%
@@ -149,7 +146,7 @@ tidy.tfidf %>% filter(title == "Elementary Forms") %>%
   head(10) %>%
   ggplot(aes(tf_idf, word)) +
   geom_col(color='blue') +
-  labs(y = NULL, x='TF-IDF weight', title="10 stems with highest TF-IDF weight in The Elementary Forms of Religious Life", caption="Stopwords removed+, stemmed")
+  labs(y = NULL, x='TF-IDF weight', title="10 stems with highest TF-IDF in Elementary Forms ", caption="Stopwords removed+, stemmed")
 ```
 
 # Vector representations of texts
@@ -166,10 +163,12 @@ tidy.tfidf %>% filter(title == "Elementary Forms") %>%
 # Vector representations of texts
 ## Casting a `tidytext` object into a DTM
 ```{r, echo=TRUE,tidy=FALSE, mysize=TRUE, size='\\footnotesize'}
-X <- texts %>% unnest_tokens(word, text) %>% anti_join(stop_words) %>% count(title, word) %>% cast_dtm(title, word, n)
+X <- texts %>% unnest_tokens(word, text) %>%
+    anti_join(stop_words) %>% count(title, word) %>%
+    cast_dtm(title, word, n)
 print(X)
 ```
-Note that this matrix is not weighted by TF-IDF, although we could apply the weights if desired.
+\tiny Note: This matrix is not weighted by TF-IDF, although we could apply the weights if desired.
 
 # Vector representations of texts
 ## Viewing the DTM
@@ -216,21 +215,19 @@ Here vectors for each play are plotted in two-dimensional space. The y- and x-ax
 ```{r, out.width="70%",out.height="70%", fig.align="center"}
   include_graphics('../images/word_vectors.png')
 ```
-We could also treat the rows of this matrix as vector representations of each word. We will discuss this further next week when we study word embeddings.
+We could also treat the rows of this matrix as vector representations of each word. We will return to this idea next week.
 
-# Vector representations of texts
-## Cosine similarity
+# Cosine similarity
 ```{r, out.width="70%",out.height="70%", fig.align="center"}
   include_graphics('../images/cosine.png')
 ```
 
-# Vector representations of texts
+# Cosine similarity
 ```{r, out.width="70%",out.height="70%", fig.align="center"}
   include_graphics('../images/vector_vis_angles.png')
 ```
 
-# Vector representations of texts
-## Calculating cosine similarity
+# Cosine similarity
 
 $\vec{u}$ and $\vec{v}$ are vectors representing texts (e.g. rows from a DTM matrix). We can compute the cosine of the angle between these two vectors using the following formula:
 
@@ -239,20 +236,19 @@ $$ cos(\theta) = \frac{\vec{u} \cdot \vec{v}}{\|\vec{u}\|\|\vec{v}\|} = \frac{\s
 
 The value range from 0 (complete dissimilarity) to 1 (identical), since all values are non-negative.
 
-# Vector representations of texts
-## Calculating cosine similarity
+# Cosine similarity
 ```{r, echo=TRUE, tidy=FALSE, mysize=TRUE, size='\\footnotesize'}
 u <- c(1,2,3,4)
 v <- c(0,1,0,1)
 
 sum(u*v) / (sqrt(sum(u^2)) * sqrt(sum(v^2)))
 
-u %*% v / (sqrt(u %*% u) * sqrt(v %*% v)) # Using matrix multiplication
+# Same result using matrix multiplication
+u %*% v / (sqrt(u %*% u) * sqrt(v %*% v))
 ```
 
-# Vector representations of texts
-## Calculating cosine similarity
-Let's make a function to compute this.
+# Cosine similarity
+## Making a function
 ```{r, echo=TRUE, tidy=FALSE, mysize=TRUE, size='\\footnotesize'}
 cosine.sim <- function(u,v) {
   numerator <- u %*% v
@@ -265,83 +261,77 @@ cosine.sim(u,v)
 
 
 
-# Vector representations of texts
+# Cosine similarity
 ## Cosine similarity between Marx and Durkheim
 We can use the two columns of the DTM matrix defined above as arguments to the similarity function.
 ```{r, echo=TRUE, tidy=FALSE, mysize=TRUE, size='\\footnotesize'}
 print(cosine.sim(Xm[1,], Xm[2,]))
 ```
 
-# Vector representations of texts
+# Cosine similarity
 ## Cosine similarity for a larger corpus
-The similarity between Marx's *Communist Manifesto* and Durkheim's *Elementary Forms* is rather meaningless without more information. Let's consider another example with a slightly larger corpus of texts.
+Let's consider another example with a slightly larger corpus of texts.
 ```{r, echo=TRUE, tidy=FALSE, mysize=TRUE, size='\\footnotesize'}
-m <- gutenberg_metadata %>% filter(author == "Shakespeare, William" & language == "en")
-rj <- gutenberg_download(1112)
-mnd <- gutenberg_download(1113)
-tn <- gutenberg_download(1123)
-kl <- gutenberg_download(1128)
-mb <- gutenberg_download(1129)
-rj$play <- "Romeo & Juliet"
-mnd$play <- "A Midsummer Night's Dream"
-tn$play <- "Twelth Night"
-kl$play <- "King Lear"
-mb$play <- "Macbeth"
+m <- gutenberg_metadata %>% 
+    filter(author == "Shakespeare, William" & language == "en")
+plays <- gutenberg_download(2235:2269)
 
-S <- bind_rows(rj, mnd, tn, kl, mb)
+plays <- plays %>% left_join(m, by = "gutenberg_id") %>%
+    filter(gutenberg_id != 2240) # Removing a duplicate
 ```
 
-# Vector representations of texts
-## From tidytext to DTM
-Convert the plays into tidytext objects, using any preprocessing steps you want and filtering out any words which occur less than 10 times in the corpus. Calculate TF-IDF scores then convert to a DTM called `S.m`.
+
+# Cosine similarity
+## From text to DTM
 ```{r, echo=FALSE, tidy=FALSE, mysize=TRUE, size='\\footnotesize'}
-S.m <- S %>% unnest_tokens(word, text) %>%
+plays.tidy <- plays %>% unnest_tokens(word, text) %>%
   anti_join(stop_words) %>%
-  count(play, word) %>% 
+  count(title, word) %>% 
   group_by(word) %>%
   mutate(total = sum(n)) %>%
   ungroup() %>%
   filter(total >= 10) %>% 
-  bind_tf_idf(word, play, n) %>% # get TF-IDF
-  cast_dtm(play, word, tf) # convert to DTM (only using tf not tf_idf, but could switch)
+  bind_tf_idf(word, title, n)
+    
+DTM <- plays.tidy %>% cast_dtm(title, word, tf) 
   
-print(S.m)
-dim(S.m)
+print(DTM)
+dim(DTM)
 ```
 
-# Vector representations of texts
+# Cosine similarity
 ## Extracting TF-IDF matrix
 ```{r, echo=TRUE, tidy=FALSE, mysize=TRUE, size='\\footnotesize'}
-S.dense <- as.matrix(S.m)
+DTMd <- as.matrix(DTM)
 
-# Run line below if using tf-idf weights, as some columns will contain zeros
-#S.dense <- S.dense[,colSums(S.dense) > 0]
+# Run line below if using tf-idf weights as
+# some columns contain zeros and must be removed
+#DTMd <- DTMd[,colSums(DTM) > 0]
 ```
 
-# Vector representations of texts
+# Cosine similarity
 ## Normalizing columns
-We can simplify the cosine similarity calculating to a single matrix multiplication if we normalize each column by its length (the denominator in the above calculation.)
+We can simplify the cosine similarity calculation if we normalize each column by its length (the denominator in the above calculation.)
 ```{r, echo=TRUE, tidy=FALSE, mysize=TRUE, size='\\footnotesize'}
 normalize <- function(v) {
   return (v/sqrt(v %*% v))
 }
 
 # Normalizing every column in the matrix
-for (i in 1:dim(S.dense)[1]) {
-  S.dense[i,] <- normalize(S.dense[i,])
+for (i in 1:dim(DTMd)[1]) {
+  DTMd[i,] <- normalize(DTMd[i,])
 }
 ```
 
-# Vector representations of texts
+# Cosine similarity
 ## Calculating cosine similarity using matrix multiplication
 ```{r, echo=TRUE, tidy=FALSE, mysize=TRUE, size='\\footnotesize'}
-sims <- S.dense %*% t(S.dense)
+sims <- DTMd %*% t(DTMd)
 print(sims)
 ```
 
-# Vector representations of texts
-## Calculating cosine similarity using matrix multiplication
-```{r, echo=TRUE, tidy=FALSE, mysize=TRUE, size='\\footnotesize'}
+# Cosine similarity
+```{r, echo=FALSE, tidy=FALSE, mysize=TRUE, size='\\footnotesize'}
 library(reshape2)
 library(viridis)
 data <- melt(sims)
@@ -353,9 +343,8 @@ ggplot(data, aes(x = play_i, y = play_j, fill = similarity)) + geom_tile() +
   theme_minimal() + ylim(rev(levels(data$play_i))) + xlim(levels(data$play_j))
 ```
 
-# Vector representations of texts
-## Calculating cosine similarity using matrix multiplication
-```{r, echo=TRUE, tidy=FALSE, mysize=TRUE, size='\\footnotesize'}
+# Cosine similarity
+```{r, echo=FALSE, tidy=FALSE, mysize=TRUE, size='\\footnotesize'}
 sims2 <- sims
 diag(sims2) <- NA # Set diagonal values to NA
 
@@ -363,8 +352,15 @@ data <- melt(sims2)
 colnames(data) <- c("play_i", "play_j", "similarity")
 
 ggplot(data, aes(x = play_j, y = play_i, fill = similarity)) + geom_tile() +
-  scale_fill_gradient2() +
+  #scale_fill_gradient2() +
   scale_fill_viridis_c() +
+  theme_minimal()  + labs (x = "", y = "", title = "Cosine similarity of Shakespeare's plays") + theme(axis.text.x = element_text(angle = 45, hjust = 1)) + ylim(rev(levels(data$play_i))) + xlim(levels(data$play_j))
+```
+
+# Cosine similarity
+```{r, echo=FALSE, tidy=FALSE, mysize=TRUE, size='\\footnotesize'}
+ggplot(data, aes(x = play_j, y = play_i, fill = similarity)) + geom_tile() +
+  scale_fill_viridis_c(option = "plasma", direction = -1) +
   theme_minimal()  + labs (x = "", y = "", title = "Cosine similarity of Shakespeare's plays") + theme(axis.text.x = element_text(angle = 45, hjust = 1)) + ylim(rev(levels(data$play_i))) + xlim(levels(data$play_j))
 ```
 
