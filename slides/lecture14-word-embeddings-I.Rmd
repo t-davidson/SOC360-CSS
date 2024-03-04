@@ -3,7 +3,7 @@ title: "Computational Social Science"
 subtitle: "Word embeddings I"
 author: Dr. Thomas Davidson
 institute: Rutgers University
-date: March 7, 2022
+date: March 4, 2024
 output:
     beamer_presentation:
       theme: "Szeged"
@@ -44,13 +44,10 @@ knitr::knit_hooks$set(mysize = function(before, options, envir) {
 4. Language models
 
 # Course updates
-- Project proposal assignment on Canvas, due Friday at 5pm
+- Project proposal assignment on Canvas, due Thursday at 5pm
   - A short description of the planned project
-  - Data collection
-  - Data cleaning
-  - Data analysis
-  - Data visualization
-  - Team
+    - Details on data source and collection
+  - Team information
   
 # The vector-space model review
 ## Vector representations
@@ -104,15 +101,19 @@ include_graphics('../images/SVD.png')
 
 \tiny See the \href{https://en.wikipedia.org/wiki/Latent_semantic_analysis}{Wikipedia page} for video of the latent dimensions in a sparse TDM.
 
-# Latent semantic analysis
-## Example: Shakespeare's writings
-`X` is a TF-IDF weighted Document-Term Matrix of Shakespeare's writings from Project Gutenberg. There are 11,666 unique tokens (each of which occurs 10 or more times in the corpus) and 66 documents.
-```{r, echo=TRUE, tidy=FALSE, mysize=TRUE, size='\\footnotesize'}
+```{r, echo=FALSE, tidy=FALSE, mysize=TRUE, size='\\footnotesize'}
 library(tidyverse)
-library(ggplot2)
-X <- as.matrix(read.table("data/shakespeare.txt"))
+```
+
+# Latent semantic analysis
+## Example: Sci-fi texts
+`X` is a TF-IDF weighted Document-Term Matrix of sci-fi from Project Gutenberg.
+```{r, echo=TRUE, tidy=FALSE, mysize=TRUE, size='\\footnotesize'}
+X <- read.csv("../data/scifi_100.csv")
+rownames(X) <- X[,1] # Setting rownames
+X <- X[, -1] # Deleting rownames as a column
+X <- as.matrix(X) # Transforming to matrix
 X <- X[, which(colSums(X) != 0)] # Drop zero columns
-X <- X[, -which(colnames(X) %in% c("footnote","sidenote"))]
 
 dim(X)
 ```
@@ -130,10 +131,10 @@ for (i in 1:length(colnames(X))) {
 
 # Latent semantic analysis
 ## Using the lookup dictionary
-This easily allows us to find the vector representation of a particular word. Note how most values are zero since the character Hamlet is only mentioned in a handful of documents.
+This easily allows us to find the vector representation of a particular word. Note how most values are zero.
 ```{r, echo=TRUE, tidy=FALSE, mysize=TRUE, size='\\footnotesize'}
-lookup.index.from.token["hamlet"]
-round(as.numeric(X[,unlist(lookup.index.from.token["hamlet"])]),3)
+lookup.index.from.token["monster"]
+round(as.numeric(X[,unlist(lookup.index.from.token["monster"])]),5)[1:100]
 ```
 
 
@@ -142,18 +143,18 @@ round(as.numeric(X[,unlist(lookup.index.from.token["hamlet"])]),3)
 The following code normalizes each *column* (rather than row normalization seen last lecture) and constructs a word-word cosine-similarity matrix.
 ```{r, echo=TRUE, tidy=FALSE, mysize=TRUE, size='\\footnotesize'}
 normalize <- function(X) {
-  for (i in 1:dim(X)[2]) {
-    X[,i] <- (X[,i]/sqrt(sum(X[,i]^2)))
-  }
-  return(X)
+  columnNorms <- sqrt(colSums(X^2))
+  Xn <- X / matrix(columnNorms, 
+                   nrow = nrow(X), 
+                   ncol = ncol(X), byrow = TRUE)
+  return(Xn)
 }
 
 X.n <- normalize(X)
 
-sims <- t(X.n) %*% X.n
+sims <- crossprod(X.n) # Optimized routine for t(X.n) %*% X.n
 dim(sims)
 ```
-
 
 # Latent semantic analysis
 ## Most similar function
@@ -169,11 +170,15 @@ get.top.n <- function(token, sims, n=10) {
 # Latent semantic analysis
 ## Finding similar words
 ```{r, echo=TRUE, tidy=FALSE, mysize=TRUE, size='\\footnotesize'}
-get.top.n("summer",sims)
-get.top.n("fight", sims)
-get.top.n("romeo", sims)
-get.top.n("hamlet", sims)
+get.top.n("fight", sims, n = 3)
 ```
+# Latent semantic analysis
+## Finding similar words
+Choose another word to inspect.
+```{r, echo=TRUE, eval=FALSE, tidy=FALSE, mysize=TRUE, size='\\footnotesize'}
+get.top.n("", sims, n = 3)
+```
+
 
 # Latent semantic analysis
 ## Singular value decomposition
@@ -191,22 +196,22 @@ sum(round(X-X.2,5))
 
 # Latent semantic analysis
 ## Singular value decomposition
-This plot shows the magnitude of the singular values (the diagonal entries of $\Sigma$). \small The magnitude of the singular value corresponds to the amount of variance explained in the original matrix.
 ```{r, echo=FALSE, tidy=FALSE, mysize=TRUE, size='\\footnotesize', fig.width=4, fig.height=3}
-lsa.df <- data.frame(lsa$d)
+library(ggplot2)
+lsa.df <- data.frame(lsa$d[1:250])
 colnames(lsa.df) <- c("v")
-lsa.df$index <- 1:length(lsa$d)
+lsa.df$index <- 1:250 #1:length(lsa$d) #Using first 250
 ggplot(lsa.df, aes(y = v, x = index)) + geom_line() + geom_point(alpha=0.5) +
   labs(y="Variance explained", x = "Singular value", title = "Variance explained by singular values") +
   theme_minimal()
 ```
-
+\tiny This plot shows the magnitude of the singular values (the diagonal entries of $\Sigma$). The magnitude of the singular value corresponds to the amount of variance explained in the original matrix.
 
 # Latent semantic analysis
 ## Truncated singular value decomposition
 In the example above retained the original matrix dimensions. The point of latent semantic analysis is to compute a *truncated* SVD such that we have a new matrix in a sub-space of X. In this case we only want to retain the first `k` dimensions of the matrix.
 ```{r, echo=TRUE, tidy=FALSE, mysize=TRUE, size='\\footnotesize'}
-k <- 20 # Dimensions in truncated matrix
+k <- 50 # Dimensions in truncated matrix
 
 # We can take the SVD of X but only retain the first k singular values
 lsa.2 <- svd(X, nu=k, nv=k)
@@ -220,12 +225,12 @@ sum(round(X-X.trunc,2))
 ```
 
 # Latent semantic analysis
-## Recalculating similarties using the LSA matrix
+## Inspecting the LSA matrix
 ```{r, echo=TRUE, tidy=FALSE, mysize=TRUE, size='\\footnotesize'}
 words.lsa <- t(lsa.2$v)
 colnames(words.lsa) <- colnames(X)
 
-round(as.numeric(words.lsa[,unlist(lookup.index.from.token["hamlet"])]), 2)
+round(as.numeric(words.lsa[,unlist(lookup.index.from.token["fight"])]), 2)
 ```
 
 
@@ -241,9 +246,9 @@ sims.lsa <- t(words.lsa.n) %*% words.lsa.n
 # Latent semantic analysis
 ## Comparing similarities
 ```{r, echo=TRUE, tidy=FALSE, mysize=TRUE, size='\\footnotesize'}
-get.top.n("summer",sims)
-get.top.n("summer",sims.lsa)
-bind_cols(names(get.top.n("summer",sims)), names(get.top.n("summer",sims.lsa)))
+get.top.n("fight",sims)
+get.top.n("fight",sims.lsa)
+bind_cols(names(get.top.n("fight",sims)), names(get.top.n("fight",sims.lsa)))
 ```
 
 # Latent semantic analysis
@@ -255,35 +260,33 @@ get.bottom.n <- function(token, sims, n=10) {
   return(bottom)
 }
 
-get.bottom.n("summer", sims)
+get.bottom.n("fight", sims)
 ```
 
 # Latent semantic analysis
 ## Comparing similarities
 ```{r, echo=TRUE, tidy=FALSE, mysize=TRUE, size='\\footnotesize'}
-get.top.n("fight",sims)
-get.top.n("fight",sims.lsa)
-bind_cols(names(get.top.n("fight",sims)), names(get.top.n("fight",sims.lsa)))
+bind_cols(names(get.top.n("ghost",sims, n = 5)), names(get.top.n("ghost",sims.lsa, n = 5)))
 ```
 
 # Latent semantic analysis
 ## Comparing similarities
 ```{r, echo=TRUE, tidy=FALSE, mysize=TRUE, size='\\footnotesize'}
-get.top.n("romeo", sims)
-get.top.n("romeo", sims.lsa)
+get.top.n("love", sims, n = 5)
+get.top.n("love", sims.lsa, n = 5)
 ```
 
 # Latent semantic analysis
 ## Comparing similarities
 ```{r, echo=TRUE, tidy=FALSE, mysize=TRUE, size='\\footnotesize'}
-get.top.n("hamlet", sims)
-get.top.n("hamlet", sims.lsa)
+get.top.n("run", sims)
+get.top.n("run", sims.lsa)
 ```
 
 # Latent semantic analysis
 ## Execise
 Re-run the code above with a different value of `k` (try lower or higher). Compare some terms in the original similarity matrix and the new matrix. How does changing `k` affect the results?
-```{r, echo=TRUE, tidy=FALSE, mysize=TRUE, size='\\footnotesize'}
+```{r, echo=TRUE, eval = FALSE, tidy=FALSE, mysize=TRUE, size='\\footnotesize'}
 get.top.n("", sims)
 get.top.n("", sims.lsa)
 ```
@@ -296,7 +299,7 @@ We can analyze the meaning of the latent dimensions by looking at the terms with
 for (i in 1:dim(words.lsa)[1]) {
   top.words <- sort(words.lsa[i,], decreasing=T)[1:5]
   print(paste(c("Dimension: ",i), collapse=" "))
-  print(top.words)
+  print(round(top.words,3))
 }
 ```
 
@@ -378,13 +381,14 @@ include_graphics('../images/language_model_example.png') # cross-entropy figure
 ## Limitations of N-gram language models
 - Language use is much more complex than N-gram language models
 - Three limitations
-  - Insufficient data to sufficiently model language generation
-  - Complex models become intractable to compute
-  - Limited information on word order
-- Next lecture we will see how advances in neural network models and the availability of large text corpora have opened up new avenues for language modeling and semantic analysis
+  1. Insufficient data to sufficiently model language generation
+  2. Complex models become intractable to compute
+  3. Limited information on word order
 
 # Summary
 - Limitations of sparse representations of text
   - LSA allows us to project sparse matrix into a dense, low-dimensional representation
 - Probabilistic language models allow us to directly model language use
-- Next lecture: How neural language models allow us to create more meaningful semantic representations of texts
+
+# Next lecture
+- How neural language models allow us to create more meaningful semantic representations of texts
