@@ -3,7 +3,7 @@ title: "Computational Social Science"
 subtitle: "Topic Modeling I"
 author: Dr. Thomas Davidson
 institute: Rutgers University
-date: March 21, 2022
+date: March 18, 2024
 output:
     beamer_presentation:
       theme: "Szeged"
@@ -44,12 +44,13 @@ knitr::knit_hooks$set(mysize = function(before, options, envir) {
 <!--Note: This lecture does not render to PDF due to errors when compiling. PDF only includes non-code slides-->
 
 # Course updates
-- Homework 2 grades and proposal feedback will be released on Wednesday
-- Homework 3 also released Wednesday, due 4/1
+- Homework 2 grades and proposal feedback now available on Canvas
+    - See Github diff for comments on Homework 2
+- Homework 3 will be released on Thursday
   
 # Introduction to topic modeling
 ## What is topic modeling?
-- A corpus of documents contains a set of latent "themes" or "topics"
+- A corpus of documents contains a set of latent "topics"
 - A topic model is a probabilistic algorithm is designed to inductively create a "model" of these latent topics
 - This gives us an overview of the content of an entire corpus and the ability to characterize individual documents
 
@@ -116,9 +117,10 @@ include_graphics('../images/blei_topics.png')
 # Latent Dirichlet Allocation
 ## Intuition
 - Topic modeling is a *generative* process
-  - The goal is to create a plausible model that can mimic the hidden structure and *generate* the observed documents
+  - The goal is to create a plausible model that can mimic the hidden structure that generates the observed documents\*
   - "The utility of topic models stems from the property that the inferred hidden structure resembles the thematic structure of the collection." Blei, 2012.
 
+\tiny \* Note this is term is also used to refer to generative AI, but unlike ChatGPT and other large language models we cannot use topic models to generate plausible texts.
 
 # Latent Dirichlet Allocation
 ## Mathematical formulation
@@ -149,34 +151,35 @@ $$
 
 # Training an LDA topic model in R
 ## Loading the corpus
-Loading a corpus of most recent 2000 tweets by the New York Times and the Wall Street Journal. 
+Loading a corpus of most recent 2000 tweets by the New York Times and the Wall Street Journal. TODO: Change if needed
 ```{r,eval=FALSE, echo=TRUE, tidy=FALSE, mysize=TRUE, size='\\footnotesize'}
 library(tidyverse)
-data <- as_tibble(read_csv("data/nytimes_wsj_2000_statuses_march2122.csv"))
-head(data)
+library(tidytext)
+data <- as_tibble(read_csv("../data/politics_twitter.csv"))
 data$status_id <- as.character(data$status_id)
 data <- data %>% distinct(text, .keep_all = TRUE) # Removing duplicates
 ```
 
 # Latent Dirichlet Allocation
 ## Preprocessing
-Removing hashtags, mentions and URLs using a regular expression. I initially left in hashtags and mentions but found that they tended to dominate some topics since different newspapers frequently used the same hashtags. I also used some keywords related to the Russian invasion of Ukraine, dropping around half the tweets.
+Removing hashtags, mentions and URLs using a regular expression. I initially left in hashtags and mentions but found that they tended to dominate some topics since different newspapers frequently used the same hashtags.
 ```{r, eval=FALSE, echo=TRUE, tidy=FALSE, mysize=TRUE, size='\\footnotesize'}
 data <- data %>% 
     mutate(text = gsub("#[A-Za-z0-9]+|@[A-Za-z0-9]", "", text)) %>%
-    mutate(text = gsub("(http[^ ]*)|(www.[^ ]*)", "", text))
-
-data <- data %>% 
-    filter(!grepl("Ukrain|Russia|Kiev|Kyiv|Moscow|Putin|Zelensky", text))
+    mutate(text = gsub("(http[^ ]*)|(www.[^ ]*)", "", text)) %>%
+    mutate(text = gsub("’", "'", text))
 ```
 
 # Latent Dirichlet Allocation
 ## Preprocessing
 ```{r, eval=FALSE,echo=TRUE, tidy=FALSE, mysize=TRUE, size='\\footnotesize'}
-library(tidytext)
 data(stop_words)
+
+custom_stop <- tibble(word=c("amp"))
+
 word.counts <- data %>% unnest_tokens(word, text, strip_punct = TRUE) %>%
   anti_join(stop_words) %>%
+  anti_join(custom_stop) %>%
   count(status_id, word)
 
 doc.freq <- word.counts %>% 
@@ -184,35 +187,37 @@ doc.freq <- word.counts %>%
   group_by(word) %>%
   summarize(df = sum(n))
 
-words <- left_join(word.counts, doc.freq)
+words <- left_join(word.counts, doc.freq) %>%
+    filter(df >= 50 & df <= 1900)
 ```
 
 
 # Latent Dirichlet Allocation
 ## Constructing a DTM
 ```{r, eval=FALSE,echo=TRUE, tidy=FALSE, mysize=TRUE, size='\\footnotesize'}
-DTM <- words %>% filter(df >= 5) %>%
+DTM <- words %>%
   cast_dtm(status_id, word, n)
+dim(DTM)
 ```
 
 # Latent Dirichlet Allocation
 ## Training an LDA model using `topicmodels`
-We can pass the DTM to the `LDA` function to train a topic model with 40 topics.
+We can pass the DTM to the `LDA` function to train a topic model with 27 topics.
 ```{r, eval=FALSE, echo=TRUE, tidy=FALSE, mysize=TRUE, size='\\footnotesize'}
 #install.packages("topicmodels")
 library(topicmodels)
-news_model<- LDA(DTM, k=30, control = list(seed = 10980))
+topic_model<- LDA(DTM, k=27, control = list(seed = 10980))
 ```
 \tiny LDA analysis based on code from https://www.tidytextmining.com/topicmodeling.html and https://cbail.github.io/SICSS_Topic_Modeling.html.
 
 # Latent Dirichlet Allocation
 ## Analyzing topics
-We can use the `tidy` function to pull the beta matrix from the model. Each row corresponds to the probability of word $w$ in topic $k$. In this case we can see the probabilities of the term "biden" in topics 1-5.
+We can use the `tidy` function to pull the beta matrix from the model. Each row corresponds to the probability of word $w$ in topic $k$. In this case we can see the probabilities of the term "economy" in topics 1-10.
 ```{r,eval=FALSE, echo=TRUE, mysize=TRUE, size='\\footnotesize'}
-topics <- tidy(news_model, matrix = "beta")
-topics %>% filter(term == "biden") %>%
+topics <- tidy(topic_model, matrix = "beta")
+topics %>% filter(term == "economy") %>%
     dplyr::select(topic, beta) %>%
-    head(5)
+    head(10)
 ```
 
 # Latent Dirichlet Allocation
@@ -261,44 +266,10 @@ top_terms %>% filter(topic >= 19) %>%
 ## Analyzing documents
 We can extract the document-topic proportions. Each row corresponds to the proportion of topic $i$ in document $j$.
 ```{r, eval=FALSE,echo=FALSE, mysize=TRUE, size='\\footnotesize'}
-documents <- broom::tidy(news_model, matrix = "gamma")
+documents <- broom::tidy(topic_model, matrix = "gamma")
 head(documents)
 ```
 \tiny Note the notation change. This matrix is called *gamma* ($\gamma$) here but was referenced as *theta* ($\theta$) in the equation above. Unfortunately this kind of thing happens a lot as notation is used inconsistently.
-
-# Latent Dirichlet Allocation
-## Helper function
-This function can be used to find the documents and words with highest weights in a particular topic.
-```{r, eval=FALSE,echo=FALSE, tidy=FALSE, mysize=TRUE, size='\\footnotesize'}
-topic <- 1 # Specify a topic
-
-get_top_docs_and_words <- function(t, n = 5) {
-    top_docs <- documents %>% arrange(desc(gamma)) %>% dplyr::filter(topic == topic) %>%
-      left_join(data, by = c("document" = "status_id")) %>% slice_max(gamma, n= n) %>%
-    dplyr::select(text)
-    
-    top_words <- topics %>% filter(topic == topic) %>%
-            top_n(n, beta) %>% dplyr::select(term)
-    
-    return(c(top_docs, top_words))
-} 
-
-get_top_docs_and_words(topic)
-```
-
-# Latent Dirichlet Allocation
-## Exercise
-- Modify the code above to look at top words and documents in each topic.
-- For each topic:
-  - What themes does this topic contain?
-  - Is the topic coherent?
-  - Can you name the topic?
-- Add your findings to the shared Google Sheet (requires Rutgers login): shorturl.at/hoJUV
-
-# Exercise code
-```{r, eval=FALSE,echo=FALSE, tidy=FALSE, mysize=TRUE, size='\\footnotesize'}
-# Use this block to run code for the exercise
-```
 
 # Latent Dirichlet Allocation
 ## Interpreting the results
@@ -308,6 +279,37 @@ documents in which a given topic is highly represented) and document-level measu
 percentage of words in each document assigned to each topic) based on these categories. It
 remains for the analyst to use this information to address the analytic questions that motivated the research. The analyst must also validate the solution by demonstrating that the model is sound
 and that his or her interpretation is plausible" (DiMaggio et al. 2013: 586).
+
+# Latent Dirichlet Allocation
+## Helper function
+This function can be used to find the documents and words with highest weights in a particular topic.
+```{r, eval=FALSE,echo=FALSE, tidy=FALSE, mysize=TRUE, size='\\footnotesize'}
+get_top_docs_and_words <- function(t, n_docs = 3, n_words = 10) {
+    
+    top_docs <- documents %>% arrange(desc(gamma)) %>%
+        dplyr::filter(topic == t) %>%
+        left_join(data, by = c("document" = "status_id")) %>%
+        slice_max(gamma, n=n_docs) %>%
+        dplyr::select(text)
+    
+    top_words <- topics %>% filter(topic == t) %>%
+            top_n(n_words, beta) %>% dplyr::select(term)
+    
+    return(c(top_docs, top_words))
+} 
+```
+
+
+# Latent Dirichlet Allocation
+## Inspecting topics
+```{r, eval=FALSE,echo=FALSE, tidy=FALSE, mysize=TRUE, size='\\footnotesize'}
+get_top_docs_and_words(27)
+```
+
+# Latent Dirichlet Allocation
+## Exercise
+- Run code above to evaluate your assigned topic
+- Add your findings to the shared Google Sheet (requires Rutgers login): https://tinyurl.com/topicmodelcoding
 
 # Latent Dirichlet Allocation
 ## Validation
@@ -338,8 +340,6 @@ and that his or her interpretation is plausible" (DiMaggio et al. 2013: 586).
     - Dynamic topic models account for how topics can change over time
   - *Assumption 3*: The number of topics, $K$, is known
     - Bayesian non-parametric topic models discover $K$ during the inference procedure
-- *Structural topic modeling* (STM) has recently become a popular extension of LDA, we will focus on this next lecture
-
 
 # Summary
 - Topic modeling is an inductive approach for the summary of large text corpora
