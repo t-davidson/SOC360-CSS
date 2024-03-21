@@ -1,9 +1,9 @@
 ---
 title: "Computational Social Science" 
-subtitle: "Topic Modeling"
+subtitle: "Topic Modeling II"
 author: Dr. Thomas Davidson
 institute: Rutgers University
-date: March 23, 2022
+date: March 21, 2024
 output:
     beamer_presentation:
       theme: "Szeged"
@@ -43,14 +43,20 @@ knitr::knit_hooks$set(mysize = function(before, options, envir) {
 
 # Course updates
 ## Homework 3
-- Homework 2 grades and comments have been released
-- Homework 3 on NLP will be released this evening
-- Project feedback also released this evening
+- Homework 3 on NLP will be released today on Canvas
+    - Due next Wednesday at 5pm
+    - Covers intro to NLP, word embeddings, and topic modeling
+    
+# Topic modeling
+- Topic modeling is an approach for understanding themes in documents
+- Topics capture words that are frequently used together
+    - A topic is a distribution across a vocabulary
+- A document contains a mixture of different topics
+
 
 # Structural Topic Modeling
 ## Background
 - LDA assumes  *topic prevalence* (frequency topic is mentioned) and *topic content* (the words used to discuss a topic) are constant across documents
-  - e.g. In the previous example, we assume that *NYT* and *WSJ* devote equal coverage to topics and discuss topics in the same way.
 - STM extends LDA by "allowing for the inclusion of covariates of interest into the prior distributions for document-topic proportions and topic-word distributions" (Roberts et al. 2014).
   - This allows analysis of how topics vary according to other factors, for example the treatment in a survey experiment may alter open responses.
   
@@ -61,30 +67,11 @@ knitr::knit_hooks$set(mysize = function(before, options, envir) {
   - Author (person, organization, publisher, political party, etc.)
   - Time (day, month, year, decade, etc.)
   - Demographics (age group, gender, race, ethnicity, etc.)
-  
-# Structural Topic Modeling
-## Topic prevalence
-- Example 1: How does topic prevalence vary between the *New York Times* and the *Wall Street Journal*?
-  - Potential hypotheses:
-    - WSJ focues more on topics including business and the economy
-    - NYT focuses more on cultural issues
-- Example 2: How does prevalence vary over time?
-  - Potential hypotheses:
-    - Topic prevalence ebbs and flows following the news cycle
     
 # Structural Topic Modeling
 ## Topic content
-- Content refers to the way different topics are dicussed
-- As social scientists, we might expect different groups to use different kinds of language
-
-# Structural Topic Modeling
-## Topic content
-- Example: How is the issue of the economy described differently by the *New York Times* and the *Wall Street Journal*?
-  - Hypothesis 1: The *WSJ* uses more "jargon" words because it is targeted towards a more knowledgeable audience
-  - Hypothesis 2: The *NYT* is more critical of capitalism than the *WSJ*
-- These hypotheses would require careful identification of relevant topics and analysis of how language varies across publications.
-  
-
+- Content refers to the way different topics are discussed
+    - As social scientists, we might expect different groups to use different kinds of language to refer to the same topic
 
 # Structural Topic Modeling
 ## Analyzing open-ended survey responses using an STM
@@ -98,39 +85,41 @@ include_graphics('../images/roberts_treatment.png')
 include_graphics('../images/roberts_party_id.png')
 ``` 
 
-# Training an LDA topic model in R
+# Structural Topic Modeling
 ## Loading the corpus
-Loading a corpus of most recent 1000 tweets by the New York Times and the Wall Street Journal. What do you notice about the file? Are there any problems with the way the data have been stored? 
+Loading a corpus of State of the Union speeches from 1900-2020. Each row represents a paragraph from a speech. 50% of paragraphs are sampled at random, otherwise models take too long to run!
 ```{r,eval=FALSE, echo=TRUE, tidy=FALSE, mysize=TRUE, size='\\footnotesize'}
 library(tidyverse)
-library(lubridate)
-data <- as_tibble(read_csv("data/nytimes_wsj_2000_statuses_march2122.csv"))
-data <- data %>% 
-    mutate(text = gsub("#[A-Za-z0-9]+|@[A-Za-z0-9]", "", text)) %>%
-    mutate(text = gsub("(http[^ ]*)|(www.[^ ]*)", "", text)) %>%
-    distinct(text, .keep_all =TRUE) # Removing duplicates
-
-data <- data %>% filter(month(created_at) == 3)
+data <- as_tibble(read_csv("../data/sotu_texts.csv")) %>%
+    sample_frac(0.5)
 ```
 
 # Structural Topic Modeling
-## Running an STM
-The first step is to select the relevant metadata. In this case we are going to use the screen_name and the day of the month.
+## Inspecting the texts
 ```{r, eval=FALSE,echo=TRUE, tidy=FALSE, mysize=TRUE, size='\\footnotesize'}
-min(data$created_at)
-max(data$created_at)
-data$day <- data$created_at %>% day()
-meta <- data %>% select(screen_name, day)
+head(data$paragraph, n=3)
 ```
 
 # Structural Topic Modeling
-## Running an STM
+## Selecting metadata
+```{r, eval=FALSE,echo=TRUE, tidy=FALSE, mysize=TRUE, size='\\footnotesize'}
+meta <- data %>% select(year, party)
+head(meta)
+```
+
+# Structural Topic Modeling
+## Preprocessing
 The `stm` library has its own set of functions for processing data. `textProcessor` takes a corpus, plus metadata, and conducts pre-processing tasks. `prepDocuments` then converts the documents into the appropriate format.
 ```{r, eval=FALSE, echo=TRUE, tidy=FALSE, mysize=TRUE, size='\\footnotesize'}
 library(stm)
 # install.packages("stm")
-processed.docs <- textProcessor(data$text, metadata = meta)
-output <- prepDocuments(processed.docs$documents, processed.docs$vocab, processed.docs$meta, lower.thresh = 5)
+processed.docs <- textProcessor(data$paragraph, 
+                                metadata = meta)
+
+output <- prepDocuments(processed.docs$documents, 
+                        processed.docs$vocab, 
+                        processed.docs$meta, 
+                        lower.thresh = 10)
 ```
  
 # Structural Topic Modeling
@@ -139,9 +128,9 @@ The STM package can calculate some heuristics for finding the "best" value of `K
 ```{r, eval=FALSE,  echo=TRUE, tidy=FALSE, mysize=TRUE, size='\\footnotesize'}
 library(parallel)
 search.results <- searchK(output$documents, output$vocab,
-                   K = c(20,30,40,60,80),
+                   K = c(20,40,60,80,100,120),
                    data = output$meta,
-                   proportion=0.1, # proportion of docs held-out
+                   proportion=0.2, # proportion of docs held-out
                    cores=detectCores() # use maximum number of available cores
 ) 
 ```
@@ -155,123 +144,116 @@ plot(search.results)
 \tiny See Mimno, David, Hanna M Wallach, Edmund Talley, Miriam Leenders, and Andrew McCallum. 2011. “Optimizing Semantic Coherence in Topic Models.” In Proceedings of the 2011 Conference on Empirical Methods in Natural Language Processing, 262–72. ACL for discussion of the semantic coherence measure.
 
 # Structural Topic Modeling
-Fitting a model with `k=40`. The `screen_name` field is used as a covariate for both prevalence and content. This means that we allow both the prevalence and content of topics to vary depending on whether the tweet was from the *NYT* or the *WSJ*. Day is used as a covariate for prevalence, where `s()` is a non-linear spline function.
+## Fitting a model
+Fitting a model with `k=60`. The `party` variable is used as a covariate for both prevalence and content. Year is used as a covariate for prevalence, where `s()` is a non-linear spline function.
 ```{r, eval= FALSE, echo=TRUE, tidy=FALSE, mysize=TRUE, size='\\footnotesize'}
-K=40
+K=60
 fit <- stm(documents = output$documents, vocab = output$vocab, K=K,
            data = output$meta, 
-           prevalence = ~ screen_name + s(day), # s takes a non-linear function
-           content = ~ screen_name, # content can only contain one variable
+           prevalence = ~ party + s(year), # s takes a non-linear function
+           content = ~ party, # content can only contain one variable
            verbose = TRUE
            )
 ```
 
 # Structural Topic Modeling
-## Loading data 
+## Storing/loading data 
 I stored the image of this workspace and uploaded it to Github. You can load the trained model and all other files in this script by running this line.
 ```{r,  eval=FALSE, echo=TRUE, tidy=FALSE}
-#save.image(file = "data/news_stm.RData")
-#load(file = "data/news_stm.RData")
+save.image(file = "../data/sotu_stm.RData")
+#load(file = "../data/sotu_stm.RData")
 ```
 
 # Structural Topic Modeling
-## Plotting the results
+## Inspecting the results
 We can directly plot the proportions to show how frequent different topics are. Here are the first 20.
 ```{r,  eval=FALSE, echo=TRUE, tidy=FALSE}
 plot(fit, type = "summary", topics = 1:20)
 ```
 
 # Structural Topic Modeling
-## Plotting the results
-We can directly plot the proportions to show how frequent different topics are. Here are the first 20.
+## Inspecting the results
 ```{r,  eval=FALSE, echo=TRUE, tidy=FALSE}
 plot(fit, type = "summary", topics = 21:40)
 ```
 
 # Structural Topic Modeling
+## Inspecting the results
+```{r,  eval=FALSE, echo=TRUE, tidy=FALSE}
+plot(fit, type = "summary", topics =41:60)
+```
+
+# Structural Topic Modeling
 ## Inspecting topics
 ```{r, eval=FALSE, echo=TRUE, tidy=FALSE, mysize=TRUE, size='\\footnotesize'}
-labelTopics(fit, topics=20, n=10)
+labelTopics(fit, topics=40, n=10)
 ```
   
 # Structural Topic Modeling
-## Inspecting topics
+## Analyzing documents
 We can use `findThoughts` to identify documents with a high weight in a given topic. Note that the original texts column does not work, I have to use the index for the metadata file to identify relevant columns.
 ```{r, eval=FALSE, echo=TRUE, tidy=FALSE, mysize=TRUE, size='\\footnotesize'}
-t=20
-thoughts <- findThoughts(fit, texts = as.character(data[as.numeric(rownames(output$meta)),]$text), topic=t, n = 5)
+t=40
+thoughts <- findThoughts(fit, texts = as.character(data[as.numeric(rownames(output$meta)),]$paragraph), topic=t, n = 5)
 for (i in unlist(thoughts$docs)) {print(i)}
 ```
 
 # Structural Topic Modeling
-## Inspecting topics
+## Analyzing documents
 ```{r, eval=FALSE, echo=TRUE, tidy=FALSE, mysize=TRUE, size='\\footnotesize'}
-t=30
-thoughts <- findThoughts(fit, texts = as.character(data[as.numeric(rownames(output$meta)),]$text), topic=t, n = 5)
+t=3
+thoughts <- findThoughts(fit, texts = as.character(data[as.numeric(rownames(output$meta)),]$paragraph), topic=t, n = 5)
 for (i in unlist(thoughts$docs)) {print(i)}
 ```
 
 # Structural Topic Modeling
-## Inspecting topics
+## Analyzing documents
 ```{r, eval=FALSE, echo=TRUE, tidy=FALSE, mysize=TRUE, size='\\footnotesize'}
-t=38
-thoughts <- findThoughts(fit, texts = as.character(data[as.numeric(rownames(output$meta)),]$text), topic=t, n = 5)
+t=4
+thoughts <- findThoughts(fit, texts = as.character(data[as.numeric(rownames(output$meta)),]$paragraph), topic=t, n = 5)
 for (i in unlist(thoughts$docs)) {print(i)}
 ```
 
 # Structural Topic Modeling
 ## Estimating relationship between topic prevalence and metadata
 ```{r, eval=FALSE, echo=TRUE, tidy=FALSE, mysize=TRUE, size='\\footnotesize'}
-prep <- estimateEffect(~ screen_name + s(day), fit, meta = output$meta)
-summary(prep, topics = c(20, 30,38)) # show results for selected topics
+prep <- estimateEffect(~ party + s(year), fit, meta = output$meta)
 ```
 
 # Structural Topic Modeling
-## Topic prevalence by publication
-We can see how different topics vary in prevalence according to the publication. The horizontal lines indicate 95% confidence intervals.
+## Topic prevalence by party
 ```{r, eval=FALSE, echo=FALSE, tidy=FALSE, mysize=TRUE, size='\\footnotesize'}
-topic.nums <- 1:40
-plot(prep, covariate = "screen_name", topics = topic.nums, model = fit, 
-     method = "difference", cov.value1 = "nytimes", cov.value2 = "WSJ",
-     xlab = "More WSJ ... More NYT",
+topic.nums <- 1:60
+plot(prep, covariate = "party", topics = topic.nums, model = fit, 
+     method = "difference", cov.value1 = "Republican", cov.value2 = "Democratic",
+     xlab = "More Democrat ... More Republican",
      labeltype = "custom", custom.labels = topic.nums)
 ```
 
 # Structural Topic Modeling
 ## Prevalence over time
-We can use the `day` variable to track how prevalence changes over time.
+We can use the `year` variable to track how prevalence changes over time.
 ```{r, eval=FALSE, echo=FALSE, tidy=FALSE, mysize=TRUE, size='\\footnotesize'}
-plot(prep, "day", method = "continuous", topics = c(20, 30, 38), model = fit, xaxt = "n", xlab = "Day in March 2022", 
-     labeltype = "custom", custom.labels = c("President", "Supreme Court","Plane Crash"))
+plot(prep, "year", method = "continuous", topics = c(3, 4, 40), model = fit, xlab = "Year", 
+     labeltype = "custom", custom.labels = c("Labor", "Agriculture", "Health"))
 ```
 
 # Structural Topic Modeling
-## Content by publication
-We can also see how the topic content varies according to the publication. Let's take a look at each topic
+## Content by party
 ```{r, eval=FALSE, echo=FALSE, tidy=FALSE, mysize=TRUE, size='\\footnotesize'}
-plot(fit, type="perspectives", topics=20)
+plot(fit, type="perspectives", topics=40)
 ```
 
 # Structural Topic Modeling
-## Content by publication
+## Content by party
 ```{r, eval=FALSE, echo=FALSE, tidy=FALSE, mysize=TRUE, size='\\footnotesize'}
-plot(fit, type="perspectives", topics=30)
+plot(fit, type="perspectives", topics=3)
 ```
 # Structural Topic Modeling
-## Content by publication
+## Content by party
 ```{r, eval=FALSE, echo=FALSE, tidy=FALSE, mysize=TRUE, size='\\footnotesize'}
-plot(fit, type="perspectives", topics=38)
+plot(fit, type="perspectives", topics=4)
 ```
-
-# Structural Topic Modeling
-## Topic correlations
-We can also measure the correlations between different topics. Topics are connected if the correlation exceeds a threshold.
-```{r, eval=FALSE, echo=FALSE, tidy=FALSE, mysize=TRUE, size='\\footnotesize'}
-corrs <- topicCorr(fit)
-corrs$cor
-plot(corrs)
-```
-
 
 # Structural Topic Modeling
 - Resources
