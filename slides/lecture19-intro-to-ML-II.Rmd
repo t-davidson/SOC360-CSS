@@ -3,7 +3,7 @@ title: "Computational Social Science"
 subtitle: "Supervised Machine Learning"
 author: Dr. Thomas Davidson
 institute: Rutgers University
-date: March 30, 2022
+date: March 28, 2024
 output:
     beamer_presentation:
       theme: "Szeged"
@@ -37,107 +37,131 @@ knitr::knit_hooks$set(mysize = function(before, options, envir) {
 ```
 
 # Plan
-1. Course updates
-2. Classification algorithms
-3. Intro to machine learning in R
 
+1.  Course updates
+2.  Classification algorithms
+3.  Intro to machine learning in R
 
 # Course updates
-## Homework 3
-- Homework 3 due Friday at 5pm
-- Office hours today at 5pm
-    - No appointment needed
-  
-# Recap
-- Supervised learning optimizes for predictive accuracy (focus on $\hat{Y}$ not $\hat{\beta}$)
-- Problems of over and under-fitting
-  - Out-of-sample validation and cross-validation
-  - Regularization
-- Evaluating model performance
-  - Precision, recall, F1, ROC/AUC
-  
-# Recap
-- Given some outcome $Y$ and a matrix of features $X$, we want to find a function $Y=f(X)$ that best predicts the outcome
+
+## Homework
+
+-   Homework 3 was due yesterday
+-   Homework 4 on supervised machine learning released next week
 
 # Recap
+
+-   Supervised learning optimizes for predictive accuracy (focus on $\hat{Y}$ not $\hat{\beta}$)
+-   Problems of over and under-fitting
+    -   Out-of-sample validation and cross-validation
+    -   Regularization
+-   Evaluating model performance
+    -   Precision, recall, F1, ROC/AUC
+
+# Recap
+
+-   Given some outcome $Y$ and a matrix of features $X$, we want to find a function $Y=f(X)$ that best predicts the outcome
+
+# Recap
+
 ```{r, out.width="70%",out.height="60%", fig.align="center"}
 include_graphics('../images/penguins.jpg')
-``` 
+```
 
 # Recap
 ## Predicting penguins
-- $Y = 1$ if the bird is a penguin, otherwise $Y = 0$
-- $X$ is a matrix including information on birds including their diet, wingspan, coloring, locations, etc.
-  - Some of the information will be useful (e.g. ability to fly) but other information will be less meaningful (e.g. coloring)
-- Goal is to find $f(X)$ to predict whether a given bird is a penguin
-- The quality of the prediction will depend on both the information contained in $X$ and the properties of the function $f()$.
+
+-   $Y = 1$ if the bird is a penguin, otherwise $Y = 0$
+-   $X$ is a matrix including information on birds including their diet, wingspan, coloring, locations, etc.
+    -   Some of the information will be useful (e.g. ability to fly) but other information will be less meaningful (e.g. coloring)
+-   Goal is to find $f(X)$ to predict whether a given bird is a penguin
+-   The quality of the prediction will depend on both the information contained in $X$ and the properties of the function $f()$.
 
 # Classification algorithms
-- Logistic regression
-- Support vector machines (SVM)
-- Decision trees and random forests
-- Neural networks
-- And many others
+
+-   Logistic regression
+-   Support vector machines (SVM)
+-   Decision trees and random forests
+-   Neural networks
+-   And many others
 
 # Machine learning in R
+
 ## Tidymodels
-- `tidymodels` is a set of packages designed to use tidy principles to conduct machine-learning.
-  - See https://www.tidymodels.org/packages/ for a list of packages.
-```{r, out.width="50%",out.height="35%", fig.align="center"}
-include_graphics('../images/tidymodels.png')
-```
-\tiny \centering Source: \href{https://rviews.rstudio.com/2019/06/19/a-gentle-intro-to-tidymodels/}{tidymodels tutorial.}
+
+-   `tidymodels` is a set of packages designed to use tidy principles to conduct machine-learning.
+
+    -   See <https://www.tidymodels.org/packages/> for a list of packages.
+
+    ```{r, out.width="50%",out.height="35%", fig.align="center"}
+    include_graphics('../images/tidymodels.png')
+    ```
+
+    \tiny \centering Source: \href{https://rviews.rstudio.com/2019/06/19/a-gentle-intro-to-tidymodels/}{tidymodels tutorial.}
 
 # Machine learning in R
+
 ## Loading `tidymodels`
+
 The `tidymodels` package loads all of the sub-packages, as well as the `tidyverse` packages. We're going to be using a sample of data from the General Social Survey (GSS). The goal will be to predict whether a respondent has a college degree (or higher) as a function of their survey responses.
+
 ```{r, echo=TRUE, tidy=FALSE, mysize=TRUE, size='\\footnotesize'}
 library(tidyverse)
 library(tidymodels)
-data <- read_csv("data/gss_sample.csv")
+data <- read_csv("../data/2018_gss_sample.csv")
 
-data <- data %>%
-    replace(is.na(.), 0) %>%
-    mutate(sex = as.factor(sex),
-            race = as.factor(race),
-            degree = as.factor(degree), 
-            bible = as.factor(bible),
-           marital = as.factor(marital)) %>%
-    select(!educ)
+table(data$degree)
 ```
 
+
 # Machine learning in R
-## Splitting data
-We can use the `initial_split` command to create a train-test split, where 20% of the data are held-out for testing.
+## Data cleaning
 ```{r, echo=TRUE, tidy=FALSE, mysize=TRUE, size='\\footnotesize'}
-set.seed(08901)
+colnames(data)
+
+data <- data %>%
+  mutate(across(-c(age, sibs), as.factor))
+```
+    
+    
+# Machine learning in R
+
+## Splitting data
+
+We can use the `initial_split` command to create a train-test split, where 20% of the data are held-out for testing.
+
+```{r, echo=TRUE, tidy=FALSE, mysize=TRUE, size='\\footnotesize'}
+set.seed(987123)
 data_split <- initial_split(data, prop = 0.8)
 print(data_split)
 ```
 
 # Machine learning in R
-## Viewing the data
+## Viewing the traing data
+
 ```{r, echo=TRUE, tidy=FALSE, mysize=TRUE, size='\\footnotesize'}
 data_split %>% training() %>% head()
 ```
 
-
 # Machine learning in R
-## Pre-processing
+## Pre-processing using `recipe`
+
 We will use the `recipes` package to pre-process the data.
 ```{r, echo=TRUE, tidy=FALSE, mysize=TRUE, size='\\footnotesize'}
 data_recipe <- training(data_split) %>%
   recipe(degree ~ .) %>%
-  step_center(all_numeric_predictors(), -all_outcomes()) %>%
   step_scale(all_numeric_predictors(), -all_outcomes()) %>%
+  step_dummy(all_factor_predictors(), -all_outcomes()) %>%
   prep()
 
 data_recipe
 ```
 
 # Machine learning in R
-## Pre-processing the test data
-The previous chunk only applied these transformations to the training data. We want to also modify the test data so that they are the same dimensions. We can apply the `recipe` to the new data using the `bake` command. We also want to load the training data into a variable using the `juice` command. This extracts the data directly from the recipe.
+## Extracting data from `recipe`
+
+The previous chunk only applied these transformations to the training data. We want to also modify the test data so that they are the same dimensions. We can apply the `recipe` to the new data using the `bake` command. We also want to load the training data using the `juice` command. This extracts the data directly from the recipe.
+
 ```{r, echo=TRUE, tidy=FALSE, mysize=TRUE, size='\\footnotesize'}
 data_testing <- data_recipe %>% 
   bake(testing(data_split))
@@ -146,8 +170,9 @@ data_training <- juice(data_recipe)
 ```
 
 # Machine learning in R
-## Specifying a model
-The `parsnip` command allows us to specify a model. ML models in R exist across a range of different packages and `parsnip` gives them a standardized syntax. We define the model, choose the package (in this case `randomForest`), then use `fit` to train the model.
+## Fitting a model
+
+ML models in R exist across a range of different packages and `parsnip` gives them a standardized syntax. We define the model, choose the package (in this case `randomForest`), then use `fit` to train the model.
 ```{r, echo=TRUE, tidy=FALSE, mysize=TRUE, size='\\footnotesize'}
 library(randomForest)
 rf <-  rand_forest(trees = 1000, mode = "classification") %>%
@@ -159,14 +184,16 @@ rf <-  rand_forest(trees = 1000, mode = "classification") %>%
 ## Making predictions (in-sample)
 ```{r, echo=TRUE, tidy=FALSE, mysize=TRUE, size='\\footnotesize'}
 preds <- predict(rf, data_training)
-bind_cols(data_training, preds) %>% select(degree, .pred_class)
+train_preds <- bind_cols(data_training, preds) %>%
+    select(degree, .pred_class)
+head(train_preds)
 ```
 
 # Machine learning in R
 ## Calculating metrics (in-sample)
 ```{r, echo=TRUE, tidy=FALSE, mysize=TRUE, size='\\footnotesize'}
-precision <- bind_cols(data_training, preds) %>% precision(truth=degree, estimate = .pred_class)
-recall <- bind_cols(data_training, preds) %>% recall(truth=degree, estimate = .pred_class)
+precision <- train_preds %>% precision(truth=degree, estimate = .pred_class)
+recall <- train_preds %>% recall(truth=degree, estimate = .pred_class)
 print(bind_rows(precision, recall))
 ```
 
@@ -174,17 +201,17 @@ print(bind_rows(precision, recall))
 ## Making predictions (out-of-sample)
 ```{r, echo=TRUE, tidy=FALSE, mysize=TRUE, size='\\footnotesize'}
 preds <- predict(rf, data_testing)
-bind_cols(data_testing, preds) %>% select(degree, .pred_class)
+test_preds <- bind_cols(data_testing, preds) %>%
+    select(degree, .pred_class)
 ```
 
 # Machine learning in R
 ## Calculating metrics (out-of-sample)
 ```{r, echo=TRUE, tidy=FALSE, mysize=TRUE, size='\\footnotesize'}
-precision <- bind_cols(data_testing, preds) %>% precision(truth=degree, estimate = .pred_class)
-recall <- bind_cols(data_testing, preds) %>% recall(truth=degree, estimate = .pred_class)
+precision <- test_preds %>% precision(truth=degree, estimate = .pred_class)
+recall <- test_preds %>% recall(truth=degree, estimate = .pred_class)
 print(bind_rows(precision, recall))
 ```
-
 
 # Machine learning in R
 ## Calculating metrics: Predicted probabilities
@@ -198,7 +225,7 @@ head(probs %>% select(degree, .pred_0, .pred_1) %>% bind_cols(preds))
 
 # Machine learning in R
 ## Calculating metrics: ROC
-```{r, echo=TRUE, tidy=FALSE, mysize=TRUE, size='\\footnotesize'}
+```{r, echo=FALSE, tidy=FALSE, mysize=TRUE, size='\\footnotesize'}
 probs %>% roc_curve(degree, .pred_0) %>% autoplot()
 ```
 
@@ -209,18 +236,19 @@ probs %>% roc_auc(degree, .pred_0)
 ```
 
 # Machine learning in R
-## Next week
-- We will go into more depth using `tidymodels` to implement cross-validation and a hyperparameter search and will evaluate multiple different models
-- Supervised machine learning to perform text classification
-- Considering how the inputs and label quality affect classifier performance
-
-# Machine learning in R
 ## Alternatives
-- Python has a more developed ML ecosystem than R.
-  - `scikit-learn` provides a suite of tools for most machine-learning tasks except deep-learning, which requires specialized libraries.
-```{r, out.width="45%",out.height="40%", fig.align="center"}
-include_graphics('../images/scikit.png')
-```
-\tiny \centering Source: \href{https://scikit-learn.org/stable/tutorial/machine_learning_map/index.html}{scikit-learn documentation}. See this \href{https://www.r-bloggers.com/2020/04/how-to-run-pythons-scikit-learn-in-r-in-5-minutes/}{tutorial} for how to run `scikit-learn` using R.
 
+-   Python has a more developed ML ecosystem than R.
+    -   `scikit-learn` provides a suite of tools for most machine-learning tasks except deep-learning, which requires specialized libraries.
 
+    ```{r, out.width="45%",out.height="40%", fig.align="center"}
+    include_graphics('../images/scikit.png')
+    ```
+
+    \tiny \centering Source: \href{https://scikit-learn.org/stable/tutorial/machine_learning_map/index.html}{scikit-learn documentation}. See this \href{https://www.r-bloggers.com/2020/04/how-to-run-pythons-scikit-learn-in-r-in-5-minutes/}{tutorial} for how to run `scikit-learn` using R.
+    
+# Machine learning in R
+## Next week
+-   Supervised machine learning to perform text classification
+-   Cross-validation, parameter searches, and model comparison
+-   Data quality and predictive performance
