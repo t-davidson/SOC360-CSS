@@ -40,3 +40,12 @@ vignettes/*.pdf
 
 # Add .DS_Store
 .DS_Store
+
+# Latex log files and auxillary files that are occasonally produced
+slides/*.log
+slides/*.aux
+slides/*.snm
+slides/*.tex
+slides/*.toc
+slides/*.vrb
+slides/*.nav
