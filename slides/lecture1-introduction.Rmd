@@ -3,7 +3,7 @@ title: "Computational Social Science"
 subtitle: "Introduction"
 author: Dr. Thomas Davidson
 institute: Rutgers University
-date: January 18, 2024
+date: September 4, 2024
 urlcolor: blue
 output:
     beamer_presentation:
@@ -28,17 +28,17 @@ library("knitr")
 
 # Plan
 
-- Introductions
 - A brief introduction to Computational Social Science
 - Course outline
 - R and RStudio
-- Resources
-- Readings and set-up
+- Homework
 
+<!--
 # Introductions
 - Name
 - Area of study (major, minors, etc.) and year
 - Interests in data science / social science
+-->
 
 # Introduction to Computational Social Science
 ```{r, out.width="70%",out.height="60%", fig.align="center"}
@@ -143,6 +143,7 @@ include_graphics('../images/css_pubs.png')
 - This week's readings consist of the first chapter of *Bit by Bit* by Matthew Salganik and selected chapters from *R for Data Science (R4DS)* by Garrett Grolemund and Hadley Wickham.
 - You will continue to read *R4DS* over the next few of weeks to build familiarity with R and the `tidyverse` packages.
   - *I recommend reviewing this material even if you are familiar with R.*
+- Links to all readings are available on the Canvas page.
 
 # Course outline
 ## Assessment
@@ -162,7 +163,7 @@ include_graphics('../images/css_pubs.png')
     2. Submit project proposal
     3. Prototype
     4. Present final project and submit app
-- *Projects can be completed individually or as part of a group*
+- *Projects must be completed as part of a group (2-3 students)*
 
 # Course outline
 ## Policies
@@ -170,23 +171,28 @@ include_graphics('../images/css_pubs.png')
     - Accommodations
     - Diversity and inclusion
     - Academic integrity
-    - ChatGPT and AI (more shortly)
+    - ChatGPT and AI
 
+<!--
 # Course outline
 ## Office hours and communication
-- Office hours, Monday 5-6pm, 109 Davison Hall (Douglass) or Zoom.
+- Office hours, Wednesday 6:30-7:30pm, 109 Davison Hall (Douglass) or Zoom.
 - Email me to schedule an appointment if you cannot make office hours.
 
-# Questions?
 
+# Questions?
+-->
+
+<!--
 # Why R?
 ```{r, out.width="70%",out.height="70%", fig.align="center"}
 include_graphics('../images/package_wars.png')
 ```
 
 \centering \tiny \href{https://kieranhealy.org/blog/archives/2019/02/07/statswars/}{Source: Kieran Healey}
+-->
 
-# Why R?
+# Using R
 - Alongside Python, it is one of the main programming languages used by data scientists
 - A statistical computing language
 - Free and open-source
@@ -210,6 +216,7 @@ include_graphics('../images/package_wars.png')
         - For example, these slides are rendered using RMarkdown
     - You will be using RMarkdown for your homework assignments and hopefully your papers
 
+<!-- 
 # Other resources
 - StackOverflow
     - An online community for coding questions
@@ -217,7 +224,8 @@ include_graphics('../images/package_wars.png')
         - Sometimes it can take a while to figure out the appropriate query to use to find an answer.
         - If you can't find an answer, you can make your own question - but the formatting requirements are quite strict and users can be unforgiving.
     - A useful thread for posting an R question and example: https://stackoverflow.com/questions/5963269/how-to-make-a-great-r-reproducible-example
-    
+
+
 # Generative AI
 - ChatGPT and other models are trained on large amounts of text data as well as code from Github
     - This means they can "understand" R and can write and comment on code
@@ -254,7 +262,8 @@ include_graphics('../images/package_wars.png')
 - *You are not permitted to use Github CoPilot in RStudio*
     - Autocompletion violates academic integrity
     - And the solutions are often distracting and not very helpful
-    
+
+   
 # Exercise
 ## Problem solving in R
 
@@ -269,14 +278,21 @@ include_graphics('../images/package_wars.png')
     1. Solve it without using the internet
     2. Solve it by searching StackOverflow
     3. Solve it by using ChatGPT
+-->
 
 
 # Homework tasks
 - Download and install RStudio
 - Familiarize yourself with RMarkdown
 
+# Next week
+- R refresher
+    - Basic data structures and programming
+- Social network analysis
+
+<!--
 # Questions?
-    
+-->   
 
     
     
