@@ -46,13 +46,15 @@ We will be using something called Github Classroom for the homework assignments.
 
 
 ### How to download ("clone") the homework repository
-You will need to clone this repository using the same process as in Step 4. Just use the URL for your unique repository in place of the course website. Make sure to save it some separate (e.g. not inside the `SOC360-CSS` directory). Once you have downloaded it, clicking the project file will open up RStudio within the homework repository.
+
+You will need to clone this repository using the same process as in Step 4 above. Just use the URL for your unique repository in place of the course website. Make sure to save it somewhere separate (e.g. *not* inside the `SOC360-CSS` directory). Once you have cloned it, the project should automatically open in RStudio. Clicking the project file will also open up RStudio within the homework repository.
 
 ### How to commit and push changes to the homework
 
+- Verify that your RStudio is using the correct project and that you are not in the main class project since you will be switching back and forth between projects
 - Save the files you want to update
-- Navigate to the Git tab in RStudio and click the check-box for the file then click `Commit`
-- A dialogue box will open. Add a short message to the `Commit message` box, e.g. `Updated HW1 solutions` then click the `Commit` button again. 
+- Navigate to the Git tab in RStudio and click the check-box for the file then click `Commit`. Only check the boxes next to the required files.
+- A dialogue box will open. Add a short message to the `Commit message` box, e.g. `Final HW1 solutions` then click the `Commit` button again. 
 - Finally, click the `Push` button with the green upwards arrow to send the change to your cloud-based repository
 	- Note: If you are asked for your username and password, click `Cancel` and exit the process. Follow these instructions to set up a personal access token (https://happygitwithr.com/https-pat.html#tldr) then attempt again.
 - Once you have pushed the changes, visit the Github webpage for your homework repository and you should see your commit message next to the file name, showing it is updated.
