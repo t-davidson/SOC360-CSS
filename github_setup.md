@@ -35,7 +35,7 @@ If you get an access or permission error then you may need to complete this step
 
 4. Finally, you can use Github to get the latest version of all the course files (including this one!) on your computer.
 
-Return to RStudio and click the `File` tab at the top of the page and select `New Project...` from the dropdown. This will open up the project wizard. Click the `Version Control` option then `Git`. Paste the URL for this project (https://github.com/t-davidson/SOC360-CSS/tree/main) into the Repository URL box and select an appropriate directory to store it (the folder you made in class). When you're ready, click `Create Project`
+Return to RStudio and click the `File` tab at the top of the page and select `New Project...` from the dropdown. This will open up the project wizard. Click the `Version Control` option then `Git`. Paste the URL for this project (https://github.com/t-davidson/SOC360-CSS) into the Repository URL box and select an appropriate directory to store it (the folder you made in class). When you're ready, click `Create Project`
 
 You will see a window pop up and then you will return to RStudio when the process is completed. If you look in the `Files` pane you should see the files from the course. You should also see a tab titled `Git` at the top. Now, whenever there is an update to the course, all you need to do is click the downwards facing green arrow to "pull" the files onto your computer.
 
