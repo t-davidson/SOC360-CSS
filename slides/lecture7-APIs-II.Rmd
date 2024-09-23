@@ -3,7 +3,7 @@ title: "Computational Social Science"
 subtitle: "Observational Studies and Application Programming Interfaces II"
 author: Dr. Thomas Davidson
 institute: Rutgers University
-date: February 8, 2024
+date: September 25, 2024
 output:
     beamer_presentation:
       theme: "Szeged"
@@ -54,13 +54,18 @@ set.seed(08901)
 
 # Using the Spotify API
 ## Documentation
-- It's always good to start by reading the documentation
+- It's always good to start by reading the documentation:
   - https://developer.spotify.com/documentation/web-api/
 - This provides information on the API, endpoints, rate-limits, etc.
 
 # Using the Spotify API
 ## Signing up
-This API requires authentication. Let's log in to use the API.
+- To use the Spotify API you need a Spotify account
+- If you don't have one already, please sign up for a free account
+
+# Using the Spotify API
+## Signing up
+This API requires authentication. Visit the link below and click "Log in". If you are already logged in, click your username in the top-right then "Dashboard".
 ```{r, out.width="70%",out.height="70%", fig.align="center"}
 include_graphics('../IMAGES/spotify_develop2.png')
 ```  
@@ -78,10 +83,8 @@ include_graphics('../IMAGES/spotify_create_app2.png')
 - Add a name and a short description
     - e.g. "Computational Social Science", "App for class"
 - Click on the app in Dashboard
-- Click "Edit Settings"
-    - Add  http://localhost:1410/ to the Redirect URIs and click Save
 - Click "SHOW CLIENT SECRET"
-    - Copy Client ID and Client Secret
+    - Copy Client ID and Client Secret and store them somewhere safe
     
 # APIs
 ## Access credentials
@@ -101,7 +104,7 @@ include_graphics('../IMAGES/spotify_create_app2.png')
 
 # Using the Spotify API
 ## Storing credentials
-- Open `creds.json` (located in the `credentials` folder) and paste the ID and secret into the relevant fields.
+- Open `creds.json` (located in the `credentials` folder of the course repository) and paste the ID and secret into the relevant fields. Save the file.
   - Storing credentials in a separate file helps to prevent them from getting committed to Github accidentally
 - The file should look like this:
 
@@ -112,20 +115,21 @@ include_graphics('../IMAGES/spotify_create_app2.png')
 
 # Using the Spotify API
 ## Loading packages
-We're going to be using `spotifyr`, a *wrapper* around the spotify API. This allows us to make use of the functionality without needing to write the API calls, make requests, or convert the results to JSON/tabular format.
+We're going to be using `spotifyr`, a *wrapper* around the spotify API. This allows us to make use of the functionality without needing to write the API calls, make requests, or convert the results to JSON/tabular format. To install it, you must uncomment and run the line below.
 ```{r, echo=TRUE, tidy=TRUE, mysize=TRUE, size='\\footnotesize'}
-# install.packages("spotifyr") # uncomment and run to install
-library(spotifyr)
-library(tidyverse)
-library(jsonlite)
-library(lubridate)
+# devtools::install_github('t-davidson/spotifyr') # uncomment and run to install
 ```
 \tiny  You can read more about the library \href{https://www.rcharlie.com/spotifyr/}{here}.
 
 # Using the Spotify API
 ## Authentication
-Now let's read in the credentials and create a token.
+Now let's load the packages, read in the credentials, and create an access token. Run this chunk to proceed.
 ```{r, echo=TRUE, tidy=TRUE, mysize=TRUE, size='\\footnotesize'}
+library(spotifyr)
+library(tidyverse)
+library(jsonlite)
+library(lubridate)
+
 creds <- read_json("../credentials/creds.json") # read creds
 
 Sys.setenv(SPOTIFY_CLIENT_ID = creds$id) # set creds
@@ -144,7 +148,7 @@ print(get_artist_audio_features)
 
 # Using the Spotify API
 ## Querying the API
-Now we're authorized, we can use the package to retrieve information from the API. Let's take a look at one of the functions.
+Now we're authorized, we can use the package to retrieve information from the API. Let's take a look at one of the functions. Add an artist name to `get_artist_audio_features`.
 ```{r, echo=TRUE, tidy=FALSE, mysize=TRUE, size='\\footnotesize', eval = F}
 artist1 <- get_artist_audio_features("") %>% as_tibble() # Add artist name inside quotes
 head(artist1)
@@ -158,7 +162,7 @@ head(artist1$track_name, n=10)
 
 # Using the Spotify API
 ## Creating a summary
-Let's calculate some statistics using this table.
+Let's calculate some statistics using this table. What does this show?
 ```{r, echo=TRUE, tidy=FALSE, mysize=TRUE, size='\\footnotesize', eval = F}
 results <- artist1 %>%
             group_by(album_release_year) %>% 
@@ -189,7 +193,7 @@ p + geom_smooth() +
 
 # Using the Spotify API
 ## Collecting more data
-Let's collect the same data for a second artist and combine it.
+Let's collect the same data for a second artist and combine it. Add an artist name to the `get_artist_audio_features`.
 ```{r, echo=TRUE, tidy=FALSE, mysize=TRUE, size='\\footnotesize', eval = F}
 artist2 <- get_artist_audio_features("") %>% as_tibble()
 both <- bind_rows(artist1, artist2) # adding 2nd artist to the same tibble
@@ -211,7 +215,7 @@ r <- both %>%
 ```{r, echo=TRUE, tidy=FALSE, mysize=TRUE, size='\\footnotesize', eval = F}
 p <- ggplot(both, aes(x=album_release_year, y=danceability, 
                       group = artist_name, color = artist_name))
-p + geom_point(alpha=0.1) + geom_smooth() +
+p + geom_point(alpha=0.3) + geom_smooth() +
   labs(title="Comparing danceability", 
        caption = "Data from collect from Spotify API") +
   xlab("") + ylab("Mean danceability") + theme_bw()
@@ -230,9 +234,9 @@ p + geom_point(alpha=0.1) + geom_smooth() +
 
 # Using the Spotify API
 ## Collecting more data
-Let's try another type of query.
+Let's try another type of query. Add a genre name to `get_genre_artists`. Note that not all genres will work.
 ```{r, echo=FALSE, tidy=FALSE, mysize=TRUE, size='\\footnotesize'}
-hh <- spotifyr::get_genre_artists("hip-hop", limit = 20) %>%
+hh <- spotifyr::get_genre_artists("", limit = 20) %>%
   select(id, name, popularity, followers.total)
 hh %>% slice_max(order_by = followers.total, n=10)
 ```
@@ -275,6 +279,7 @@ ggplot(album.year.count, aes(x = year,
 # Using the Spotify API
 ## Improving the visualization
 ```{r, echo=FALSE, tidy=FALSE, mysize=TRUE, size='\\footnotesize'}
+# Uncomment and run lines below to install packages
 # install.packages("ggrepel")
 # install.packages("viridis")
 library(ggrepel)
@@ -308,7 +313,7 @@ ggplot(album.year.count, aes(x = year)) +
 ## More advanced visualizations
 There are other extensions of `ggplot` that can create even more sophisticated plots. The `ggridges` package allows us to represent multiple artists' trends as overlaid histograms.
 ```{r, echo=FALSE, tidy=FALSE, mysize=TRUE, size='\\footnotesize'}
-# install.packages("ggridges")
+# install.packages("ggridges") # Remove comment symbol to run line to install this package
 library(ggridges)
 
 ggplot(album.year.count, aes(x = year, y = artist, height = n_albums,
@@ -321,7 +326,7 @@ ggplot(album.year.count, aes(x = year, y = artist, height = n_albums,
 ## Exercise
 1. Use the Spotify API to collect your own data.
 2. Use tidyverse functions to select relevant columns and summarize (as necessary)
-3. Product a plot using ggplot.
+3. Produce a plot using ggplot (different from the examples given)
 4. Share the plot in this Google Doc: https://bit.ly/3rAG7Uk
 
 # Using the Spotify API
@@ -330,29 +335,6 @@ ggplot(album.year.count, aes(x = year, y = artist, height = n_albums,
 # Your code here
 ```
 
-# Using the Spotify API
-## Accessing your personal data
-- Some features require more setup and authentication
-  - You can only use these features if you have set `http://localhost:1410/` in Redirect URIs and authorized your app
-  - This tells the API to open up authentication on port 1410 of your computer
-  - Note: You may need to install the package `httpuv` for this to work
-
-# Using the Spotify API
-## Finding your recently played tracks
-To access your personal data, you can run this code to look at your most recently played tracks. There are many other functions you can use to get and even modify your own data (so use these carefully!). You will have to type `1` into the console after running the chunk and may need to approve access in your browser. Note how we need to request additional authorization for this action.
-```{r, echo=TRUE, eval=FALSE, tidy=FALSE, mysize=TRUE, size='\\footnotesize'}
-recents <- get_my_recently_played(limit = 10,
-    authorization = get_spotify_authorization_code(scope = 'user-read-recently-played'))
-```
-\tiny Example from the `spotifyr` documentation. 
-
-# Using the Spotify API
-## Inspecting the results
-```{r, echo=TRUE, eval=FALSE, tidy=FALSE, mysize=TRUE, size='\\footnotesize'}
-recents %>% mutate(artist.name = map_chr(track.artists, function(x) x$name[1]),
-           played_at = as_datetime(played_at)) %>% 
-    select(track.name, artist.name, track.album.name, played_at) %>% as_tibble()
-```
 
 # Summary
 - Application programming interfaces provide programmatic access to data stored on websites and social media platforms, making them an ideal source of digital trace data for social scientific research

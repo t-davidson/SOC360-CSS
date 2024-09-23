@@ -3,7 +3,7 @@ title: "Computational Social Science"
 subtitle: "Observational Data and Application Programming Interfaces"
 author: Dr. Thomas Davidson
 institute: Rutgers University
-date: February 5, 2024
+date: September 23, 2024
 output:
     beamer_presentation:
       theme: "Szeged"
@@ -53,6 +53,12 @@ set.seed(08901)
   - Don't leave it until the last minute!
   - Please push your final version to Github with the appropriate commit message.
   - Make sure to also submit the URL on Canvas
+  
+# Course updates
+## No class Wednesday
+- At-home workshop on using the Spotify API
+    - Work through the examples and complete an optional extra credit assignment
+    - You will need a Spotify API account for Homework 2
 
 
 # Digital trace data
@@ -300,10 +306,11 @@ p
   
 # APIs
 ## The post-API age?
-- The future for APIs seems brighter
-  - Facebook Pages and Group data available via CrowdTangle
-  - Twitter Academic API provides extensive access
-  - Much of Reddit is available via Pushshift
+- Current access on major social media platforms
+    - Meta recently shutdown CrowdTangle, which provided data on Pages and Groups
+    - Twitter Academic API provided extensive access but shut down after Musk takeover
+    - Reddit had a permissive system but closed access to monetize data for large language model training
+    - Restrictive conditions for TikTok academic access
     
 # Next lecture
 - Using the Spotify API in R
