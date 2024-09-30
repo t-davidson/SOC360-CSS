@@ -3,7 +3,7 @@ title: "Computational Social Science"
 subtitle: "Scraping the web I"
 author: Dr. Thomas Davidson
 institute: Rutgers University
-date: February 12, 2024
+date: September 30, 2024
 output:
     beamer_presentation:
       theme: "Szeged"
