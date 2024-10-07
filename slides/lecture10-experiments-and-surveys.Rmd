@@ -3,7 +3,7 @@ title: "Computational Social Science"
 subtitle: "Online experiments and surveys"
 author: Dr. Thomas Davidson
 institute: Rutgers University
-date: February 21, 2022
+date: October 7, 2024
 output:
     beamer_presentation:
       theme: "Szeged"
@@ -11,6 +11,7 @@ output:
       fonttheme: "structurebold"
       toc: false
       incremental: false
+urlcolor: blue
 header-includes:
   - \usepackage{multicol}
   - \usepackage{caption}
@@ -42,9 +43,15 @@ knitr::knit_hooks$set(mysize = function(before, options, envir) {
 3. Online surveys
 
 # Course updates
+- Homework 1 grades coming soon
 - Homework 2 released on Wednesday
   - APIs and web-scraping
-- Homework 1 grades will be released tomorrow
+  
+# Online experiments and surveys
+## Adapting methods to the digital era
+- Experiments and surveys are two mainstays of the social sciences
+- Both were developed to study people in labs and in the field
+- How does the internet and technological advancement create new opportunities for methodological innovation?
 
 # Online experiments
 ## Motivation for online experiments
@@ -58,9 +65,7 @@ knitr::knit_hooks$set(mysize = function(before, options, envir) {
 ## Methods: Internal experiments
 - Companies and other actors experiment internally
   - A/B tests used to test different user-interface and product differences
-  - Some now use complex, machine-learning driven "adaptive" experimentation systems to conduct test thousands of different conditions.
-- The vast majority of these experiments are private, but some are published by researchers
-  - Kramer, Guillory, and Hancock. 2014. "Emotional contagion" study.
+- The vast majority of these experiments are private, but some are published by researchers.
 - Researchers recently made an entire archive of thousands of experiments available, see the \href{https://upworthy.natematias.com/}{Upworthy Research Archive}
 
 # Online experiments
@@ -148,9 +153,8 @@ include_graphics('../images/munger_results.png')
 ## Methods: Digital labs
 - Create a virtual environment, fully controlled by the researcher
 - High-cost (fixed costs associated with developing a platform)
-- But high-rewards
 - Zero variable cost experiments
-  - Nobody wants to do a boring experiment for free; incentivize participation
+  - Incentivizing participation
   
 # Online experiments
 ## The Music Lab Study
@@ -286,6 +290,6 @@ include_graphics('../images/wang_survey.png')
   - These methods come with more challenges and require different skills to conventional methods
   - We must think more about ethics, related to informed consent, impacts on study participants, and implications of partnerships with other organizations
   
-# Next lecture (Wednesday)
+# Next lecture
 - Final projects discussion
 - Introduction to RShiny
