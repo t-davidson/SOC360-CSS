@@ -14,7 +14,7 @@ title:
      |  Syllabus
 
 author: Dr. Thomas Davidson
-date: "Spring 2024"
+date: "Fall 2024"
 urlcolor: blue
 
 fontfamily: mathpazo
@@ -34,16 +34,16 @@ E-mail: ``thomas.davidson@rutgers.edu``.
 
 Website: \href{https://github.com/t-davidson/SOC360-CSS}{https://github.com/t-davidson/SOC360-CSS} and Canvas.
 
-Class meetings: Monday & Thursday 10:20-11:40am, Allison Road Classroom 204, Busch Campus.
+Class meetings: Monday & Wednesday 3:50-5:10pm, Tillett Hall 246, Livingston Campus.
 
-Office hours: Monday 5:00-6:00 p.m, 109 Davison Hall, Douglass Campus or by appointment.
+Office hours: Wednesday 5:30-6:30 p.m, 109 Davison Hall, Douglass Campus, or by appointment.
 
 # COURSE DESCRIPTION
 This course introduces students to the growing field of computational social science. Students will learn to collect and critically analyze social scientific data using a range of techniques including natural language processing, machine learning, and agent-based modeling. We will discuss how these techniques are used by social scientists and consider the ethical implications of big data and artificial intelligence. Students will complete homework assignments involving coding in the R programming language to analyze several different datasets and a final project to create an application for data analysis and visualization.
 
 # LEARNING GOALS
-- Become competent at using R and RStudio
-- Develop proficiency in data merging, cleaning, analysis, and visualization
+- Further develop proficiency in using R and RStudio
+- Competence in data merging, cleaning, analysis, and visualization
 - Understand and implement various methods for online data collection, natural language processing, and machine learning
 - Use RShiny to develop a web application for data analysis and visualization
 - Identify important ethical issues related to the use of social data and computational methods
@@ -57,8 +57,8 @@ This course introduces students to the growing field of computational social sci
     - Students are expected to attend all class meetings and to actively participate in class discussions
 - 60% Homework assignments (4 x 15%)
     - Students will complete a series of homework assignments to gain experience using R for data science
-- 30% Final project
-    - Students will complete a final project involving the use of RShiny to build an interactive web application for data analysis and visualization. Students may work individually or as part of a group. The project will include a written report and a presentation.
+- 30% Group project
+    - Students will complete a final project involving the use of RShiny to build an interactive web application for data analysis and visualization. The project will include a written report and a presentation.
     
 ## Rubric
 
@@ -90,7 +90,7 @@ The course will be organized using two different tools, Github and Canvas. Canva
 
 Over the course of the semester we will consider how generative artificial intelligence tools can be used to advance computational research and will situate these tools in the context of earlier techniques. Not only can these technologies contribute to methodological advances, but they are a valuable pedagogical resource. I encourage you to draw on these tools to help you to learn to code and learn various computational methods. At the same time, however, these tools come with risks. For example, they can produce misleading or incorrect results, and hence must be used with caution. I am also concerned that overreliance on AI can undermine your learning. I strongly recommend trying to solve problems yourself or by consulting the course materials before resorting to AI for assistance.
 
-AI tools can also be used in ways that violate academic integrity policies. As such, you are prohibited for using ChatGPT or other AI tools to complete homework assignments or to write your final paper. Of course, the definition of AI tools becomes some what blurred when we think about tools like Grammarly, which uses similar technologies to help you improve your writing. Google Docs now has similar functionality and Microsoft is rolling this out in Office. I will permit you to use these tools to help you edit your work, but you may not use them to generate sentences or paragraphs of text. Similarly, I will permit you to use AI to help edit and debug code in your final project, but you may not use them to generate entire chunks of code. *You will be asked to provide a statement in assignments and your final project detailing any ways that AI tools were used.* Please contact me if you are unsure about whether a particular use case is acceptable.
+AI tools can also be used in ways that violate academic integrity policies. As such, you are prohibited for using ChatGPT or other AI tools to complete homework assignments. Of course, the definition of AI tools becomes some what blurred when we think about tools like Grammarly, which uses similar technologies to help you improve your writing. Google Docs now has similar functionality and Microsoft is rolling this out in Office. I will permit you to use these tools to help you edit your work, but you may not use them to generate sentences or paragraphs of text. Similarly, I will permit you to use AI to help edit and debug code in your final project, but you may not use them to generate entire chunks of code. *You will be asked to provide a statement in assignments and your final project detailing any ways that AI tools were used.* Please contact me if you are unsure about whether a particular use case is acceptable.
 
 # TECHNOLOGY REQUIREMENTS
 
@@ -117,7 +117,7 @@ Please see the bottom of the syllabus for information on additional information 
 
 *Readings*
 
-- Thursday 1/18:
+- Wednesday 9/4:
     - *Bit by Bit*, C1
     - *R4DS*: Introduction & C1, C27 in 1st edition [Note: Chapter numbers correspond to the online book; physical book numbers are different]
 
@@ -131,10 +131,10 @@ Please see the bottom of the syllabus for information on additional information 
     
 *Readings*
 
-- Monday 1/22: 
+- Monday 9/9: 
     - *R4DS*: C2, 27
     - David Easley and Jon Kleinberg. 2010. *Networks, Crowds, and Markets: Reasoning About a Highly Connected World*. Cambridge University Press, Chapter 1.
-- Thursday 1/25: 
+- Wednesday 9/11: 
     - *R4DS*: C3-5
 
 ## Week 3
@@ -142,11 +142,11 @@ Please see the bottom of the syllabus for information on additional information 
 
 *Readings*
 
-- Monday 1/29: 
+- Monday 9/16: 
     - Macy, Michael W., and Robert Willer. 2002. “From Factors to Factors: Computational Sociology and Agent-Based Modeling.” *Annual Review of Sociology* 28(1):143–66
         - *Read pages 143-150*
     - *R4DS*: C25-26
-- Thursday 2/1: 
+- Wednesday 9/18: 
     - *R4DS*: C6-8
     
 ## *Assignment 1 released: Programming in R.*
@@ -156,10 +156,10 @@ Please see the bottom of the syllabus for information on additional information 
 
 *Readings*
 
-- Monday 2/5: 
+- Monday 9/23: 
     - *Bit by Bit*, C2
     - *R4DS*: C17, 19
-- Thursday 2/8: 
+- Wednesday 9/25 (NO CLASS): 
     - *R4DS*: C9
 
     
@@ -168,16 +168,16 @@ Please see the bottom of the syllabus for information on additional information 
 
 *Readings*
 
-- Monday 2/12: 
+- Monday 9/30: 
     - *Bit by Bit*, C6
     - *R4DS*: C24
-- Thursday 2/15: 
+- Wednesday 10/2: 
     - *R4DS*: C14, 16
 
 *Recommended*
 
 - Fiesler, Casey, Nate Beard, and Brian C Keegan. 2020. “No Robots, Spiders, or Scrapers: Legal and Ethical Regulation of Data Collection Methods in Social Media Terms of Service.” In *Proceedings of the Fourteenth International AAAI Conference on Web and Social Media*, 187–96.
-    
+
 ## *Assignment 2: Collecting and storing data released.*
 
 ## Week 6
@@ -185,9 +185,9 @@ Please see the bottom of the syllabus for information on additional information 
 
 *Readings*
 
-- Monday 2/19: 
+- Monday 10/7: 
     - *Bit by Bit*, C3-5
-- Thursday 2/22: 
+- Wednesday 10/9: 
     - R Shiny tutorial: https://shiny.rstudio.com/tutorial/
 
 ## Week 7
@@ -195,9 +195,9 @@ Please see the bottom of the syllabus for information on additional information 
 
 *Readings*
 
-- Monday 2/26: 
+- Monday 10/14: 
     - Evans, James, and Pedro Aceves. 2016. “Machine Translation: Mining Text for Social Theory.” *Annual Review of Sociology* 42 (1): 21–50.
-- Thursday 2/29: 
+- Wednesday 10/16: 
     - *Text Mining with R*, C1 & 3
 
 
@@ -206,13 +206,13 @@ Please see the bottom of the syllabus for information on additional information 
 
 *Readings*
 
-- Monday 3/4: 
+- Monday 10/21: 
     - *Text Mining with R*: C5.
-- Thursday 3/7: 
+- Wednesday 10/23: 
     - Hvitfeldt, Emil and Julia Silge. 2020 *Supervised Machine Learning for Text Analysis in R.* Chapter 5.
     - Kozlowski, Austin, Matt Taddy, and James Evans. 2019. “The Geometry of Culture: Analyzing the Meanings of Class through Word Embeddings.” *American Sociological Review*, September, 000312241987713.
-
-## *Spring Break*
+    
+## *Project proposals due 10/23*
 
 ## Week 9
 ### Natural Language Processing III: Topic Models
@@ -221,9 +221,9 @@ Please see the bottom of the syllabus for information on additional information 
 
 *Readings*
 
-- Monday 3/18: 
+- Monday 10/28: 
     - *Text Mining with R*: C6
-- Thursday 3/21:
+- Wednesday 10/30:
     - Roberts, Margaret, Brandon M. Stewart, Dustin Tingley, Christopher Lucas, Jetson Leder-Luis, Shana Kushner Gadarian, Bethany Albertson, and David Rand. 2014. “Structural Topic Models for Open-Ended Survey Responses: Structural Topic Models for Survey Responses.” *American Journal of Political Science* 58 (4): 1064–82.
 
 ## Week 10
@@ -231,63 +231,69 @@ Please see the bottom of the syllabus for information on additional information 
 
 *Readings*
 
-- Monday 3/25: 
+- Monday 11/4: 
     - Molina, Mario, and Filiz Garip. 2019. “Machine Learning for Sociology.” *Annual Review of Sociology* 45: 27–45.
-- Thursday 3/28: 
-    - Grimmer, Justin, Margaret E. Roberts, and Brandon M. Stewart. 2021. “Machine Learning for Social Science: An Agnostic Approach.” *Annual Review of Political Science* 24(1)
+- Wednesday 11/7: 
+    - Salganik, Matthew J, Ian Lundberg, Alexander T Kindel, Caitlin E Ahearn, Khaled Al-Ghoneim, Abdullah Almaatouq, Drew M Altschul, et al. 2020. “Measuring the Predictability of Life Outcomes with a Scientiﬁc Mass Collaboration.” *Proceedings of the National Academy of Sciences*.
 
 
 
 ## Week 11
 ### Machine learning II: Text Classification
 
-## *Assignment 4: Machine learning released.*
-
 *Readings*
 
-- Monday 4/1:
-    - Barberá, Pablo, Amber E. Boydstun, Suzanna Linn, Ryan McMahon, and Jonathan Nagler. 2020. “Automated Text Classification of News Articles: A Practical Guide.” *Political Analysis*, June, 1–24.
-- Thursday 4/4: 
+- Monday 11/11:
+    - *Text Mining with R*, Chapter 6
+- Wednesday 11/13: 
     - Dixon, Lucas, John Li, Jeffrey Sorensen, Nithum Thain, and Lucy Vasserman. 2018. “Measuring and Mitigating Unintended Bias in Text Classification.” In *Proceedings of the 2018 AAAI/ACM Conference on AI, Ethics, and Society*  - AIES ’18, 67–73. New Orleans, LA, USA: ACM Press.
 
 ## Week 12
 ### Machine learning III: Large language models
 
+## *Assignment 4: Machine learning released.*
+
 *Readings*
 
-- Monday 4/8 (No class due to travel, but please read the following)
+- Monday 11/18
+- Wednesday 11/20: 
     - Manning, Christopher D. 2022. "Human Language Understanding \& Reasoning." *Daedalus* 151(2):127–38.
-- Thursday 4/11: 
     - Ziems, Caleb, William Held, Omar Shaikh, Zhehao Zhang, Diyi Yang, and Jiaao Chen. 2023. “Can Large Language Models Transform Computational Social Science?”
+    
+## *Project prototype due 11/20*
 
 ## Week 13
 ### Machine learning IV: Image Classification
 
 *Readings*
 
-- Monday 4/15:
-    - Torres, Michelle, and Francisco Cantú. 2021. “Learning to See: Convolutional Neural Networks for the Analysis of Social Science Data.” *Political Analysis*, April, 1–19.
+- Monday 11/25:
     - Gebru, Timnit, Jonathan Krause, Yilun Wang, Duyun Chen, Jia Deng, Erez Lieberman Aiden, and Li Fei-Fei. 2017. “Using Deep Learning and Google Street View to Estimate the Demographic Makeup of Neighborhoods across the United States.” *Proceedings of the National Academy of Sciences* 114 (50): 13108–13. 
-- Thursday 4/18: 
-    - Project workshop
+    - Buolamwini, Joy, and Timnit Gebru. 2018. “Gender Shades: Intersectional Accuracy Disparities in Commercial Gender Classiﬁcation.” In *Proceedings of Machine Learning Research*, 81:1–15.
+- Wednesday 11/27: 
+    - No class due to change in designation, Friday classes meet today
+    
+## *THANKSGIVING RECESS*
 
 ## Week 14
 ### Generative Artificial Intelligence
 
 *Readings*
 
-- Monday 4/22: 
+- Monday 12/2: 
     - Davidson, Thomas. 2023. "Start Generating: Harnessing Generative Artificial Intelligence for Sociological Research."
-- Thursday 4/25: 
+- Wednesday 12/4: 
     - Project workshop
 
 ## Week 15
 ### Project presentations
 
-- Monday 4/29 (last day of classes)
+- Monday 12/9
+    - Presentations
+- Wednesday 12/11  (last day of classes)
     - Presentations
 
-## *Final projects due TBD*
+## *Final projects due 12/11*
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 
