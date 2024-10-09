@@ -1,4 +1,5 @@
 # This script is used to deploy the RShiny app
+# But I recommend using the GUI in RStudio to do this
 
 # Loading package to deploy app
 library(rsconnect)
