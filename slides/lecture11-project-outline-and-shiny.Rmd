@@ -3,7 +3,7 @@ title: "Computational Social Science"
 subtitle: "Final Projects & Shiny Applications"
 author: Dr. Thomas Davidson
 institute: Rutgers University
-date: February 23, 2022
+date: October 9, 2024
 output:
     beamer_presentation:
       theme: "Szeged"
@@ -43,10 +43,10 @@ knitr::knit_hooks$set(mysize = function(before, options, envir) {
 3. Developing Shiny applications in R
 
 # Course updates
-- Homework 2 released
+- Homework 2 released after class
   - Github Classroom link in Canvas Module
   - Topics: tidyverse + ggplot2, APIs, and webscraping
-  - Deadline: Next Friday, 3/4, 5pm ET
+  - Deadline: Next Wednesday, 10/16, 11:59pm ET
 
 # Final projects
 ## Goals
@@ -56,17 +56,16 @@ knitr::knit_hooks$set(mysize = function(before, options, envir) {
 
 # Final projects
 ## Five steps
-- Data collection
-- Data cleaning
-- Data analysis
-- Data visualization
-- Building and deploying an app
+1. Data collection
+2. Data cleaning
+3. Data analysis
+4. Data visualization
+5. Building and deploying an app
 
 # Final projects
 ## Data collection
-- Collect a dataset
-  - Data of interest to social scientists
-  - Data sources:
+- Collect a dataset related to social science
+- Data sources:
     - APIs
     - Webscraping
     - Existing datasets (e.g. General Social Survey, American National Election Study)
@@ -111,13 +110,13 @@ knitr::knit_hooks$set(mysize = function(before, options, envir) {
 ## Milestones
 1. Identify a suitable topic
   - *All projects are subject to approval*
-2. Initial proposal (due 3/9)
+2. Initial proposal (due 10/23)
   - A short description of the planned project including plan for data collection, cleaning, analysis, and visualization
-3. Prototype (due 4/13)
-  - A simple working prototype of your app
-4. Presentation (5/2)
-  - A chance to present your app
-5. App and deliverables submitted (5/6 at 5pm)
+3. Prototype (due 11/20)
+  - A basic working prototype of your app
+4. Presentation (12/9 & 12/11)
+  - Short demo and discussion in class
+5. App and deliverables submitted (12/13 at 5pm)
 
 # Final projects
 ## Feedback
@@ -133,12 +132,10 @@ include_graphics('../images/agile_workflow.png')
 ```
   
 # Final projects
-## Teamwork
-- You can work on the project individually or as part of a team
-- Make a decision when you submit your proposal
-- Teams will be require to submit an additional document describing contributions of each member
+## Teams
+- You will work as part of a team (3-4 students)
+- Teams will be require to submit a document describing contributions of each member
   - Ensure fair distribution of work
-  - Git commit history to highlight contributions
 
 # Developing Shiny applications in R
 ## What is Shiny?
@@ -149,16 +146,7 @@ include_graphics('../images/agile_workflow.png')
 
 # Developing Shiny applications in R
 ## Example 1: Explore your weather
-- A \href{https://connect.rstudioservices.com/explore_your_weather}{simple app} to show trends in temperature and precipitation using data from NOAA
-
-# Developing Shiny applications in R
-## Example 1: Explore your weather
-- This app visualizes an existing dataset containing information about average temperatures in a given location
-- Features
-  - Two different plots show temperature and precipitation
-  - The user interface contains a search bar, return button, and a random city button
-  - Options to change light/dark mode
-  - Links to original data and code on Github
+- A \href{https://shiny.posit.co/r/gallery/start-simple/faithful/}{simple app} to show data on eruptions of Old Faithful, a geyer in Yellowstone NP
 
 # Developing Shiny applications in R
 ## Example 2: Bloodbanks in India
@@ -176,22 +164,20 @@ include_graphics('../images/agile_workflow.png')
   - \href{https://d3js.org/}{D3} for data-driven visualization. See \href{https://rstudio.github.io/r2d3/articles/shiny.html}{`r2d3` website}
   - \href{https://rstudio.github.io/leaflet/shiny.html}{Leaflet for interactive mapping}
   - \href{https://plotly-r.com/}{Plotly for interactive plots}
-  - \href{https://github.com/cschwem2er/stminsights}{STMinsights} for exploring structural topic models (Week 9)
 - \href{https://github.com/nanxstats/awesome-shiny-extensions}{This Github page} lists a ton of Shiny resources.
 
 # Developing Shiny applications in R
 ## Further readings
 - RStudio's \href{https://raw.githubusercontent.com/rstudio/cheatsheets/master/shiny.pdf}{Shiny cheatsheet} is a really useful quick reference.
 - *\href{https://mastering-shiny.org/index.html}{Mastering Shiny}* by Hadley Wickham is available for free online.
-- RStudio has a two and a half hour long \href{https://shiny.rstudio.com/tutorial/}{video tutorial}, along with a set of short online tutorials
+- RStudio has a \href{https://shiny.rstudio.com/tutorial/}{tutorial}.
 - Lots of videos on YouTube
 
 # Developing Shiny applications in R
 ## Deployment
 - Apps can be deployed for free using the \href{https://www.shinyapps.io/}{Shiny Apps website}.* You just need to do the following:
   - Sign up (you can use Github account)
-  - Get credentials (key and secret)
-  - Authorize credentials
+  - Link to RStudio using credentials
   - Package app in appropriate format
   - Deploy
 
@@ -199,19 +185,14 @@ include_graphics('../images/agile_workflow.png')
 
 # Developing Shiny applications in R
 ## Information on example files
-- `app.R` is an example of simple Shiny app to interactively plot correlations, along with other descriptive statistics
-- `app2.R` modifies the previous app to use the `shinydashboards` framework
-- `/app` is a directory containing two files, `ui.R` and `server.R` (the components of `app.R`)
-  - `test.R` uses the files in `/app` to launch a local version of the app
-  - `app_deploy_template.R` can be run to deploy the app to shinyapps.io.
-    - You must add credentials and other information to this template before running it.
+1. `app.R` is an example of simple Shiny app to interactively plot correlations, along with other descriptive statistics
+2. `app2.R` modifies the previous app to use the `shinydashboards` framework
+3. `https://github.com/t-davidson/soc360-project` is a Github repository with a demo of an app that uses additional data.
+    - This can serve as a model for your projects
     
-# Course updates
-- Homework 1 feedback and grades
-    - Visit Github your repository
-    - Click on my comment to see a `diff` or pull changes to your local repo.
+# Team matching
+- Discussion now
+- Canvas board
     
 # Next week
 - Introduction to Natural Language Processing
-
-# Questions
