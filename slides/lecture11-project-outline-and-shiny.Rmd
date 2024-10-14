@@ -191,7 +191,7 @@ include_graphics('../images/agile_workflow.png')
 
 # Developing Shiny applications in R
 # App template
-- `https://github.com/t-davidson/soc360-project` is a Github repository with a demo of an app that uses additional data.
+- \href{https://github.com/t-davidson/soc360-project}{https://github.com/t-davidson/soc360-project} is a Github repository with a demo of an app that uses additional data.
     - This can serve as a model for your projects
     
 # Team matching
