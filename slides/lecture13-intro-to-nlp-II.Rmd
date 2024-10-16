@@ -3,7 +3,7 @@ title: "Computational Social Science"
 subtitle: "Introduction to Natural Language Processing II"
 author: Dr. Thomas Davidson
 institute: Rutgers University
-date: February 29, 2024
+date: October 16, 2024
 output:
     beamer_presentation:
       theme: "Szeged"
@@ -43,8 +43,8 @@ knitr::knit_hooks$set(mysize = function(before, options, envir) {
 4. Cosine similarity
 
 # Course updates
-- Homework 2 grades
-- Project proposals due next Wednesday at 5pm
+- Homework 2 due tonight
+- Project proposals due next Wednesday
     - Complete quiz on Canvas
 
 # Working with text
@@ -288,9 +288,11 @@ plays.tidy <- plays %>% unnest_tokens(word, text) %>%
   anti_join(stop_words) %>%
   count(title, word) %>% 
   group_by(word) %>%
-  mutate(total = sum(n)) %>%
+  mutate(total = sum(n),
+         play_count = n_distinct(title)) %>%
   ungroup() %>%
-  filter(total >= 10) %>% 
+  filter(total >= 10 & play_count >= 2) %>% 
+  filter(!str_detect(word, "^[0-9]+$")) %>%
   bind_tf_idf(word, title, n)
     
 DTM <- plays.tidy %>% cast_dtm(title, word, tf) 
@@ -303,6 +305,7 @@ dim(DTM)
 ## Extracting TF-IDF matrix
 ```{r, echo=TRUE, tidy=FALSE, mysize=TRUE, size='\\footnotesize'}
 DTMd <- as.matrix(DTM)
+write.csv(DTMd %>% as.data.frame(), "../data/shakespeare.csv", row.names = T)
 
 # Run line below if using tf-idf weights as
 # some columns contain zeros and must be removed
@@ -312,7 +315,7 @@ DTMd <- as.matrix(DTM)
 # Cosine similarity
 ## Normalizing columns
 We can simplify the cosine similarity calculation if we normalize each column by its length (the denominator in the above calculation.)
-```{r, echo=TRUE, tidy=FALSE, mysize=TRUE, size='\\footnotesize'}
+```{r, echo=TRUE, tidy=FALSE, mysize=TRUE, size='\\footnotesize', warning = FALSE}
 normalize <- function(v) {
   return (v/sqrt(v %*% v))
 }
@@ -327,7 +330,6 @@ for (i in 1:dim(DTMd)[1]) {
 ## Calculating cosine similarity using matrix multiplication
 ```{r, echo=TRUE, tidy=FALSE, mysize=TRUE, size='\\footnotesize'}
 sims <- DTMd %*% t(DTMd)
-print(sims)
 ```
 
 # Cosine similarity
