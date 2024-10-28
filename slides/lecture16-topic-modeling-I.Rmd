@@ -3,7 +3,7 @@ title: "Computational Social Science"
 subtitle: "Topic Modeling I"
 author: Dr. Thomas Davidson
 institute: Rutgers University
-date: March 18, 2024
+date: October 28, 2024
 output:
     beamer_presentation:
       theme: "Szeged"
@@ -44,9 +44,11 @@ knitr::knit_hooks$set(mysize = function(before, options, envir) {
 <!--Note: This lecture does not render to PDF due to errors when compiling. PDF only includes non-code slides-->
 
 # Course updates
-- Homework 2 grades and proposal feedback now available on Canvas
-    - See Github diff for comments on Homework 2
-- Homework 3 will be released on Thursday
+- Homework 2 grades and proposal feedback in-progress
+- Homework 3 will be released on Wednesday
+    - Introduction to NLP
+    - Word embeddings
+    - Topic modeling
   
 # Introduction to topic modeling
 ## What is topic modeling?
@@ -151,7 +153,7 @@ $$
 
 # Training an LDA topic model in R
 ## Loading the corpus
-Loading a corpus of most recent 2000 tweets by the New York Times and the Wall Street Journal. TODO: Change if needed
+Loading a corpus of political tweets.
 ```{r,eval=FALSE, echo=TRUE, tidy=FALSE, mysize=TRUE, size='\\footnotesize'}
 library(tidyverse)
 library(tidytext)
@@ -232,35 +234,36 @@ top_terms <-
   ungroup() %>%
   arrange(topic, -beta)
 
-top_terms %>% filter(topic <= 9) %>% # Only first 12 topics
-  mutate(term = reorder(term, beta)) %>%
-  ggplot(aes(term, beta, fill = factor(topic))) +
+top_terms %>% filter(topic <= 9) %>%
+  mutate(term = reorder_within(term, beta, topic)) %>%
+  ggplot(aes(beta, term, fill = factor(topic))) +
   geom_col(show.legend = FALSE) +
   facet_wrap(~ topic, scales = "free") +
-  coord_flip() + labs(y="Beta", x="Term", caption="Top 10 highest words for each topic")
+  scale_y_reordered()  + labs(y="Beta", x="Term", caption="Top 10 highest words for each topic")
 ```
 
 # Latent Dirichlet Allocation
 ## Analyzing topics
 ```{r, eval=FALSE,echo=FALSE, tidy=FALSE, mysize=TRUE, size='\\footnotesize'}
 top_terms %>% filter(topic > 9 & topic < 19) %>%
-  mutate(term = reorder(term, beta)) %>%
-  ggplot(aes(term, beta, fill = factor(topic))) +
+  mutate(term = reorder_within(term, beta, topic)) %>%
+  ggplot(aes(beta, term, fill = factor(topic))) +
   geom_col(show.legend = FALSE) +
   facet_wrap(~ topic, scales = "free") +
-  coord_flip() + labs(y="Beta", x="Term", caption="Top 10 highest words for each topic")
+  scale_y_reordered()  + labs(y="Beta", x="Term", caption="Top 10 highest words for each topic")
 ```
 
 # Latent Dirichlet Allocation
 ## Analyzing topics
 ```{r, eval=FALSE,echo=FALSE, tidy=FALSE, mysize=TRUE, size='\\footnotesize'}
 top_terms %>% filter(topic >= 19) %>%
-  mutate(term = reorder(term, beta)) %>%
-  ggplot(aes(term, beta, fill = factor(topic))) +
+  mutate(term = reorder_within(term, beta, topic)) %>%
+  ggplot(aes(beta, term, fill = factor(topic))) +
   geom_col(show.legend = FALSE) +
   facet_wrap(~ topic, scales = "free") +
-  coord_flip() + labs(y="Beta", x="Term", caption="Top 10 highest words for each topic")
+  scale_y_reordered()  + labs(y="Beta", x="Term", caption="Top 10 highest words for each topic")
 ```
+
 
 # Latent Dirichlet Allocation
 ## Analyzing documents
@@ -286,13 +289,15 @@ This function can be used to find the documents and words with highest weights i
 ```{r, eval=FALSE,echo=FALSE, tidy=FALSE, mysize=TRUE, size='\\footnotesize'}
 get_top_docs_and_words <- function(t, n_docs = 3, n_words = 10) {
     
-    top_docs <- documents %>% arrange(desc(gamma)) %>%
+    top_docs <- documents %>% 
         dplyr::filter(topic == t) %>%
+        arrange(desc(gamma)) %>%
         left_join(data, by = c("document" = "status_id")) %>%
-        slice_max(gamma, n=n_docs) %>%
+        slice_max(gamma, n = n_docs) %>%
         dplyr::select(text)
     
     top_words <- topics %>% filter(topic == t) %>%
+            arrange(desc(beta)) %>%
             top_n(n_words, beta) %>% dplyr::select(term)
     
     return(c(top_docs, top_words))
@@ -303,7 +308,7 @@ get_top_docs_and_words <- function(t, n_docs = 3, n_words = 10) {
 # Latent Dirichlet Allocation
 ## Inspecting topics
 ```{r, eval=FALSE,echo=FALSE, tidy=FALSE, mysize=TRUE, size='\\footnotesize'}
-get_top_docs_and_words(27)
+get_top_docs_and_words(6, n_docs = 4)
 ```
 
 # Latent Dirichlet Allocation
