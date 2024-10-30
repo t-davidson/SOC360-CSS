@@ -3,7 +3,7 @@ title: "Computational Social Science"
 subtitle: "Topic Modeling II"
 author: Dr. Thomas Davidson
 institute: Rutgers University
-date: March 21, 2024
+date: October 30, 2024
 output:
     beamer_presentation:
       theme: "Szeged"
@@ -43,8 +43,8 @@ knitr::knit_hooks$set(mysize = function(before, options, envir) {
 
 # Course updates
 ## Homework 3
-- Homework 3 on NLP will be released today on Canvas
-    - Due next Wednesday at 5pm
+- Homework 3 on NLP will be released today on Canvas/Github
+    - Due next Friday at 5pm (extra time due to election)
     - Covers intro to NLP, word embeddings, and topic modeling
     
 # Topic modeling
@@ -52,6 +52,7 @@ knitr::knit_hooks$set(mysize = function(before, options, envir) {
 - Topics capture words that are frequently used together
     - A topic is a distribution across a vocabulary
 - A document contains a mixture of different topics
+    - A document is a distribution across topics
 
 
 # Structural Topic Modeling
@@ -66,7 +67,7 @@ knitr::knit_hooks$set(mysize = function(before, options, envir) {
 - As social scientists, we often want to see how a topic varies by some categorical variable of interest
   - Author (person, organization, publisher, political party, etc.)
   - Time (day, month, year, decade, etc.)
-  - Demographics (age group, gender, race, ethnicity, etc.)
+  - Demographics (age group, gender, race/ethnicity, etc.)
     
 # Structural Topic Modeling
 ## Topic content
@@ -112,7 +113,7 @@ head(meta)
 The `stm` library has its own set of functions for processing data. `textProcessor` takes a corpus, plus metadata, and conducts pre-processing tasks. `prepDocuments` then converts the documents into the appropriate format.
 ```{r, eval=FALSE, echo=TRUE, tidy=FALSE, mysize=TRUE, size='\\footnotesize'}
 library(stm)
-# install.packages("stm")
+#install.packages("stm")
 processed.docs <- textProcessor(data$paragraph, 
                                 metadata = meta)
 
@@ -160,8 +161,8 @@ fit <- stm(documents = output$documents, vocab = output$vocab, K=K,
 ## Storing/loading data 
 I stored the image of this workspace and uploaded it to Github. You can load the trained model and all other files in this script by running this line.
 ```{r,  eval=FALSE, echo=TRUE, tidy=FALSE}
-save.image(file = "../data/sotu_stm.RData")
-#load(file = "../data/sotu_stm.RData")
+#save.image(file = "../data/sotu_stm.RData")
+load(file = "../data/sotu_stm.RData")
 ```
 
 # Structural Topic Modeling
@@ -186,14 +187,14 @@ plot(fit, type = "summary", topics =41:60)
 # Structural Topic Modeling
 ## Inspecting topics
 ```{r, eval=FALSE, echo=TRUE, tidy=FALSE, mysize=TRUE, size='\\footnotesize'}
-labelTopics(fit, topics=40, n=10)
+labelTopics(fit, topics=14, n=10)
 ```
   
 # Structural Topic Modeling
 ## Analyzing documents
 We can use `findThoughts` to identify documents with a high weight in a given topic. Note that the original texts column does not work, I have to use the index for the metadata file to identify relevant columns.
 ```{r, eval=FALSE, echo=TRUE, tidy=FALSE, mysize=TRUE, size='\\footnotesize'}
-t=40
+t=14
 thoughts <- findThoughts(fit, texts = as.character(data[as.numeric(rownames(output$meta)),]$paragraph), topic=t, n = 5)
 for (i in unlist(thoughts$docs)) {print(i)}
 ```
@@ -201,7 +202,7 @@ for (i in unlist(thoughts$docs)) {print(i)}
 # Structural Topic Modeling
 ## Analyzing documents
 ```{r, eval=FALSE, echo=TRUE, tidy=FALSE, mysize=TRUE, size='\\footnotesize'}
-t=3
+t=10
 thoughts <- findThoughts(fit, texts = as.character(data[as.numeric(rownames(output$meta)),]$paragraph), topic=t, n = 5)
 for (i in unlist(thoughts$docs)) {print(i)}
 ```
@@ -209,7 +210,7 @@ for (i in unlist(thoughts$docs)) {print(i)}
 # Structural Topic Modeling
 ## Analyzing documents
 ```{r, eval=FALSE, echo=TRUE, tidy=FALSE, mysize=TRUE, size='\\footnotesize'}
-t=4
+t=18
 thoughts <- findThoughts(fit, texts = as.character(data[as.numeric(rownames(output$meta)),]$paragraph), topic=t, n = 5)
 for (i in unlist(thoughts$docs)) {print(i)}
 ```
@@ -234,25 +235,25 @@ plot(prep, covariate = "party", topics = topic.nums, model = fit,
 ## Prevalence over time
 We can use the `year` variable to track how prevalence changes over time.
 ```{r, eval=FALSE, echo=FALSE, tidy=FALSE, mysize=TRUE, size='\\footnotesize'}
-plot(prep, "year", method = "continuous", topics = c(3, 4, 40), model = fit, xlab = "Year", 
-     labeltype = "custom", custom.labels = c("Labor", "Agriculture", "Health"))
+plot(prep, "year", method = "continuous", topics = c(25, 45), model = fit, xlab = "Year", 
+     labeltype = "custom", custom.labels = c("Space", "Freedom"))
 ```
 
 # Structural Topic Modeling
 ## Content by party
 ```{r, eval=FALSE, echo=FALSE, tidy=FALSE, mysize=TRUE, size='\\footnotesize'}
-plot(fit, type="perspectives", topics=40)
+plot(fit, type="perspectives", topics=14)
 ```
 
 # Structural Topic Modeling
 ## Content by party
 ```{r, eval=FALSE, echo=FALSE, tidy=FALSE, mysize=TRUE, size='\\footnotesize'}
-plot(fit, type="perspectives", topics=3)
+plot(fit, type="perspectives", topics=10)
 ```
 # Structural Topic Modeling
 ## Content by party
 ```{r, eval=FALSE, echo=FALSE, tidy=FALSE, mysize=TRUE, size='\\footnotesize'}
-plot(fit, type="perspectives", topics=4)
+plot(fit, type="perspectives", topics=18)
 ```
 
 # Structural Topic Modeling
