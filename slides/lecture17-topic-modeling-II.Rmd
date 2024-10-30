@@ -47,6 +47,15 @@ knitr::knit_hooks$set(mysize = function(before, options, envir) {
     - Due next Friday at 5pm (extra time due to election)
     - Covers intro to NLP, word embeddings, and topic modeling
     
+# Course updates
+## Projects
+- Feedback shared on Canvas
+    - Start working on data collection as soon as possible
+- Prototype due 11/20
+    - A minimal working version of the app
+- In-class project workshops
+    - 11/13, 11/18, and 12/4
+    
 # Topic modeling
 - Topic modeling is an approach for understanding themes in documents
 - Topics capture words that are frequently used together
