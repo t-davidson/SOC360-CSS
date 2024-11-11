@@ -3,7 +3,7 @@ title: "Computational Social Science"
 subtitle: "Supervised Text Classification"
 author: Dr. Thomas Davidson
 institute: Rutgers University
-date: April 1, 2024
+date: November 11, 2024
 output:
     beamer_presentation:
       theme: "Szeged"
@@ -53,23 +53,22 @@ knitr::knit_hooks$set(mysize = function(before, options, envir) {
         
 # Course updates
 ## Timeline
-- Project prototype due 4/10
-- Homework 4 released Thursday, due 4/17
-- Presentation on 4/29 (final class)
-- Final project submission due 5/6
+- Project prototype due next Wednesday, 11/20
+- Homework 4 released Wednesday, due Monday 11/25
 
 # Course updates
 ## Projects
-- Project Prototype
-    - Live app on shinyapps.io
-    - Link to code on Github
+- Project Prototype submission
+    - A minimal working app live on shinyapps.io
+        - At least one interactive visualization using your data
+    - Link to data and code on Github
         - Add my username if using a private repository
         
 # Course updates
 ## Projects
-- Project workshops
-    - In-class workshop on 4/4, 4/18, and 4/25
-    - No class on 4/8
+- In-class project workshops
+    - 11/13 (this Wednesday), 11/18 (next Monday), and 12/4 (Wednesday)
+- Attendance is mandatory and important to ensure fair distribution of work
     
 
 # Introduction to supervised text classification
@@ -394,7 +393,7 @@ imp %>%
   labs(
     y = NULL,
     title = "Feature importance for predicting the valence of an IMBD review"
-  ) + scale_fill_viridis_d(option="plasma")
+  ) + scale_fill_viridis_d(option="plasma") + theme_minimal()
 ```
 
 # Supervised text classification in R
