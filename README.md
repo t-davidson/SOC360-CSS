@@ -2,7 +2,7 @@
 
 # Wiki
 
-This Wiki contains information for SOC360 Computational Social Science, Spring 2024, Rutgers University.
+This Wiki contains information for SOC360 Computational Social Science, Fall 2025, Rutgers University.
 
 ## Getting started
 
