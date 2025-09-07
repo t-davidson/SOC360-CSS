@@ -3,7 +3,7 @@ title: "Computational Social Science"
 subtitle: "Data structures"
 author: Dr. Thomas Davidson
 institute: Rutgers University
-date: September 9, 2024
+date: September 8, 2024
 urlcolor: blue
 output:
     beamer_presentation:
@@ -41,20 +41,9 @@ knitr::knit_hooks$set(mysize = function(before, options, envir) {
 # Plan
 - Introductions
 - Part I : Social networks and social network analysis
-    - What are social networks?
-    - Visualizing social networks
 - Part II : Data structures in R
-    - Basic types
-    - Vectors
-    - Lists
-    - Matrices
-    - Data frames
     
-# Introductions
-- Name
-- Area of study (major, minors, etc.) and year
-- Interests in data science / social science
-    
+
 # Part I: Social networks and social network analysis
 ```{r, out.width="70%",out.height="70%", fig.align="center"}
 include_graphics('../images/florentine_network.png')
@@ -132,9 +121,9 @@ There are four basic types we will be using throughout the class. Here I used th
 # Character (also known as "strings")
 name <- "Gary"
 # Numeric
-weight <- 13.2
+weight <- 14.5
 # Integer ("int" for short)
-age <- 7L
+age <- 8L
 # Logical
 human <- FALSE
 ```
@@ -159,9 +148,9 @@ typeof(weight) # Shows type of object, not always equal to class
 We can use the `==` expression to verify the value of an object. We will discuss Boolean operations in more detail next lecture.
 ```{r, echo=TRUE, , mysize=TRUE, size='\\footnotesize' }
 name == "Tabitha"
-age == 4L
-age >= 4L # is greater than
-age != 4L # is not
+age == 5L
+age >= 5L # is greater than
+age != 5L # is not
 ```
 
 # Vectors
@@ -310,7 +299,7 @@ Combine `$` and square bracket indexing to extract the 5th element of `v1` from 
 # Lists
 We can define lists more concisely by providing sublists as named arguments.
 ```{r, echo=TRUE, , mysize=TRUE, size='\\footnotesize' }
-cats <- list(names = c("Gary", "Tabitha"), ages = c(5,2))
+cats <- list(names = c("Gary", "Tabitha"), ages = c(8,4))
 print(cats)
 ```
 
