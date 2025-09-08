@@ -3,7 +3,7 @@ title: "Computational Social Science"
 subtitle: "Data structures"
 author: Dr. Thomas Davidson
 institute: Rutgers University
-date: September 8, 2024
+date: September 8, 2025
 urlcolor: blue
 output:
     beamer_presentation:
