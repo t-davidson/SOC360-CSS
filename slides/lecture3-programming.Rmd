@@ -399,14 +399,6 @@ q <- flights |> filter(!is.na(dep_delay), !is.na(arr_delay)) |>
 q
 ```
 
-# Pipes
-Here we have the same expression using a pipe. Note how much easier this is to read.
-```{r, echo=TRUE, tidy=FALSE, mysize=TRUE, size='\\footnotesize'}
-q <- flights |> filter(!is.na(dep_delay), !is.na(arr_delay)) |>
-  group_by(year, month, day) |> summarize(mean = mean(dep_delay))
-q
-```
-
   
 # Next week
 - Monday
