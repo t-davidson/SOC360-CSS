@@ -3,7 +3,7 @@ title: "Computational Social Science"
 subtitle: "Programming in R"
 author: Dr. Thomas Davidson
 institute: Rutgers University
-date: January 25, 2024
+date: September 11, 2025
 urlcolor: blue
 output:
     beamer_presentation:
@@ -35,6 +35,7 @@ knitr::knit_hooks$set(mysize = function(before, options, envir) {
   if (before) 
     return(options$size)
 })
+set.seed(8901)
 ```
 
 # Plan
@@ -45,7 +46,6 @@ knitr::knit_hooks$set(mysize = function(before, options, envir) {
   - Loops
   - Functions
   - Pipes
-
 
 # Recap
 ## Data structures in R
@@ -85,7 +85,7 @@ FALSE | TRUE & FALSE
 # If-else statements
 - We often encounter situations where we want to make a choice contingent upon the value of some information received.
 - If-else statements allow us to chain together one or more conditional actions.
-  - e.g. If time is between 10:20-11:40am AND day is Monday or Thursday,  attend Computational Data Science lecture. Else, do something else.
+  - e.g. If time is between 12:10-1:30 pm AND day is Monday or Thursday,  attend Computational Social Science lecture. Else, do something else.
 
 # If-else statements
 The basic syntax. The ``if`` is followed by a conditional statement in parentheses. If the condition is met, then the code in the braces is executed.
@@ -98,13 +98,13 @@ if (x == TRUE) {
 ```
 
 # If-else statements
-In this case we have a vector containing five fruits. We use `sample` to randomly pick one. We can use an if-statement to determine whether we have selected an apple.
+In this case we have a vector containing five fruit. We use `sample` to randomly pick one. We can use an if-statement to determine whether we have selected an apple.
 ```{r, echo=TRUE, tidy=TRUE, mysize=TRUE, size='\\footnotesize'}
-fruits <- c("apple", "apple",
+fruit <- c("apple", "apple",
             "orange", "orange",
             "apple")
 
-f <- sample(fruits, 1)
+f <- sample(fruit, 1)
 
 if (f == "apple") {print("We selected an apple")}
 ```
@@ -112,11 +112,11 @@ if (f == "apple") {print("We selected an apple")}
 # If-else statements
 In the previous example we only have an if-statement. If the condition is not met then nothing happens. Here we add an else statement.
 ```{r, echo=TRUE, tidy=TRUE, mysize=TRUE, size='\\footnotesize'}
-fruits <- c("apple", "apple", 
+fruit <- c("apple", "apple", 
             "orange", "orange",
             "apple")
 
-f <- sample(fruits, 1)
+f <- sample(fruit, 1)
 
 if (f == "apple") {
   print("We selected an apple")
@@ -130,11 +130,11 @@ if (f == "apple") {
 # If-else statements
 What about this case where we have another fruit? If we only care about apples we could modify the output of our else condition.
 ```{r, echo=TRUE, tidy=TRUE, mysize=TRUE, size='\\footnotesize'}
-fruits <- c("apple", "apple", 
+fruit <- c("apple", "apple", 
             "orange", "orange", 
             "apple", "pineapple")
 
-f <- sample(fruits, 1)
+f <- sample(fruit, 1)
 
 if (f == "apple") {print("We selected an apple")
 } else 
@@ -146,13 +146,20 @@ if (f == "apple") {print("We selected an apple")
 # If-else statements
 We could also use else-if statements to have a separate consideration of all three.
 ```{r, echo=TRUE, tidy=TRUE, mysize=TRUE, size='\\footnotesize'}
-f <- sample(fruits, 1)
+f <- sample(fruit, 1)
 
 if (f == "apple") {print("We selected an apple")
   } else if (f == "orange") {print("We selected an orange")
     } else {print("We selected a pineapple")}
 ```
 
+# Exercise: If-else
+Write an if-else statement to print `TRUE` if the sum of `y` is greater than 0. Otherwise, print false.
+```{r, echo=TRUE, tidy=TRUE, mysize=TRUE, size='\\footnotesize'}
+y <- rnorm(10)
+
+
+```
 
 # Loops
 - Often when we program we need to complete the same operation many times. One of the common approaches is to use a loop.
@@ -169,6 +176,7 @@ s <- 0 # value to store our sum
 
 for (i in 1:100)  {# for i from 1 to 100
   s <- s + i # add i to sum
+  print(s)
 }
 
 print(s)
@@ -189,17 +197,17 @@ print(s)
 
 # For-loops
 ```{r, echo=TRUE, tidy=TRUE, mysize=TRUE, size='\\footnotesize'}
-is_orange <- logical(length(fruits)) # a vector of logical objects
+is_orange <- logical(length(fruit)) # a vector of logical objects
 
 i=1 # In this case we need to maintain a counter
-for (f in fruits) {
+for (f in fruit) {
   if (f == "orange") {
     is_orange[i] <- TRUE
   }
   i <- i + 1 # increment counter by 1
 }
 
-print(fruits)
+print(fruit)
 print(is_orange)
 ```
 
@@ -208,35 +216,44 @@ Loops can also easily be *nested*. Here we start a second loop within the first 
 ```{r, echo=TRUE, tidy=TRUE, mysize=TRUE, size='\\footnotesize'}
 M <- matrix(nrow=5,ncol=5)
 
-for (i in 1:5) {
-  for (j in 1:5) {
+for (i in 1:nrow(M)) {
+  for (j in 1:ncol(M)) {
     M[i,j] <- i*j
   }
 }
 print(M)
 ```
 
+# Exercise: For-loops
+Write a loop to print the values in each row of `M`. Each iteration should print out the vector representing an entire row.
+```{r, echo=TRUE, tidy=TRUE, mysize=TRUE, size='\\footnotesize'}
+
+```
+
+
+
 # While-loops
 A while loop runs when a condition is true and ends when it becomes false. *Make sure the condition will eventually be false to avoid an infinite loop.*
-```{r, echo=TRUE, tidy=TRUE, mysize=TRUE, size='\\footnotesize'}
+```{r, echo=TRUE, eval=FALSE, tidy=TRUE, mysize=TRUE, size='\\footnotesize'}
 i <- 1 # iterator
-while (i < 5) {
+while (TRUE) {
   print(i)
   i <- i+1
 }
 ```
 
 # While-loops
-In this example we iterate over fruits until we get a pineapple.
+In this example we iterate over fruit until we get a pineapple.
 ```{r, echo=TRUE, tidy=TRUE, mysize=TRUE, size='\\footnotesize'}
 i <- 1 # iterator
-f <- fruits[i] # define initial value 
+f <- fruit[i] # define initial value 
 while (f != "pineapple") {
   print(f)
   i <- i+1 # increment index
-  f <- fruits[i] # get next f
+  f <- fruit[i] # get next f
 }
 ```
+
 
 # Functions
 - A function is a customized sequence of operations
@@ -341,7 +358,7 @@ Note how pipes allow us to chain operations from left to right, rather than nest
 ```{r, echo=TRUE, tidy=TRUE, mysize=TRUE, size='\\footnotesize'}
 print(sum(sqrt(seq(1:10)))) # nested functions
 
-seq(1:10) %>% sqrt() %>% sum() %>% print() # using pipes
+seq(1:10) |> sqrt() |> sum() |> print() # using pipes
 ```
 
 # Pipes
@@ -350,7 +367,7 @@ We can also use pipes to do basic arithmetic using pipes. Note again the differe
 library(magrittr)
 ((1+2)-10)*10
 
-1 %>% add(2) %>% subtract(10) %>% multiply_by(10)
+1 |> add(2) |> subtract(10) |> multiply_by(10)
 ```
 \tiny  Note how `magrittr` provides aliases for certain mathematical operations as shown in the second line. \href{https://stackoverflow.com/questions/27364390/chain-arithmetic-operators-in-dplyr-with-pipe#_=_}{This StackOverflow post has some further discussion}.
 
@@ -377,16 +394,16 @@ summarize(group_by(
 # Pipes
 Here we have the same expression using a pipe. Note how much easier this is to read.
 ```{r, echo=TRUE, tidy=FALSE, mysize=TRUE, size='\\footnotesize'}
-q <- flights %>% filter(!is.na(dep_delay), !is.na(arr_delay)) %>%
-  group_by(year, month, day) %>% summarize(mean = mean(dep_delay))
+q <- flights |> filter(!is.na(dep_delay), !is.na(arr_delay)) |>
+  group_by(year, month, day) |> summarize(mean = mean(dep_delay))
 q
 ```
 
 # Pipes
 Here we have the same expression using a pipe. Note how much easier this is to read.
 ```{r, echo=TRUE, tidy=FALSE, mysize=TRUE, size='\\footnotesize'}
-q <- flights %>% filter(!is.na(dep_delay), !is.na(arr_delay)) %>%
-  group_by(year, month, day) %>% summarize(mean = mean(dep_delay))
+q <- flights |> filter(!is.na(dep_delay), !is.na(arr_delay)) |>
+  group_by(year, month, day) |> summarize(mean = mean(dep_delay))
 q
 ```
 
