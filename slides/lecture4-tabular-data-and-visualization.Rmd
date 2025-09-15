@@ -1,9 +1,9 @@
 ---
 title: "Computational Social Science" 
-subtitle: "Tabular data and visualization"
+subtitle: "Agent-based Modeling / Tabular data and visualization"
 author: Dr. Thomas Davidson
 institute: Rutgers University
-date: January 29, 2024
+date: September 15, 2025
 output:
     beamer_presentation:
       theme: "Szeged"
@@ -51,7 +51,6 @@ knitr::knit_hooks$set(mysize = function(before, options, envir) {
 - If-else statements
 - Loops
 - Functions
-- Pipes
 
 # Part I
 ## Agent-based modeling
@@ -95,6 +94,11 @@ include_graphics('../images/boids.png')
 ```
 \tiny \centering Reynolds, Craig W. 1987. “Flocks, Herds and Schools: A Distributed Behavioral Model.” In *Proceedings of the 14th Annual Conference on Computer Graphics and Interactive Techniques*, 25–34.
 
+# NetLogo and NetLogoWeb
+## Flocking behavior in NetLogo
+http://www.netlogoweb.org/launch#http://ccl.northwestern.edu/netlogo/models/models/Sample%20Models/Biology/Flocking.nlogo
+
+
 # What is agent-based modeling?
 ## Thomas Schelling *Homophily and segregation*
 ```{r, out.width="70%",out.height="70%", fig.align="center"}
@@ -102,12 +106,9 @@ include_graphics('../images/shelling.png')
 ```
 \tiny \centering Schelling, Thomas C. 1971. “Dynamic Models of Segregation.” *Journal of Mathematical Sociology* 1: 143–86.
 
-# What is agent-based modeling?
-## Robert Axelrod *Local convergence and global polarization* (1987)
-```{r, out.width="70%",out.height="70%", fig.align="center"}
-include_graphics('../images/axelrod1997.png')
-```
-\tiny \centering Axelrod, Robert. 1997. “The Dissemination of Culture: A Model with Local Convergence and Global Polarization.” *Journal of Conflict Resolution* 41 (2): 203–26.
+# NetLogo
+## Schelling's segregation model in NetLogo
+http://www.netlogoweb.org/launch#http://ccl.northwestern.edu/netlogo/models/models/IABM%20Textbook/chapter%203/Segregation%20Extensions/Segregation%20Simple.nlogo
 
 # What is agent-based modeling?
 ## DellaPosta, Shi, and Macy *Why Do Liberals Drink Lattes?* (2015)
@@ -138,7 +139,7 @@ Copy the code at this link and try to run it as an R script in RStudio: \href{ht
 
 # Tabular data
 ## Data frames
-These data extend some of the functionality of basic types. A data frame is a tabular representation that has a similar structure to a list but allows us to organize the data more neatly.
+A data frame is a tabular representation that has a similar structure to a list but allows us to organize the data more neatly.
 ```{r, echo=TRUE, , mysize=TRUE, size='\\footnotesize' }
 data(iris) # The `data` function loads a built in dataset
 head(iris)
@@ -196,45 +197,53 @@ glimpse(c19)
 tail(c19)
 ```
 
+
 # Tabular data
 ## Selecting columns
 We can use the select command to select subsets of columns in the dataset.
 ```{r, echo=TRUE, tidy=TRUE, mysize=TRUE, size='\\footnotesize'}
-c19 %>% select(date, state, cases) # Select these columns
-c19 <- c19 %>% select(-fips) # select all except named column, replace dataset
+c19 |> select(date, state, cases) # Select these columns
+c19 <- c19 |> select(-fips) # select all except named column, replace dataset
 ```
 
 # Tabular data
 ## Filtering
 The `filter` command allows us to subset rows that meet one or more conditions.
 ```{r, echo=TRUE, tidy=TRUE, mysize=TRUE, size='\\footnotesize'}
-c19 %>% filter(cases > 1000) # conditional filtering
-c19 %>% filter(str_detect(state, "New")) # str_detect function from stringr package
-c19 %>% filter(str_detect(state, "New") & cases > 1000)
-c19 %>% filter(date >= as.Date("2023-03-23")) # using as.Date to case string to date
+c19 |> filter(cases > 1000) # conditional filtering
+c19 |> filter(str_detect(state, "New")) # str_detect function from stringr package
+c19 |> filter(str_detect(state, "New") & cases > 1000)
+c19 |> filter(date >= as.Date("2023-03-23")) # using as.Date to case string to date
+```
+
+# Tabular data
+## Filtering
+The `filter` command allows us to subset rows that meet one or more conditions.
+```{r, echo=TRUE, tidy=TRUE, mysize=TRUE, size='\\footnotesize'}
+c19 |> filter(date >= as.Date("2023-03-23")) |> head(1) # using as.Date to case string to date
 ```
 
 # Tabular data
 ## Sampling
 We can also filter our dataset by taking a sample. This can be very useful for testing purposes.
 ```{r, echo=TRUE, tidy=TRUE, mysize=TRUE, size='\\footnotesize'}
-sample_n(c19, 10) # Randomly pick n rows
-sample_frac(c19, 0.01) # Randomly pick 1% of rows
+c19 |> sample_n(2) # Randomly pick n rows
+c19 |> sample_frac(0.0001) # Randomly a tiny proportion of rows
 ```
 
 # Tabular data
 ## Slicing
-The `slice` commands can be used to select ordered subsets of rows.
+The `slice` commands can be used to select ordered subsets of rows. Note how we can add the dataset as an argument rather than using a pipe.
 ```{r, echo=TRUE, tidy=TRUE, mysize=TRUE, size='\\footnotesize'}
 slice_max(c19, order_by = cases, n = 10) # Get the top n rows by a specified column
-slice_min(c19, order_by = cases, n = 1) # with_ties determines whether tied results are returned.
+slice_min(c19, order_by = cases, n = 1, with_ties = T) # with_ties determines whether tied results are returned.
 ```
 
 # Tabular data
 ## Making new columns using mutate
 The `mutate` function allows us to generate new columns.
 ```{r, echo=TRUE, tidy=TRUE, mysize=TRUE, size='\\footnotesize'}
-c19 <- c19 %>% mutate(deaths_per_case = deaths / cases)
+c19 <- c19 |> mutate(deaths_per_case = deaths / cases)
 colnames(c19)
 ```
 
@@ -242,10 +251,10 @@ colnames(c19)
 ## Mutate
 Although these data are cumulative, we can recover the new cases and deaths each day by using the `lag` operator.
 ```{r, echo=TRUE, tidy=TRUE, mysize=TRUE, size='\\footnotesize'}
-c19 <- c19 %>% group_by(state) %>% mutate(new_cases = cases - lag(cases),
-                                          new_deaths = deaths - lag(deaths)) %>%
+c19 <- c19 |> group_by(state) |> mutate(new_cases = cases - lag(cases),
+                                          new_deaths = deaths - lag(deaths)) |>
     ungroup()
-tail(c19 %>% filter(state == "Oregon"))
+tail(c19 |> filter(state == "Oregon"))
 ```
 
 # Tabular data
@@ -253,7 +262,7 @@ tail(c19 %>% filter(state == "Oregon"))
 We can use `summarize` to create statistical summaries of the data. Like `mutate`, we define a new variable within `summarize` to capture a defined summary.
 ```{r, echo=TRUE, tidy=TRUE, mysize=TRUE, size='\\footnotesize'}
 # Summarize specific variables
-c19 %>% summarise(mean_deaths = mean(deaths), 
+c19 |> summarise(mean_deaths = mean(deaths), 
                   median_deaths = median(deaths),
                   max_deaths = max(deaths))
 ```
@@ -262,37 +271,37 @@ c19 %>% summarise(mean_deaths = mean(deaths),
 ## Summarizing
 The `summarize_all` command takes a summary function (e.g. mean, min, max) and applies it to all columns. This can be useful if there are lots of variables. See documentation for other variants of summarize. Note that the mean is undefined for non-numeric columns AND columns with missing data.
 ```{r, echo=TRUE, tidy=TRUE, mysize=TRUE, size='\\footnotesize'}
-c19 %>% summarize_all(mean) # Map a summary function to all valid columns
+c19 |> summarize_all(mean) |> select(state,cases,new_cases) # Map a summary function to all valid columns
 ```
 
 # Tabular data
 ## Summarizing
 We can *impute* missing data to get an estimate of the mean. In this case, values are missing for early rows where the lag operator was not defined. Missing `new_cases` or `new_deaths` will be set to zero using `replace_na`.
 ```{r, echo=TRUE, tidy=TRUE, mysize=TRUE, size='\\footnotesize'}
-c19 <- c19 %>% replace_na(list(new_cases = 0, new_deaths = 0))
-c19 %>% summarize_all(mean) # Map a summary function to all valid columns
+c19 <- c19 |> replace_na(list(new_cases = 0, new_deaths = 0))
+c19 |> summarize_all(mean) |> select(state, cases, new_cases) # Map a summary function to all valid columns
 ```
 
 # Tabular data
 ## Grouping
 Often we want to group our data before summarizing. What does this example tell us?
 ```{r, echo=TRUE, tidy=TRUE, mysize=TRUE, size='\\footnotesize'}
-c19 %>% group_by(state) %>% summarise(mean(deaths_per_case))
+c19 |> group_by(state) |> summarise(mean(deaths_per_case)) |> ungroup()
 ```
 
 # Tabular data
 ## Grouping
 Sometimes we might want to create a group-level variable then revert back to the original dataset. We can do this using the `ungroup` command. What does this new column represent?
 ```{r, echo=TRUE, tidy=TRUE, mysize=TRUE, size='\\footnotesize'}
-c19 %>% group_by(date) %>% mutate(daily_mean = mean(new_cases)) %>% ungroup() %>%
-    tail()
+c19 |> group_by(date) |> mutate(daily_mean = mean(new_cases)) |> ungroup() |>
+    select(date, state, daily_mean) |> tail()
 ```
 
 # Tabular data
 ## Joins
-We often want to join together different datasets. Venn diagrams are a useful way for thinking about this.
-```{r, out.width="70%",out.height="70%", fig.align="center", include=FALSE, eval=FALSE}
-include_graphics('https://d33wubrfki0l68.cloudfront.net/aeab386461820b029b7e7606ccff1286f623bae1/ef0d4/diagrams/join-venn.png')
+We often want to join together different datasets. There are four main types of joins:
+```{r, out.width="70%",out.height="70%", fig.align="center", echo = F}
+include_graphics('../images/joins.png')
 ```
 
 
@@ -301,9 +310,9 @@ include_graphics('https://d33wubrfki0l68.cloudfront.net/aeab386461820b029b7e7606
 The `left_join` is the most commonly used type of join. We keep all rows in our left dataset and the rows on the right dataset with valid matches. Here we're download a dataset about state governors and joining it on state. The `by` argument defines the columns we should join on.
 ```{r, echo=TRUE, tidy=TRUE, mysize=TRUE, size='\\footnotesize'}
 gov <- read_csv("https://raw.githubusercontent.com/OpenGovDataMirror/F_CivilServiceUSA_us-governors/master/us-governors/data/us-governors.csv")
-gov <- gov %>% select(state_name, party) # just select two columns
+gov <- gov |> select(state_name, party) # just select two columns
 
-c19 <- c19 %>% left_join(gov, by = c("state" = "state_name")) # We can pipe c19 into the left_join function.
+c19 <- c19 |> left_join(gov, by = c("state" = "state_name")) # We can pipe c19 into the left_join function.
 ```
 
 
@@ -313,7 +322,7 @@ Let's consider another example to get state-level population data. In this case,
 ```{r, echo=TRUE, tidy=TRUE, mysize=TRUE, size='\\footnotesize'}
 library(readxl)
 census <- "https://www2.census.gov/programs-surveys/popest/tables/2010-2019/state/totals/nst-est2019-01.xlsx"
-# read_excel function from readxl does not currently handle files from the web, so we need to get it manually
+# read_excel function from readxl does not currently handle files from the web, so we need to tell R to store as a temporary file
 tmp <- tempfile(fileext = ".xlsx")
 httr::GET(url = census, httr::write_disk(tmp))
 pop <- read_excel(tmp)
@@ -323,10 +332,10 @@ pop <- read_excel(tmp)
 ## Joining
 These data are a little messier. We need to do a bit of cleaning up.
 ```{r, echo=TRUE, tidy=TRUE, mysize=TRUE, size='\\footnotesize'}
-pop.states <- pop[9:61, c(1,13)]
-colnames(pop.states) <- c("state", "pop")
-pop.states <- pop.states %>% 
-  mutate(state = str_replace(state, ".", "")) %>%
+pop.states <- pop[9:61, c(1,13)] # Selecting relevant rows and columns
+colnames(pop.states) <- c("state", "pop") # Renaming
+pop.states <- pop.states |>  # Standardizing
+  mutate(state = str_replace(state, ".", "")) |>
   drop_na()
 ```
 
@@ -334,8 +343,8 @@ pop.states <- pop.states %>%
 ## Joining
 Now we can join our new column to the dataset. Finally, we drop rows that do not have a governor (`party` column is missing).
 ```{r, echo=TRUE, tidy=TRUE, mysize=TRUE, size='\\footnotesize'}
-c19 <- c19 %>% left_join(pop.states, by = "state")
-c19 <- c19 %>% drop_na(party) # Dropping any row not considered a state
+c19 <- c19 |> left_join(pop.states, by = "state")
+c19 <- c19 |> drop_na(party) # Dropping any row not considered a state
 length(unique(c19$state)) # Verifying the correct number of states
 ```
 
@@ -400,17 +409,17 @@ We can easily group by other variables.
 ```{r, echo=FALSE, tidy=TRUE, mysize=TRUE, size='\\footnotesize'}
 ggplot(c19, # data
        aes(x = date, y= cases, group=state, color=party)) + # aesthetic mapping
-    geom_smooth(method='lm') # plot type
+    geom_smooth(method='loess') # plot type
 ```
 
 # Data visualization
 ## ggplot2
 Why might the previous plot be misleading? Is there a better way to look at how cases vary by partisanship of the governor? Note: The plot is now stored as an object `p` before plotting. This allows us to modify it later on.
 ```{r, echo=FALSE, tidy=TRUE, mysize=TRUE, size='\\footnotesize'}
-c19 <- c19 %>% mutate(case_rate = cases / pop)
+c19 <- c19 |> mutate(case_rate = cases / pop)
 p <- ggplot(c19, # data
        aes(x = date, y= case_rate, group=state, color=party)) + # aesthetic mapping
-    geom_smooth(method='lm') # plot type
+    geom_smooth(method='loess') # plot type
 p
 ```
 
@@ -429,7 +438,7 @@ p + # previous plot
 ## ggplot2
 We can easily modify this code to look at the data in a different way.
 ```{r, echo=FALSE, tidy=TRUE, mysize=TRUE, size='\\footnotesize'}
-c19 <- c19 %>% mutate(daily_case_rate = new_cases / pop)
+c19 <- c19 |> mutate(daily_case_rate = new_cases / pop)
 ggplot(c19, # data
        aes(x = date, y= daily_case_rate, group=party, color=party)) + # aesthetic mapping
     geom_smooth(method='lm') + # plot type
@@ -473,8 +482,8 @@ ggplot(data = us_states,
 ## ggplot2
 We have to merge our data with the shapefile in order to plot it on the map.
 ```{r, echo=FALSE, tidy=TRUE, mysize=TRUE, size='\\footnotesize'}
-c19.map <- c19 %>% filter(date == as.Date("2023-03-22")) %>% # select date
-    mutate(state_lower = tolower(state)) %>% # set to lowercase
+c19.map <- c19 |> filter(date == as.Date("2023-03-22")) |> # select date
+    mutate(state_lower = tolower(state)) |> # set to lowercase
     left_join(us_states, by = c("state_lower" = "region"))
 
 p <- ggplot(data = c19.map,
@@ -492,7 +501,7 @@ Let's try to do something more interesting.
 #install.packages("ggthemes")
 require(ggthemes)
 
-c19.map <- c19.map %>% mutate(cases_per_100k = new_cases / (pop/100000)) # a more interpretable metric
+c19.map <- c19.map |> mutate(cases_per_100k = new_cases / (pop/100000)) # a more interpretable metric
 
 p <- ggplot(data = c19.map,
             aes(x = long, y = lat,
@@ -508,6 +517,13 @@ p + geom_polygon(color = "gray90", size = 0.1) +
                      caption = "COVID-19 data from the New York Times. \n 2019 population estimates from the Census Bureau.",
                      fill = "Infections per \n 100k population")
 ```
+
+# Mini homework (due before next class)
+Follow the instructions on the course website to set up Github with RStudio \url{https://github.com/t-davidson/SOC360-CSS/} (click `github_setup.md`)
+
+1. Register for a Github account
+2. Install Git
+3. Sync your Github account with RStudio
 
 # Next lecture
 - File management
