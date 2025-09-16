@@ -96,7 +96,7 @@ include_graphics('../images/boids.png')
 
 # NetLogo and NetLogoWeb
 ## Flocking behavior in NetLogo
-http://www.netlogoweb.org/launch#http://ccl.northwestern.edu/netlogo/models/models/Sample%20Models/Biology/Flocking.nlogo
+http://www.netlogoweb.org/launch#http://www.netlogoweb.org/assets/modelslib/Sample%20Models/Biology/Flocking.nlogox
 
 
 # What is agent-based modeling?
@@ -108,7 +108,7 @@ include_graphics('../images/shelling.png')
 
 # NetLogo
 ## Schelling's segregation model in NetLogo
-http://www.netlogoweb.org/launch#http://ccl.northwestern.edu/netlogo/models/models/IABM%20Textbook/chapter%203/Segregation%20Extensions/Segregation%20Simple.nlogo
+http://www.netlogoweb.org/launch#http://www.netlogoweb.org/assets/modelslib/Sample%20Models/Social%20Science/Segregation.nlogox
 
 # What is agent-based modeling?
 ## DellaPosta, Shi, and Macy *Why Do Liberals Drink Lattes?* (2015)
@@ -214,13 +214,6 @@ c19 |> filter(cases > 1000) # conditional filtering
 c19 |> filter(str_detect(state, "New")) # str_detect function from stringr package
 c19 |> filter(str_detect(state, "New") & cases > 1000)
 c19 |> filter(date >= as.Date("2023-03-23")) # using as.Date to case string to date
-```
-
-# Tabular data
-## Filtering
-The `filter` command allows us to subset rows that meet one or more conditions.
-```{r, echo=TRUE, tidy=TRUE, mysize=TRUE, size='\\footnotesize'}
-c19 |> filter(date >= as.Date("2023-03-23")) |> head(1) # using as.Date to case string to date
 ```
 
 # Tabular data
