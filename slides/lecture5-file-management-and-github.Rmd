@@ -3,7 +3,7 @@ title: "Computational Social Science"
 subtitle: "File management and Github"
 author: Dr. Thomas Davidson
 institute: Rutgers University
-date: September 18, 2024
+date: September 18, 2025
 output:
     beamer_presentation:
       theme: "Szeged"
@@ -230,7 +230,7 @@ read_file("") %>% print()
 
 # Homework 1
 ## Submitting the homework
-- Homework is due next Wednesday, 9/26, at 5pm
+- Homework is due next Thursday, 9/25, at 5pm
 - Github submission instructions are included at the bottom of the homework file
     - Make a test submission to verify it works
     - There is also a guide on the Github wiki on the course website
@@ -238,8 +238,6 @@ read_file("") %>% print()
 
 # Next week
 - Collecting data from websites and social media platforms using Application Programming Interfaces (APIs)
-    - Introductory lecture on Monday
-    - No class Wednesday due to conference travel, at home assignment
 
     
 
