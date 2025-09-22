@@ -3,7 +3,7 @@ title: "Computational Social Science"
 subtitle: "Observational Data and Application Programming Interfaces"
 author: Dr. Thomas Davidson
 institute: Rutgers University
-date: September 23, 2024
+date: September 22, 2025
 output:
     beamer_presentation:
       theme: "Szeged"
@@ -49,17 +49,10 @@ set.seed(08901)
 
 # Course updates
 ## Homework
-- Homework 1 released last week, due Wednesday at 5pm.
+- Homework 1 released last week, due Thursday at 5pm.
   - Don't leave it until the last minute!
   - Please push your final version to Github with the appropriate commit message.
   - Make sure to also submit the URL on Canvas
-  
-# Course updates
-## No class Wednesday
-- At-home workshop on using the Spotify API
-    - Work through the examples and complete an optional extra credit assignment
-    - You will need a Spotify API account for Homework 2
-
 
 # Digital trace data
 ## Digital traces and "big data"
@@ -290,7 +283,7 @@ p
 
 # APIs
 ## Best-practices
-- Use a "wrapper" package if available (Wednesday's lecture)
+- Use a "wrapper" package if available (Thursday's lecture)
   - Although sometimes you will have to write your own queries
 - Build in functions to obey rate-limits where possible
 - Access only the data you need
@@ -298,7 +291,7 @@ p
 
 # APIs
 ## The post-API age?
-- Following Facebook's decision in 2018 to close down access to its Pages API, Deen Freelon writes:
+- Following Facebook's decision to close down access to its Pages API, Deen Freelon writes:
   - "We find ourselves in a situation where heavy investment in teaching and learning platform-specific methods can be rendered useless overnight."
 - Freelon's recommendations
   - Learn to web scrape (next week)
@@ -311,9 +304,10 @@ p
     - Twitter Academic API provided extensive access but shut down after Musk takeover
     - Reddit had a permissive system but closed access to monetize data for large language model training
     - Restrictive conditions for TikTok academic access
+    - Spotify has limited access to some endpoints
     
 # Next lecture
-- Using the Spotify API in R
+- Collecting data using APIs
     
 
     
