@@ -171,8 +171,22 @@ head(articles[1])
 ```
 
 # Using the NYT API
+## Inspecting the results
+The data are returned in a nested list. Indexing can be used to extract different components of the results.
+```{r, echo=TRUE, tidy=FALSE, mysize=TRUE, size='\\footnotesize', eval = F}
+articles[2][[1]]$headline$main
+```
+
+# Using the NYT API
+## Inspecting the results
+However, due to the structure of the data we cannot easily cast to a tibble.
+```{r, echo=TRUE, tidy=FALSE, mysize=TRUE, size='\\footnotesize', eval = F}
+articles %>% as_tibble()
+```
+
+# Using the NYT API
 ## Cleaning the data
-The data are in a list with variable length. I made a function to extract the relevant information into a tibble. First, it applies the function to each row, then uses `bind_rows` to render the tibble.
+I made a function to extract the relevant information into a tibble. First, it applies the function to each row, then uses `bind_rows` to render the tibble.
 ```{r, echo=TRUE, tidy=FALSE, mysize=TRUE, size='\\footnotesize', eval = F}
 extract_info <- function(x) {
   return(tibble(
@@ -235,6 +249,7 @@ ggplot(section_words, aes(y=avg_words, x = section, fill = section)) +
 ## Collecting more data
 Let's collect the comparable data for a second query.
 ```{r, echo=TRUE, tidy=FALSE, mysize=TRUE, size='\\footnotesize', eval = F}
+Sys.sleep(13)
 articles2 <- ny_search("first amendment", 
                        since = Sys.Date() - 30, 
                        pages = 20, 
