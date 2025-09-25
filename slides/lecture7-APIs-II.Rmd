@@ -3,7 +3,7 @@ title: "Computational Social Science"
 subtitle: "Observational Studies and Application Programming Interfaces II"
 author: Dr. Thomas Davidson
 institute: Rutgers University
-date: September 25, 2024
+date: September 25, 2025
 output:
     beamer_presentation:
       theme: "Szeged"
@@ -40,7 +40,7 @@ set.seed(08901)
 # Plan
 
 - Recap on APIs
-- Using the Spotify API in R
+- Using the New York Times API in R
 - Exercise
 
 # Recap
@@ -50,49 +50,53 @@ set.seed(08901)
   - API queries
   - JSON data
   - Rate-limiting
-- Interacting with the Github API in R
+- Interacting with APIs in R
 
-# Using the Spotify API
-## Documentation
-- It's always good to start by reading the documentation:
-  - https://developer.spotify.com/documentation/web-api/
-- This provides information on the API, endpoints, rate-limits, etc.
+# Using the NYT API
+## Getting starter
+- Begin by following the instructions here to set up an account:
+    - https://developer.nytimes.com/get-started
+- We'll go through the steps for registering an app
 
-# Using the Spotify API
+# Using the NYT API
 ## Signing up
-- To use the Spotify API you need a Spotify account
-- If you don't have one already, please sign up for a free account
-
-# Using the Spotify API
-## Signing up
-This API requires authentication. Visit the link below and click "Log in". If you are already logged in, click your username in the top-right then "Dashboard".
-```{r, out.width="70%",out.height="70%", fig.align="center"}
-include_graphics('../IMAGES/spotify_develop2.png')
+To use the API you will need to create an account and obtain credentials.
+```{r, out.width="40%",out.height="40%", fig.align="center"}
+include_graphics('../IMAGES/create_account_nyt.png')
 ```  
-\tiny https://developer.spotify.com/dashboard/
 
-# Using the Spotify API
+
+# Using the NYT API
 ## Creating an app
-Accept the terms of service then click on this button to create a new app.
-```{r, out.width="40%",out.height="30%", fig.align="center"}
-include_graphics('../IMAGES/spotify_create_app2.png')
-```  
+Click Apps from the dropdown by your email in the top-right
+```{r, out.width="80%",out.height="70%", fig.align="center"}
+include_graphics('../IMAGES/make_app_nyt.png')
+``` 
 
-# Using the Spotify API
+# Using the NYT API
+## Creating an app
+```{r, out.width="45%",out.height="45%", fig.align="center"}
+include_graphics('../IMAGES/create_new_app_nyt.png')
+```
+
+# Using the NYT API
+## Setting up the app
+```{r, out.width="80%",out.height="70%", fig.align="center"}
+include_graphics('../IMAGES/altering_app_nyt.png')
+``` 
+
+# Using the NYT API
 ## Creating an app
 - Add a name and a short description
     - e.g. "Computational Social Science", "App for class"
-- Click on the app in Dashboard
-- Click "SHOW CLIENT SECRET"
-    - Copy Client ID and Client Secret and store them somewhere safe
+- Click Enable for Archive, Article Search, and Books APIs
     
 # APIs
 ## Access credentials
-- Often APIs will use credentials to control access
+- Often APIs will use credentials to control access. These might include:
   - A *key* (analogous to a user name)
   - A *secret* (analogous to a password)
   - An *access token* (grants access based on key and password)
-  - Generally the access token is provided as part of the call
 - Keep credentials private
   - Avoid accidentally sharing them on Github
   
@@ -102,237 +106,230 @@ include_graphics('../IMAGES/spotify_create_app2.png')
   - JSON files consist of key-value pairs, enclosed in braces as such: `{"key": "value"}`
   - JSON files are structured in a way that makes them relatively easy to parse to retrieve relevant data
 
-# Using the Spotify API
+# Using the NYT API
 ## Storing credentials
-- Open `creds.json` (located in the `credentials` folder of the course repository) and paste the ID and secret into the relevant fields. Save the file.
+- Open `creds.json` (located in the `credentials` folder of the course repository) and paste the App ID, key, and secret (click "Show secret") into the relevant fields. Save the file.
   - Storing credentials in a separate file helps to prevent them from getting committed to Github accidentally
-- The file should look like this:
+  
+# Using the NYT API
+## Storing credentials
+- Your file should look like this:
 
 ```
-{"id": "328248djkejf298382189du329323c",
+{"id": "le90de-4023-8b21-493h-489fv030",
+"key": "328248djkejf298382189du329323c",
 "secret": "jw7329889d37f7798383e8d29ew2d"}
 ```
+\tiny Note: I made up fake credentials here as an example, otherwise they would be leaked when these slides are shared on Github.
 
-# Using the Spotify API
+# Using the NYT API
 ## Loading packages
-We're going to be using `spotifyr`, a *wrapper* around the spotify API. This allows us to make use of the functionality without needing to write the API calls, make requests, or convert the results to JSON/tabular format. To install it, you must uncomment and run the line below.
-```{r, echo=TRUE, tidy=TRUE, mysize=TRUE, size='\\footnotesize'}
-# devtools::install_github('t-davidson/spotifyr') # uncomment and run to install
-```
-\tiny  You can read more about the library \href{https://www.rcharlie.com/spotifyr/}{here}.
+We're using `nytimes`, a *wrapper* around the NYT API. To install it, uncomment and run the line below. 
 
-# Using the Spotify API
+Follow any instructions in the Console, selecting CRAN packages if asked to update and answering "Yes" when asked whether to update from source.
+```{r, echo=TRUE, tidy=TRUE, mysize=TRUE, size='\\footnotesize'}
+# remotes::install_github("t-davidson/nytimes") # uncomment and run chunk
+```
+\tiny  You can read more about the library \href{https://github.com/news-r/nytimes}{here}.
+
+# Using the NYT API
 ## Authentication
 Now let's load the packages, read in the credentials, and create an access token. Run this chunk to proceed.
 ```{r, echo=TRUE, tidy=TRUE, mysize=TRUE, size='\\footnotesize'}
-library(spotifyr)
+library(nytimes)
 library(tidyverse)
 library(jsonlite)
 library(lubridate)
 
 creds <- read_json("../credentials/creds.json") # read creds
 
-Sys.setenv(SPOTIFY_CLIENT_ID = creds$id) # set creds
-Sys.setenv(SPOTIFY_CLIENT_SECRET = creds$secret)
-
-access_token <- get_spotify_access_token() # retrieve access token
+nytimes_key(creds$key)
 ```
 
-# Using the Spotify API
+# Using the NYT API
 ## API functions
 Now we're authorized, we can use the package to retrieve information from the API. Let's take a look at one of the functions. Rather than writing all the query code ourselves, we can just pass query parameters to the function.
 ```{r, echo=TRUE, eval=FALSE, tidy=TRUE, mysize=TRUE, size='\\footnotesize'}
-?get_artist_audio_features
-print(get_artist_audio_features)
+?ny_search
+print(ny_search)
 ```
 
-# Using the Spotify API
+# Using the NYT API
 ## Querying the API
-Now we're authorized, we can use the package to retrieve information from the API. Let's take a look at one of the functions. Add an artist name to `get_artist_audio_features`.
+Now we're authorized, we can use the package to retrieve information from the API. Let's try running the search function.
 ```{r, echo=TRUE, tidy=FALSE, mysize=TRUE, size='\\footnotesize', eval = F}
-artist1 <- get_artist_audio_features("") %>% as_tibble() # Add artist name inside quotes
-head(artist1)
+articles <- ny_search("artificial intelligence", 
+                      since = Sys.Date() - 30, 
+                      pages = 15, 
+                      sort = "newest")
 ```
 
-# Using the Spotify API
-## Inspecting the data
+# Using the NYT API
+## Inspecting the results
 ```{r, echo=TRUE, tidy=FALSE, mysize=TRUE, size='\\footnotesize', eval = F}
-head(artist1$track_name, n=10)
+head(articles[1])
 ```
 
-# Using the Spotify API
+# Using the NYT API
+## Cleaning the data
+The data are in a list with variable length. I made a function to extract the relevant information into a tibble. First, it applies the function to each row, then uses `bind_rows` to render the tibble.
+```{r, echo=TRUE, tidy=FALSE, mysize=TRUE, size='\\footnotesize', eval = F}
+extract_info <- function(x) {
+  return(tibble(
+    id         = x$`_id`,
+    headline   = x$headline$main,
+    abstract   = x$abstract,
+    byline     = x$byline$original,
+    pub_date   = x$pub_date,
+    news_desk  = x$news_desk,
+    section    = x$section_name,
+    url        = x$web_url,
+    word_count = x$word_count
+  ))
+}
+
+articles_df <- lapply(articles, extract_info) %>% bind_rows()
+```
+
+# Using the NYT API
 ## Creating a summary
 Let's calculate some statistics using this table. What does this show?
 ```{r, echo=TRUE, tidy=FALSE, mysize=TRUE, size='\\footnotesize', eval = F}
-results <- artist1 %>%
-            group_by(album_release_year) %>% 
-  summarize(mean.dan = mean(danceability), 
-            mean.ac = mean(acousticness))
+articles_df %>% group_by(section) %>%
+    summarize(count = n()) %>%
+    filter(count > 3) %>%
+    arrange(desc(count)) 
 ``` 
 
-
-# Using the Spotify API
-## Visualizing the data
-```{r, echo=TRUE, tidy=FALSE, mysize=TRUE, size='\\footnotesize', eval = F}
-p <- ggplot(artist1, aes(x=album_release_year, y=danceability))
-p + geom_smooth() + 
-  labs(title="Danceability over time", 
-       caption = "Data from collect from Spotify API") +
-  xlab("") + ylab("Mean danceability") + theme_bw()
-```
-
-# Using the Spotify API
-## Visualizing the data
-```{r, echo=TRUE, tidy=FALSE, mysize=TRUE, size='\\footnotesize', eval = F}
-p <- ggplot(artist1, aes(x=album_release_year, y=acousticness))
-p + geom_smooth() +
-  labs(title="Acousticness over time", 
-       caption = "Data from collect from Spotify API")  +
-    xlab("") + ylab("Mean acousticness") + theme_bw()
-```
-
-# Using the Spotify API
-## Collecting more data
-Let's collect the same data for a second artist and combine it. Add an artist name to the `get_artist_audio_features`.
-```{r, echo=TRUE, tidy=FALSE, mysize=TRUE, size='\\footnotesize', eval = F}
-artist2 <- get_artist_audio_features("") %>% as_tibble()
-both <- bind_rows(artist1, artist2) # adding 2nd artist to the same tibble
-both %>% sample_n(5) %>% select(artist_name)
-```  
-
-# Using the Spotify API
-## Creating a new summary
-Repeating the summary operation for both artists. Note how we now group by `artist_name` in addition to `album_release_year`.
-```{r, echo=TRUE, tidy=FALSE, mysize=TRUE, size='\\footnotesize', eval = F}
-r <- both %>%
-  group_by(album_release_year, artist_name) %>%
-  summarize(mean.dan = mean(danceability), 
-            mean.ac = mean(acousticness))
-```
-
-# Using the Spotify API
-## Comparing the artists
-```{r, echo=TRUE, tidy=FALSE, mysize=TRUE, size='\\footnotesize', eval = F}
-p <- ggplot(both, aes(x=album_release_year, y=danceability, 
-                      group = artist_name, color = artist_name))
-p + geom_point(alpha=0.3) + geom_smooth() +
-  labs(title="Comparing danceability", 
-       caption = "Data from collect from Spotify API") +
-  xlab("") + ylab("Mean danceability") + theme_bw()
-```  
-
-# Using the Spotify API
-## Comparing the artists
-```{r, echo=TRUE, tidy=FALSE, mysize=TRUE, size='\\footnotesize', eval = F}
-p <- ggplot(both, aes(x=album_release_year, y=acousticness, 
-                      group = artist_name, color = artist_name))
-p + geom_point(alpha=0.1) + geom_smooth() +
-  labs(title="Comparing acousticness", 
-       caption = "Data from collect from Spotify API") +
-  xlab("") + ylab("Mean acousticness") + theme_bw()
-```  
-
-# Using the Spotify API
-## Collecting more data
-Let's try another type of query. Add a genre name to `get_genre_artists`. Note that not all genres will work.
-```{r, echo=FALSE, tidy=FALSE, mysize=TRUE, size='\\footnotesize'}
-hh <- spotifyr::get_genre_artists("", limit = 20) %>%
-  select(id, name, popularity, followers.total)
-hh %>% slice_max(order_by = followers.total, n=10)
-```
-
-# Using the Spotify API
-## Programming complex queries
-Now we have a list of artists, let's use this information as input for another query.
-```{r, echo=FALSE, tidy=FALSE, mysize=TRUE, size='\\footnotesize'}
-albums <- tibble() # empty tibble to store results
-for (artist.id in hh$id) {
-  a <- get_artist_albums(artist.id, 
-                              include_groups = c("album"),
-                              market = "US", limit = 50)
-  a$artist <- hh %>% filter(id == artist.id) %>%  
-                          select(name) %>% as.character()
-  albums <- bind_rows(albums, a)
-}
-```
-
-# Using the Spotify API
+# Using the NYT API
 ## Creating a summary
-Let's count the number of albums each artist released each year. Why is `n_distinct` useful here?
-```{r, echo=FALSE, tidy=FALSE, mysize=TRUE, size='\\footnotesize'}
-album.year.count <- albums %>% group_by(artist,
-                               year = year(as.Date(release_date))) %>%
-  summarize(n_albums = n_distinct(name)) %>%
-  drop_na()
+Here's another summary, this time saved to a new object.
+```{r, echo=TRUE, tidy=FALSE, mysize=TRUE, size='\\footnotesize', eval = F}
+section_words <- articles_df %>% group_by(section) %>%
+    summarize(avg_words = mean(word_count), count = n()) %>%
+    filter(count > 5)
+head(section_words)
 ```
 
-# Using the Spotify API
+# Using the NYT API
 ## Visualizing the data
-```{r, echo=FALSE, tidy=FALSE, mysize=TRUE, size='\\footnotesize'}
-ggplot(album.year.count, aes(x = year, 
-                             y = n_albums, 
-                             color = artist)) + 
-  geom_point() +
-  geom_text(aes(label=ifelse(n_albums >= 4, artist, ""))) + theme(legend.position = "none")
+```{r, echo=TRUE, tidy=FALSE, mysize=TRUE, size='\\footnotesize', eval = F}
+ggplot(articles_df, aes(x=word_count)) +
+    geom_histogram() +
+    theme_bw() +
+    labs(y = "Number of articles", x = "Word count")
 ```
 
-# Using the Spotify API
-## Improving the visualization
-```{r, echo=FALSE, tidy=FALSE, mysize=TRUE, size='\\footnotesize'}
-# Uncomment and run lines below to install packages
-# install.packages("ggrepel")
-# install.packages("viridis")
-library(ggrepel)
-library(viridis)
+# Using the NYT API
+## Visualizing the data
+```{r, echo=TRUE, tidy=FALSE, mysize=TRUE, size='\\footnotesize', eval = F}
+ggplot(section_words, aes(y=avg_words, x = section, fill = section)) +
+    geom_bar(stat = "identity") +
+    scale_fill_viridis_d(option = "cividis") +
+    theme_bw() +
+    labs(y = "Average word count", x = "Section") +
+    theme(legend.position = "none")
+```
 
-ggplot(album.year.count, aes(x = year, 
-                             y = n_albums, 
-                             color = artist)) + 
-  geom_jitter(width = 0.3, height=0.05) +
-  geom_label_repel(aes(label=ifelse(n_albums >= 4, artist, "")))  +
-  scale_color_viridis_d() + 
-  theme_minimal() + theme(legend.position = "none") + 
-  labs(title = "Number of albums released each year by artist", 
-       caption = "Top 20 hip-hop artists on Spotify, February 2024",
-       x = "", y = "Number of albums")
+# Using the NYT API
+## Collecting more data
+Let's collect the comparable data for a second query.
+```{r, echo=TRUE, tidy=FALSE, mysize=TRUE, size='\\footnotesize', eval = F}
+articles2 <- ny_search("first amendment", 
+                       since = Sys.Date() - 30, 
+                       pages = 20, 
+                       sort = "newest")
+
+fa <- lapply(articles2, extract_info) %>% bind_rows()
+```  
+
+# Using the NYT API
+## Collecting more data
+For convenience we can join the two datasets by combining the rows. But a new column needs to be added to ensure we know which keyword matched each article.
+```{r, echo=TRUE, tidy=FALSE, mysize=TRUE, size='\\footnotesize', eval = F}
+articles_df$topic <- "AI"
+fa$topic <- "1A"
+both <- bind_rows(articles_df, fa)
+```
+
+# Using the NYT API
+## Comparing the topics
+```{r, echo=TRUE, tidy=FALSE, mysize=TRUE, size='\\footnotesize', eval = F}
+both %>% group_by(topic, section) %>%
+    summarize(count = n()) %>%
+    top_n(count, n=3) %>%
+    ggplot(aes(y=count, x = section, fill = section)) +
+    geom_bar(stat = "identity") +
+    scale_fill_viridis_d(option = "cividis") +
+    facet_wrap(~topic, scales = "free_x") +
+    theme_bw() +
+    labs(y = "Number of articles", x = "Section",
+         title = "Top 3 sections by topic") +
+    theme(legend.position = "none")
+```  
+
+# Using the NYT API
+## Attempting another visualization
+What can be improved here?
+```{r, echo=TRUE, tidy=FALSE, mysize=TRUE, size='\\footnotesize', eval = F}
+both %>% ggplot(aes(y = word_count, x = pub_date)) + 
+    geom_point() + theme_bw()
+```  
+
+# Using the NYT API
+## A better plot
+Using `as.Date` so that `pub_date` is correctly processed. And adding some additional information.
+```{r, echo=TRUE, tidy=FALSE, mysize=TRUE, size='\\footnotesize', eval = F}
+both %>% ggplot(aes(y = word_count, x = as.Date(pub_date),
+                    color = topic)) + 
+    geom_point() + theme_bw()
+```  
+
+# Using the NYT API
+## Comparing coverage over time
+```{r, echo=TRUE, tidy=FALSE, mysize=TRUE, size='\\footnotesize', eval = F}
+both %>% mutate(day = as.Date(pub_date)) %>%
+    group_by(topic, day) %>%
+    summarize(coverage = sum(word_count)) %>%
+    ggplot(aes(y = coverage, x = day, color = topic)) + 
+    geom_point() + geom_line() + theme_bw() +
+    labs(y = "Total words", x = NULL, color = "Topic",
+         title = "Coverage of 1st Amendment and AI in the New York Times")
+```  
+
+# Using the NYT API
+## Comparing coverage over time
+Calculating a daily ratio of 1A to AI coverage.
+```{r, echo=TRUE, tidy=FALSE, mysize=TRUE, size='\\footnotesize', eval = F}
+both %>%
+  mutate(day = as.Date(pub_date)) %>%
+  group_by(day) %>%
+  summarise(
+    num = sum(word_count[topic == "1A"]),
+    den = sum(word_count[topic == "AI"]),
+    ratio = if_else(den == 0, NA_real_, num / den),
+    .groups = "drop"
+  ) %>% 
+    ggplot(aes(x = day, y = ratio)) +
+  geom_hline(yintercept = 1, linetype = "dashed", linewidth = 0.25) +
+  geom_point() + geom_line() +
+  theme_bw()  +
+  labs(y = "1A / AI coverage ratio", x = NULL, color = "Topic",
+         title = "Ratio of 1st Amendment to AI coverage in the New York Times")
 ```
 
 
-# Using the Spotify API
-## Creating a histogram
-```{r, echo=FALSE, tidy=FALSE, mysize=TRUE, size='\\footnotesize'}
-ggplot(album.year.count, aes(x = year)) + 
-  geom_histogram(bins = max(album.year.count$year)-min(album.year.count$year),
-                 fill = "blue") +
-  theme_light() + labs(title = "Number of albums released each year by top 20 hip-hop artists \n on Spotify", 
-       caption = "Data from Spotify, February 2024",
-       x = "", y = "Number of albums")
-```
-
-# Using the Spotify API
-## More advanced visualizations
-There are other extensions of `ggplot` that can create even more sophisticated plots. The `ggridges` package allows us to represent multiple artists' trends as overlaid histograms.
-```{r, echo=FALSE, tidy=FALSE, mysize=TRUE, size='\\footnotesize'}
-# install.packages("ggridges") # Remove comment symbol to run line to install this package
-library(ggridges)
-
-ggplot(album.year.count, aes(x = year, y = artist, height = n_albums,
-                             fill=artist)) +
-  geom_density_ridges(stat="identity") +
-  theme_ridges() + theme(legend.position = "none") + labs(title = "Album releases by year for top 20 most popular \n hip-hop artists on Spotify", caption = "Data collected February 2024 using Spotify API")
-```
-
-# Using the Spotify API
+# Using the NYT API
 ## Exercise
-1. Use the Spotify API to collect your own data.
-2. Use tidyverse functions to select relevant columns and summarize (as necessary)
-3. Produce a plot using ggplot (different from the examples given)
-4. Share the plot in this Google Doc: https://bit.ly/3rAG7Uk
+- Use `ny_search` to find a selection of articles of interest
+- Clean up the results
+- Produce a visualization, distinct from those already shown using `ggplot`
+- Add your visualization to this Google Doc (sign in using Rutgers account): https://tinyurl.com/css-nyt-viz
 
-# Using the Spotify API
+# Using the NYT API
 ## Exercise
 ```{r, echo=FALSE, tidy=FALSE, mysize=TRUE, size='\\footnotesize', include=FALSE, eval = FALSE}
-# Your code here
+# Your code here, but create more chunks if needed
 ```
 
 
