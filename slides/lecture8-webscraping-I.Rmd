@@ -3,7 +3,7 @@ title: "Computational Social Science"
 subtitle: "Scraping the web I"
 author: Dr. Thomas Davidson
 institute: Rutgers University
-date: September 30, 2024
+date: September 29, 2025
 output:
     beamer_presentation:
       theme: "Szeged"
@@ -39,16 +39,9 @@ knitr::knit_hooks$set(mysize = function(before, options, envir) {
 1. Ethics and data science
 2. Introduction to webscraping
 3. When to use it
-
-# Ethics and data science
-## New ethical questions
-- Salganik discusses some examples of recent studies that raise new ethical questions
-  - Emotional contagion experiment on Facebook
-  - Observational study of Facebook networks
-  - Browser-based study of censorship
   
 # Ethics and data science
-## Four ethical principles
+## Four ethical principles in social research
 - *Respect for persons*
   - Treating people as autonomous and honoring their wishes
 - *Beneficence*
@@ -173,7 +166,7 @@ include_graphics('../images/robots.png')
 
 # How to scrape a web page
 ## Exercise
-- Find a website of interest
+- Choose a website
 - Locate the robots.txt file
   - Does the website allow webscraping?
   - Are there any restrictions on which pages can be accessed?
@@ -244,7 +237,7 @@ print(message.data[2])
 Next we use `html_text()` to extract the text from the HTML.
 ```{r, echo=TRUE, tidy=FALSE, mysize=TRUE, size='\\footnotesize', tidy=FALSE}
 messages <- thread %>% html_nodes(".bbWrapper") %>% 
-  html_text() %>% str_trim() 
+  html_text() %>% str_squish() 
 messages[1]
 ```
 
@@ -353,7 +346,7 @@ head(data)
 ```{r, echo=TRUE, mysize=TRUE, size='\\footnotesize', tidy=FALSE}
 get.posts <- function(thread) {
   messages <- thread %>% html_nodes(".message-body") %>% 
-    html_text() %>% str_trim()
+    html_text() %>% str_squish()
   users <- thread %>% html_nodes(".message-userDetails") %>%
     html_text() %>% str_trim() %>% str_split('\n') %>% map(1)
   timestamps <- thread %>% html_nodes(".u-concealed .u-dt") %>%
