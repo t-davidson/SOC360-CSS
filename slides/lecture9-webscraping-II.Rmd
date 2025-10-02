@@ -3,7 +3,7 @@ title: "Computational Social Science"
 subtitle: "Scraping the web II"
 author: Dr. Thomas Davidson
 institute: Rutgers University
-date: October 2, 2024
+date: October 2, 2025
 output:
     beamer_presentation:
       theme: "Szeged"
@@ -68,9 +68,9 @@ thread <- read_html(url)
 ```{r, echo=TRUE, mysize=TRUE, size='\\footnotesize', tidy=FALSE}
 get.posts <- function(thread) {
   messages <- thread %>% html_nodes(".message-body") %>% 
-    html_text() %>% str_trim()
-  users <- thread %>% html_nodes(".message-userDetails") %>%
-    html_text() %>% str_trim() %>% str_split('\n') %>% map(1)
+    html_text() %>% str_squish()
+  users <- thread %>% html_nodes(".message-name") %>%
+    html_text() %>% str_squish()
   timestamps <- thread %>% html_nodes(".u-concealed .u-dt") %>%
     html_attr("datetime") %>% ymd_hms(tz="EST")
   timestamps <- timestamps[-1] # remove first timestamp
