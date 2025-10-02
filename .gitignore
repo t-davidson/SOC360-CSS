@@ -49,3 +49,8 @@ slides/*.tex
 slides/*.toc
 slides/*.vrb
 slides/*.nav
+
+# Images 
+images/*.png
+images/*.jpg
+images/*.pdf
