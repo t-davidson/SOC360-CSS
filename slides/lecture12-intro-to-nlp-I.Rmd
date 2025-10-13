@@ -3,7 +3,7 @@ title: "Computational Social Science"
 subtitle: "Introduction to Natural Language Processing I"
 author: Dr. Thomas Davidson
 institute: Rutgers University
-date: February 26, 2024
+date: October 13, 2025
 output:
     beamer_presentation:
       theme: "Szeged"
@@ -43,9 +43,10 @@ knitr::knit_hooks$set(mysize = function(before, options, envir) {
 
 
 # Course updates
-- Homework 2 due Wednesday  at 5pm
+- Homework 2 due Friday, end of day
   - Submit homework via Github
-- Project proposals due next week Wednesday at 5pm
+  - Add link to Canvas once submitted
+- Project proposals due next Thursday
   - Identify a suitable topic, data, and plan for analysis
   - Submit via Canvas
 
@@ -63,7 +64,7 @@ knitr::knit_hooks$set(mysize = function(before, options, envir) {
 
 # Introduction to NLP
 ## NLP tasks: Part-of-speech tagging
-```{r, out.width="100%",out.height="100%", fig.align="center"}
+```{r, out.width="95%", fig.align="center"}
   include_graphics('../images/pos.png')
 ```
 
@@ -71,7 +72,7 @@ knitr::knit_hooks$set(mysize = function(before, options, envir) {
 
 # Introduction to NLP
 ## NLP tasks: Dependency-parsing
-```{r, out.width="100%",out.height="100%", fig.align="center"}
+```{r, out.width="95%", fig.align="center"}
   include_graphics('../images/dependency.png')
 ```
 
@@ -79,7 +80,7 @@ knitr::knit_hooks$set(mysize = function(before, options, envir) {
 
 # Introduction to NLP
 ## NLP tasks: Co-reference resolution
-```{r, out.width="100%",out.height="100%", fig.align="center"}
+```{r, out.width="95%", fig.align="center"}
   include_graphics('../images/coreference.png')
 ```
 
@@ -87,14 +88,14 @@ knitr::knit_hooks$set(mysize = function(before, options, envir) {
 
 # Introduction to NLP
 ## NLP tasks: Named-entity recognition
-```{r, out.width="100%",out.height="100%", fig.align="center"}
+```{r, out.width="95%", fig.align="center"}
   include_graphics('../images/ner.png')
 ```
 \tiny \centering Examples created using https://corenlp.run/
 
 # Introduction to NLP
 ## Applications: Power dynamics
-```{r, out.width="50%",out.height="50%", fig.align="center"}
+```{r, out.height="50%", out.width = "50%", fig.align="center"}
   include_graphics('../images/power_dynamics.png')
 ```
 \tiny Danescu-Niculescu-Mizil, Cristian, Lillian Lee, Bo Pang, and Jon Kleinberg. 2012. “Echoes of Power: Language Effects and Power Differences in Social Interaction.” In Proceedings of the 21st International Conference on World Wide Web, 699–708. ACM. http://dl.acm.org/citation.cfm?id=2187931.
@@ -108,7 +109,7 @@ knitr::knit_hooks$set(mysize = function(before, options, envir) {
 
 # Introduction to NLP
 ## Applications: Trust and betrayal
-```{r, out.width="100%",out.height="100%", fig.align="center"}
+```{r, out.width="85%", fig.align="center"}
   include_graphics('../images/betrayal.png')
 ```
 
@@ -116,7 +117,7 @@ knitr::knit_hooks$set(mysize = function(before, options, envir) {
 
 # Introduction to NLP
 ## Text as data
-```{r, out.width="100%",out.height="100%", fig.align="center"}
+```{r, out.width="95%", fig.align="center"}
   include_graphics('../images/grimmer_stewart.png')
 ```
 - Justin Grimmer and Brandon Stewart, 2013
@@ -137,10 +138,12 @@ that may merit sociological consideration and theorization." - James Evans and P
   - Pre-processing, bag-of-words, and the vector-space model
 - Week 8 
   - Word embeddings
-- Week 9 (after spring break)
+- Week 9
   - Topic models
-- Week 11 (Week 10 introduces machine learning)
+- Week 11
   - Supervised text classification
+- Week 14 
+  - Large language models and generative AI
 
 # Working with text
 ## Pre-processing
@@ -247,7 +250,7 @@ ef$title <- "Elementary Forms"
 cm$title <- "Communist Manifesto"
 
 texts <- bind_rows(ef, cm)
-write_csv(texts, "marxdurkheim.csv")
+write_csv(texts, "../data/marxdurkheim.csv")
 ```
 
 # Working with text
@@ -378,7 +381,7 @@ total.words <- text.words %>% group_by(title) %>%
 words <- left_join(text.words, total.words)
 head(words)
 
-write_csv(words, 'words.csv')
+write_csv(words, '../data/words.csv')
 ```
 
 # Working with text: Zipf's law
@@ -430,9 +433,9 @@ freq_by_rank %>%
   - This makes it easy to tokenize new documents since we can always represent them as characters if a word is not in our vocabulary
 
 # Trigams
-Modify `unnest_tokens` to construct trigrams. 
+Excercise: Modify `unnest_tokens` to construct trigrams. 
 ```{r, echo=FALSE, tidy=FALSE, mysize=TRUE, size='\\footnotesize'}
-tidy.trigrams <- texts %>% unnest_tokens(word, text, token = "ngrams", n=3) %>% drop_na()
+tidy.trigrams <- texts %>% unnest_tokens(word, text) %>% drop_na()
 head(tidy.trigrams)
 ```
 
