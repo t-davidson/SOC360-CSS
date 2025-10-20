@@ -3,7 +3,7 @@ title: "Computational Social Science"
 subtitle: "Word embeddings I"
 author: Dr. Thomas Davidson
 institute: Rutgers University
-date: October 21, 2024
+date: October 20, 2025
 output:
     beamer_presentation:
       theme: "Szeged"
@@ -44,7 +44,7 @@ knitr::knit_hooks$set(mysize = function(before, options, envir) {
 4. Language models
 
 # Course updates
-- Project proposal assignment on Canvas, due Wednesday
+- Project proposal assignment on Canvas, due Thursday
   - A short description of the planned project
     - Details on data source and collection
     - Team information
