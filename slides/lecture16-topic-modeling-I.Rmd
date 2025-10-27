@@ -157,6 +157,7 @@ Loading a corpus of State of the Union speeches from 1900-2020. Each row represe
 ```{r,eval=FALSE, echo=TRUE, tidy=FALSE, mysize=TRUE, size='\\footnotesize'}
 library(tidyverse)
 library(tidytext)
+set.seed(8901)
 data <- as_tibble(read_csv("../data/sotu_texts.csv")) %>%
     sample_frac(0.5)
 data <- data %>% distinct(paragraph, .keep_all = TRUE) # Removing any duplicates
