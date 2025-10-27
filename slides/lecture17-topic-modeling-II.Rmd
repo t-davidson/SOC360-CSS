@@ -3,7 +3,7 @@ title: "Computational Social Science"
 subtitle: "Topic Modeling II"
 author: Dr. Thomas Davidson
 institute: Rutgers University
-date: October 30, 2024
+date: October 30, 2025
 output:
     beamer_presentation:
       theme: "Szeged"
@@ -44,17 +44,8 @@ knitr::knit_hooks$set(mysize = function(before, options, envir) {
 # Course updates
 ## Homework 3
 - Homework 3 on NLP will be released today on Canvas/Github
-    - Due next Friday at 5pm (extra time due to election)
+    - Due next Thursday at 5pm
     - Covers intro to NLP, word embeddings, and topic modeling
-    
-# Course updates
-## Projects
-- Feedback shared on Canvas
-    - Start working on data collection as soon as possible
-- Prototype due 11/20
-    - A minimal working version of the app
-- In-class project workshops
-    - 11/13, 11/18, and 12/4
     
 # Topic modeling
 - Topic modeling is an approach for understanding themes in documents
