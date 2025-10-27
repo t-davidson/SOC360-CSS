@@ -3,7 +3,7 @@ title: "Computational Social Science"
 subtitle: "Topic Modeling I"
 author: Dr. Thomas Davidson
 institute: Rutgers University
-date: October 28, 2024
+date: October 27, 2025
 output:
     beamer_presentation:
       theme: "Szeged"
@@ -44,8 +44,8 @@ knitr::knit_hooks$set(mysize = function(before, options, envir) {
 <!--Note: This lecture does not render to PDF due to errors when compiling. PDF only includes non-code slides-->
 
 # Course updates
-- Homework 2 grades and proposal feedback in-progress
-- Homework 3 will be released on Wednesday
+- Homework 2 grades and proposal feedback released later today
+- Homework 3 will be released on Thursday
     - Introduction to NLP
     - Word embeddings
     - Topic modeling
@@ -153,36 +153,25 @@ $$
 
 # Training an LDA topic model in R
 ## Loading the corpus
-Loading a corpus of political tweets.
+Loading a corpus of State of the Union speeches from 1900-2020. Each row represents a paragraph from a speech. 50% of paragraphs are sampled at random, otherwise models take too long to run!
 ```{r,eval=FALSE, echo=TRUE, tidy=FALSE, mysize=TRUE, size='\\footnotesize'}
 library(tidyverse)
 library(tidytext)
-data <- as_tibble(read_csv("../data/politics_twitter.csv"))
-data$status_id <- as.character(data$status_id)
-data <- data %>% distinct(text, .keep_all = TRUE) # Removing duplicates
+data <- as_tibble(read_csv("../data/sotu_texts.csv")) %>%
+    sample_frac(0.5)
+data <- data %>% distinct(paragraph, .keep_all = TRUE) # Removing any duplicates
+data$index <- 1:nrow(data) # Create a unique index
 ```
 
-# Latent Dirichlet Allocation
-## Preprocessing
-Removing hashtags, mentions and URLs using a regular expression. I initially left in hashtags and mentions but found that they tended to dominate some topics since different newspapers frequently used the same hashtags.
-```{r, eval=FALSE, echo=TRUE, tidy=FALSE, mysize=TRUE, size='\\footnotesize'}
-data <- data %>% 
-    mutate(text = gsub("#[A-Za-z0-9]+|@[A-Za-z0-9]", "", text)) %>%
-    mutate(text = gsub("(http[^ ]*)|(www.[^ ]*)", "", text)) %>%
-    mutate(text = gsub("’", "'", text))
-```
 
 # Latent Dirichlet Allocation
 ## Preprocessing
 ```{r, eval=FALSE,echo=TRUE, tidy=FALSE, mysize=TRUE, size='\\footnotesize'}
 data(stop_words)
 
-custom_stop <- tibble(word=c("amp"))
-
-word.counts <- data %>% unnest_tokens(word, text, strip_punct = TRUE) %>%
+word.counts <- data %>% unnest_tokens(word, paragraph, strip_punct = TRUE) %>%
   anti_join(stop_words) %>%
-  anti_join(custom_stop) %>%
-  count(status_id, word)
+  count(index, word)
 
 doc.freq <- word.counts %>% 
   mutate(n = pmax(pmin(n, 1), 0)) %>%
@@ -190,7 +179,7 @@ doc.freq <- word.counts %>%
   summarize(df = sum(n))
 
 words <- left_join(word.counts, doc.freq) %>%
-    filter(df >= 50 & df <= 1900)
+    filter(df >= 20 & df < 550)
 ```
 
 
@@ -198,7 +187,7 @@ words <- left_join(word.counts, doc.freq) %>%
 ## Constructing a DTM
 ```{r, eval=FALSE,echo=TRUE, tidy=FALSE, mysize=TRUE, size='\\footnotesize'}
 DTM <- words %>%
-  cast_dtm(status_id, word, n)
+  cast_dtm(index, word, n)
 dim(DTM)
 ```
 
@@ -292,7 +281,7 @@ get_top_docs_and_words <- function(t, n_docs = 3, n_words = 10) {
     top_docs <- documents %>% 
         dplyr::filter(topic == t) %>%
         arrange(desc(gamma)) %>%
-        left_join(data, by = c("document" = "status_id")) %>%
+        left_join(data, by = c("document" = "index")) %>%
         slice_max(gamma, n = n_docs) %>%
         dplyr::select(text)
     
@@ -308,7 +297,7 @@ get_top_docs_and_words <- function(t, n_docs = 3, n_words = 10) {
 # Latent Dirichlet Allocation
 ## Inspecting topics
 ```{r, eval=FALSE,echo=FALSE, tidy=FALSE, mysize=TRUE, size='\\footnotesize'}
-get_top_docs_and_words(6, n_docs = 4)
+get_top_docs_and_words(26, n_docs = 4)
 ```
 
 # Latent Dirichlet Allocation
