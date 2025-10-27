@@ -283,7 +283,7 @@ get_top_docs_and_words <- function(t, n_docs = 3, n_words = 10) {
         arrange(desc(gamma)) %>%
         left_join(data, by = c("document" = "index")) %>%
         slice_max(gamma, n = n_docs) %>%
-        dplyr::select(text)
+        dplyr::select(paragraph)
     
     top_words <- topics %>% filter(topic == t) %>%
             arrange(desc(beta)) %>%
@@ -297,7 +297,8 @@ get_top_docs_and_words <- function(t, n_docs = 3, n_words = 10) {
 # Latent Dirichlet Allocation
 ## Inspecting topics
 ```{r, eval=FALSE,echo=FALSE, tidy=FALSE, mysize=TRUE, size='\\footnotesize'}
-get_top_docs_and_words(26, n_docs = 4)
+documents$document <- as.numeric(documents$document) # Setting to ensure indexes match
+get_top_docs_and_words(2, n_docs = 5)
 ```
 
 # Latent Dirichlet Allocation
