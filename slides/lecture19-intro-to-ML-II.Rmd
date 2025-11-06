@@ -3,7 +3,7 @@ title: "Computational Social Science"
 subtitle: "Supervised Machine Learning"
 author: Dr. Thomas Davidson
 institute: Rutgers University
-date: November 6, 2024
+date: November 6, 2025
 output:
     beamer_presentation:
       theme: "Szeged"
@@ -46,7 +46,7 @@ knitr::knit_hooks$set(mysize = function(before, options, envir) {
 
 ## Homework
 
--   Homework 3 was due Friday at 5pm
+-   Homework 3 due tonight
 -   Homework 4 on supervised machine learning released next week
 
 # Recap
