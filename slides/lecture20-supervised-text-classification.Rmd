@@ -54,7 +54,7 @@ knitr::knit_hooks$set(mysize = function(before, options, envir) {
 # Course updates
 ## Timeline
 
-- Homework 4 released this evening, due next Thursday 11/20
+- Homework 4 released after class, due next Thursday 11/20
 - Project prototype due 11/24
 
 # Course updates
@@ -63,12 +63,12 @@ knitr::knit_hooks$set(mysize = function(before, options, envir) {
     - A minimal working app live on shinyapps.io
         - At least one interactive visualization using your data
     - Link to data and code on Github
-        - Add my username if using a private repository
+        - Add my username as collaborator if using a private repository
         
 # Course updates
 ## Projects
 - In-class project workshops
-    - 11/24 (next Monday), and 12/4 (Thursday)
+    - 11/20 (next Thursday), and 12/4 (Thursday)
 - Attendance is mandatory and important to ensure fair distribution of work
     
 
@@ -416,5 +416,8 @@ imp %>%
 - Model features and parameters are selected to maximize predictive accuracy
 - Error analysis and feature importance provide insight into model performance and limitations
 - Once a model performs well and has been validated out-of-sample, we use it to predict the remainder of the corpus
+
+# Next week
+- Introduction to large language models
 
 
