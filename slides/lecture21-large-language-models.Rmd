@@ -1,0 +1,533 @@
+---
+title: "Computational Social Science" 
+subtitle: "Large Language Models"
+author: Dr. Thomas Davidson
+institute: Rutgers University
+date: November 27, 2025
+output:
+    beamer_presentation:
+      theme: "Szeged"
+      colortheme: "beaver"
+      fonttheme: "structurebold"
+      toc: false
+      incremental: false
+urlcolor: blue
+header-includes:
+  - \usepackage{multicol}
+  - \usepackage{caption}
+  - \usepackage{hyperref}
+  - \usepackage{soul}
+  - \usepackage{booktabs}
+  - \usepackage{siunitx}
+  - \usepackage{pifont}
+  - \usepackage{tikz}
+  - \usetikzlibrary{shapes,arrows}
+  - \newcolumntype{d}{S[input-symbols = ()]}
+  - \captionsetup[figure]{font=scriptsize}
+  - \captionsetup[figure]{labelformat=empty}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+	echo = FALSE,
+	message = FALSE,
+	warning = FALSE,
+	dev = "pdf",
+	tidy = FALSE,
+	tidy.opts = list(width.cutoff = 80)
+)
+knitr::opts_chunk$set(warning = FALSE)
+knitr::opts_chunk$set(message = FALSE)
+knitr::opts_chunk$set(dev = 'pdf')
+library("knitr")
+library("formatR")
+
+opts_chunk$set(tidy.opts=list(width.cutoff=80),tidy=TRUE)
+opts_chunk$set(tidy = FALSE)
+
+knitr::knit_hooks$set(mysize = function(before, options, envir) {
+  if (before) 
+    return(options$size)
+})
+```
+
+# Plan
+1. Language models
+2. Large language models
+3. Social scientific applications
+4. Challenges
+5. Commercial versus open-source
+        
+# Course updates
+## Timeline
+- Thursday 11/20
+    - In-class project workshop
+    - Homework 4 due end of day
+- Monday 11/24
+    - Class as usual
+    - Project prototype due by end of day via Canvas
+        
+
+<!--Plan
+
+ - Intro to language modeling
+ - Embedding as language models
+ - Attention mechanism
+ - Transformer architecture
+ - BERT as early version
+ - Evolution of language models
+ - Scaling laws
+ - Text-to-text transformers
+ - Prompting and prompt engineering
+ - Fine-tuning
+    - LoRA
+ - Context windows
+ - Hallucination/confabulation
+    - RAG
+ - Concerns about bias, stochastic parrots
+     - Copyright
+     - Energy consumption
+ - Alignment and RLHF
+     - Crowdworker labor
+     - Whose values get represented?
+     
+ - Social scientific applications
+    - Text classification
+    - Qualitative analysis
+    - Silicon sampling
+    - Human-AI experiments
+    - Agent-based models
+
+ - Exercise
+    - Prompt engineering using ChatGPT
+    - Huggingface
+-->
+
+# Language models
+## What are language models?
+- Language models  predict the likelihood of a sequence of words.
+- Applications include auto-completion, speech recognition, and more
+
+
+# Language models
+## The bigram model
+- Simple language models learn probabilistic representations of language.
+- In the bigram model, the probability $w_k$ only depends on the previous word, $w_{k-1}$.
+
+$$P(w_{1:n}) \approx \prod_{k=1}^n P(w_k|w_{k-1})$$
+
+- $n$-gram language models generalize this to longer sequences of words
+
+# Language models
+## Limitations of n-gram language models
+- Language use is much more complex than bi-gram or $n$-gram language models
+- Three limitations of early language models:
+  1. Insufficient data/complexity to sufficiently model language generation
+  2. Complex models become intractable to compute
+  3. Limited information on word order
+  
+# Language models
+## Advances in neural language models
+- Over the past decade language models have developed due to three factors:
+
+    1. Availability of large text corpora
+    2. Advances in computer processing (Graphical Processing Units - GPUs)
+    3. Innovations in neural network architecture
+
+# Language models
+## Word2vec
+```{r, out.width="70%", fig.align="center"}
+include_graphics('../images/word2vec_training.png')
+```
+\tiny \centering Mikolov et al. 2013.
+
+
+# Attention and the transformer architecture
+```{r, out.width="60%", fig.align="center"}
+include_graphics('../images/attention2.png')
+```
+
+
+# Attention and the transformer architecture
+## Encoders and decoders
+```{r, out.width="65%", fig.align="center"}
+include_graphics('../images/wm_encoder_decoder.png')
+```
+\tiny \centering Wänkmuller 2022.
+
+
+# Attention and the transformer architecture
+## Adding attention
+```{r, out.width="60%", fig.align="center"}
+include_graphics('../images/wm_encoder_decoder_attn.png')
+```
+\tiny \centering Wänkmuller 2022.
+
+# Attention and the transformer architecture
+## Attending to a token
+```{r, out.width="70%", fig.align="center"}
+include_graphics('../images/wm_attention_mechanism.png')
+```
+\tiny \centering Wänkmuller 2022.
+
+# Attention and the transformer architecture
+## The transformer
+```{r, out.width="50%", out.height = "60%", fig.align="center"}
+include_graphics('../images/transformer_arch.png')
+```
+\tiny \centering Vaswani et al 2017
+
+# Attention and the transformer architecture
+## Stacked attention layers
+```{r, out.width="50%", out.height = "60%", fig.align="center"}
+include_graphics('../images/wm_attention_blocks.png')
+```
+\tiny \centering Wänkmuller 2022.
+
+
+# Attention and the transformer architecture
+## Further resources
+- 3Blue1Brown has a new \href{https://www.youtube.com/watch?v=wjZofJX0v4M}{series} on YouTube explaining how attention and transformers work
+
+# Large language models
+## BERT
+```{r, out.width="70%", fig.align="center"}
+include_graphics('../images/bert_paper.png')
+```
+
+
+# Large language models
+## BERT: Pre-training and fine-tuning
+```{r, out.width="85%", fig.align="center"}
+include_graphics('../images/bert_finetuning.png')
+```
+\tiny \centering Devlin et al. 2018
+
+# Large language models
+## Foundation models and transfer learning
+- Large langage models (LLMs) like BERT are sometimes described as \textbf{foundation models} insofar as the pre-trained model serves as a foundation for other tasks \begin{tiny} Bommasani et al. 2022 \end{tiny}
+- \textbf{Transfer learning} describes the process through which a model is adapted to new tasks
+    - For BERT, the pre-trained model can be fine-tuned to new tasks
+    - More recent models can learn "in-context" as new examples are provided
+
+
+# Large language models
+## From BERT to GPTs
+```{r, out.width="85%", fig.align="center"}
+include_graphics('../images/gpt3_compute.png')
+```
+\tiny \centering Radford et al. 2020
+
+
+# Large language models
+## Scaling Laws
+```{r, out.width="85%", fig.align="center"}
+include_graphics('../images/Model-Size-Chart.png')
+```
+\tiny \centering \url{https://developer.nvidia.com/blog/using-deepspeed-and-megatron-to-train-megatron-turing-nlg-530b-the-worlds-largest-and-most-powerful-generative-language-model/}
+
+# Large language models
+## Scale and performance
+```{r, out.width="80%", fig.align="center"}
+include_graphics('../images/gpt3_performance.png')
+```
+\tiny \centering Radford et al. 2020
+
+# Large language models
+## Vast training data
+```{r, out.width="80%", fig.align="center"}
+include_graphics('../images/gpt3_data.png')
+```
+\tiny \centering Radford et al. 2020
+
+# Large language models
+## Text-to-text models
+- Original models like BERT work more like standard machine learning techniques
+    - e.g. Extract embedding for a term, fine-tune to predict a label given the input
+- Text inputs were developed to simplify the way that we interact with LLMs\*
+- This interface makes it easy to transfer to new tasks and is the backbone of chat-interfaces
+
+\tiny \* Raffel, Colin, Noam Shazeer, Adam Roberts, Katherine Lee, Sharan Narang, Michael Matena, Yanqi Zhou, Wei Li, and Peter J. Liu. 2020. “Exploring the Limits of Transfer Learning with a Unified Text-to-Text Transformer.” *The Journal of Machine Learning Research* 21 (1): 140:5485-140:5551.
+
+# Large language models
+## Context windows
+- The *context window* defines the amount of text a model can process at once, measured in tokens
+    - Longer windows enable us to process longer documents
+    
+# Large language models
+## Context windows    
+- Context windows have been increasing over time:
+    - BERT: 512
+    - GPT 3.5 (original):  4097 
+    - GPT 4 Turbo: 128,000
+    - Claude 3: 200,000
+    - Gemini: 1,000,000
+
+# Large language models
+## Prompting
+- *Prompts* guide the model to generate specific outputs
+    - \textbf{User prompts} result in single output
+        - e.g. "Is the following text positive or negative?"
+    - \textbf{System prompts} guide overall model behavior
+        - e.g. "You are a helpful assistant ... "
+
+# Large language models
+## Prompt Engineering
+- An emerging field known as *prompt engineering* considers how to effectively design prompts
+    - Art or science?
+- Some systems can automatically refine and enhance prompts
+    - e.g. GPT-4 modifies prompts to DALL-E to make better images
+
+# Large language models
+## Interaction modalities
+- There are three main ways to use contemporary LLMs:
+
+    1. Text-based interaction in browser (e.g. prompting ChatGPT)
+    2. Code-based interaction with API (e.g. querying OpenAI API)
+    3. Code-based interaction using local compute hardware (e.g. running Llama on a server)
+    
+- Text-interface is great for experimentation but code-based interaction enables more systematic research
+
+<!-- 
+# Large language models
+## LoRA
+- Low-Rank Adaptation: a method for efficient fine-tuning.
+- Modifies only a small fraction of model weights.
+
+
+# Large language models
+## Hallucination/Confabulation
+
+# Large language models
+## RAG
+- Retrieval-Augmented Generation for knowledge-intensive tasks.
+- Combines pre-trained LMs with external knowledge retrieval.
+-->
+
+# Large language models
+```{r, out.width="80%", fig.align="center"}
+include_graphics('../images/parrots.png')
+```
+
+# Large language models
+## Alignment
+- An area of research known as *alignment* focuses on how to improve LLMs to address these issues
+    - Reducing stereotypes and bias
+    - Removing harmful capabilities
+    - Improving query comprehension
+    
+# Large language models
+## Reinforcement learning with human feedback (RLHF)
+- LLMs are pre-trained as language models but can be adapted to more general tasks by further training
+- RLHF is an approach that involves using feedback to guide a model's behavior and is critical to contemporary chatbots like ChatGPT, Gemini, and Claude \begin{tiny} (Ouyang et al. 2022) \end{tiny}
+    - Feedback used to make models more helpful and less harmful
+    
+# Social science applications
+
+::: columns
+
+:::: column
+```{r, fig.align='center', out.width = "100%"}
+include_graphics('../images/davidson_socius.png')
+```
+::::
+
+:::: column
+```{r, fig.align='center', out.width = "100%"}
+include_graphics('../images/davidson_karell.png')
+```
+
+::::
+
+:::
+    
+# Social science applications
+## Text classification
+- Recent work by sociologists and political scientists finds LLMs competitive compared to established ML techniques for text classification tasks \begin{tiny} Widmann and Wich 2022, Bonikowski, Luo, and Stuhler 2022, Wankmüller 2022 \end{tiny}
+
+# Social science applications
+## Text classification
+- Pre-trained LLMs can be used in several ways that differ from conventional supervised machine learning
+    - *Zero-shot learning*: LLM makes a prediction based on a prompt alone
+    - *Few-shot learning*: LLM makes a prediction based on a prompt and one or more training examples
+    - *Fine-tuning*: Larger corpus of training data fed into LLM and weights are updated to adapt to the task
+    
+# Exercise
+## Prompt engineering for text classification
+- Task: State of the Union party prediction
+- Data
+    - `data/sotu_train.json` contains 10 paragraphs from SOTU addresses with party of president
+    - `data/sotu_test.json` contains 10 paragraphs without parties
+- Use ChatGPT (free version) to predict party for the test examples
+
+# Exercise
+## Prompt engineering for text classification
+- Write a prompt to classify the texts
+- Three approaches
+    - Zero-shot (prompt only)
+    - One-shot (prompt plus 1 training example)
+    - Multi-shot (prompt and all 10 training examples)
+    
+# Text classification across models and learning regimes
+```{r, fig.align='center', out.width = '80%'}
+include_graphics('../images/main_figure_fb.png')
+```
+\begin{tiny} Chae and Davidson, 2025 \end{tiny}
+
+# Social science applications
+## Beyond classification
+- New opportunities for "methodological bricolage" as same model can be used in multiple capacities \begin{tiny} (Bonikowski and Nelson 2022) \end{tiny}
+    - e.g. LLM as classifier, topic model, and embedding
+- Enables rapid prototyping, experimentation and bespoke solutions, making computational text analysis more flexible and accessible
+
+# Social science applications
+## Qualitative text analysis
+- Computational techniques can improve rigor, transparency, and scalability of qualitative research  \begin{tiny} (Nelson 2020; Abramson et al. 2018; Nelson et al. 2021; Li, Dohan, and Abramson 2021) \end{tiny}
+
+# Social science applications
+## Advantanges of LLMs
+- LLMs have several advantages over conventional computational methods:
+    - Input texts need not be comparable or standardized
+    - Queries can be tailored to specific task
+    - Use for many tasks including transcription, translation, exploratory analysis, and coding
+
+<!--
+# Social science applications
+## Delegating interpretation
+- LLMs enable a conversational form of content analysis
+    - Analysis via conversation between human and machine
+    - Outside knowledge from pre-training can inform analysis
+    - More "agency" delegated to computational interpreter \begin{tiny} (Latour 1993) \end{tiny}
+
+# Social science applications
+## Machine habitus
+- Machine learning techniques and LLMs are not neutral but "see" the world in certain ways, analogous to how Bourdieu's "habitus" shapes experience \begin{tiny} (Bourdieu 1990; Airoldi 2021) \end{tiny}
+- LLMs can reflect cognitive schemas present in public culture \begin{tiny} (Arseniev-Koehler and Foster 2022) \end{tiny}
+
+# Social science applications
+## Whose viewpoints are represented?
+- LLMs can "overrepresent hegemonic viewpoints", reproducing biases and stereotypes from dominant social groups \begin{tiny} (Bender et al. 2021) \end{tiny}
+- Due to alignment efforts, ChatGPT responds to survey questions similarly to educated liberals \begin{tiny} (Martin 2023) \end{tiny}
+- Models can be prompted to behave like specific social groups \begin{tiny} (Argyle et al. 2023) \end{tiny}
+-->
+
+# Social science applications
+## Silicon Sampling
+```{r, out.width="70%", fig.align="center"}
+include_graphics('../images/argyle.png')
+```
+
+# Social science applications
+## Silicon Sampling
+```{r, out.width="100%", fig.align="center"}
+include_graphics('../images/argyle_describe.png')
+```
+\tiny \centering Argyle et al. 2023
+
+# Social science applications
+## Silicon Sampling
+```{r, out.width="80%", fig.align="center"}
+include_graphics('../images/argyle_describe2.png')
+```
+\tiny \centering Argyle et al. 2023
+
+# Social science applications
+## Silicon Sampling
+```{r, out.width="65%", fig.align="center"}
+include_graphics('../images/argyle_describe3.png')
+```
+\tiny \centering Argyle et al. 2023
+
+# Social science applications
+## Silicon Sampling
+```{r, out.width="80%", fig.align="center"}
+include_graphics('../images/horton_agents.png')
+```
+\tiny \centering Horton, John J. 2023. “Large Language Models as Simulated Economic Agents: What Can We Learn from Homo Silicus?” *NBER Working Papers Series*, Working Paper 31122.
+
+# Social science applications
+## Agent-based Models
+```{r, out.width="80%", fig.align="center"}
+include_graphics('../images/park_agents.png')
+```
+\tiny \centering Park, Joon Sung, Joseph C. O’Brien, Carrie J. Cai, Meredith Ringel Morris, Percy Liang, and Michael S. Bernstein. 2023. “Generative Agents: Interactive Simulacra of Human Behavior.” In *The 36th Annual ACM Symposium on User Interface Software and Technology* (UIST ’23). ACM.
+
+# Social science applications
+## Human-AI Experiments
+```{r, out.width="80%", fig.align="center"}
+include_graphics('../images/rephrase_experiment.png')
+```
+\tiny \centering Argyle, Lisa P, Christopher A Bail, Ethan C Busby, Joshua R Gubler, Thomas Howe, Christopher Rytting, Taylor Sorensen, and David Wingate. 2023. “Leveraging AI for Democratic Discourse: Chat Interventions Can Improve Online Political Conversations at Scale.” *Proceedings of the National Academy of Sciences* 120 (41): e2311627120.
+ 
+# Challenges
+## Interpretability
+- Traditional machine learning models offer limited interpretability, even less so for complex neural networks.
+- GAI models amplify these interpretative challenges. Currently no established method for interpreting these models.
+    - An area of research known as *Mechanistic interpretability* involves reverse-engineer model behaviors by analyzing specific parameters’ response to inputs.
+
+# Challenges
+## Transparency
+- Advanced GAI models, often developed by corporations, lack transparency regarding their training data
+- This opacity complicates assessing the influence of pre-training on model outputs
+
+# Challenges
+## Reproducibility
+- Reproducibility is undermined by the stochasticity of LLMs
+    - Identical prompts can lead to varied outputs
+- Model updates by corporations can further impede the ability to reproduce results
+
+# Challenges
+## Reliability
+- LLMs are trained to predict text sequences without adherence to formal logic or truth—raising reliability issues
+    - Outputs can range from meaningful and accurate to incorrect or misleading ("hallucinations" or "confabulations")
+
+# Challenges
+## Ethical questions
+- Analyzing sensitive data poses risks, potentially violating privacy regulations (e.g., inputs to ChatGPT may violate IRB guidelines on data sharing)
+- Ethical dilemmas also arise from LLM use in research settings
+- The rapid development of technology outpaces consensus on ethical guidelines, necessitating cautious and informed application in research
+
+
+# Challenges
+## Stereotypes and biases
+- Models learn stereotypes from data and make biased outputs
+- LLMs amplify this risk due to pre-training on vast amounts of unvetted data
+- Alignment and reinforcement learning used to adapt commerical models but biases remain
+- Little is understood about how biases impact sociological research (more next week)
+
+
+# Commercial versus open-source
+- Most powerful models developed by handful of corporations
+    - GPT (OpenAI), Gemini (Google), Llama (Meta), Claude (Anthropic)
+    - These models are easy to use via APIs with minimal programming experience
+- In contrast, open-source models require access to high-performance compute environments and more technical knowledge and are less accessible to sociologists
+
+# Commercial versus open-source
+- Advantages of open-source models: \begin{tiny} (Spirling 2023) \end{tiny}
+    - Public weights\* and training data
+    - More controlled and reproducible\*
+    - Lower privacy risks\*
+    - More customizable\*
+
+\tiny \*This includes partially open models like Meta's Llama and Google's Gemma.
+
+# Commercial versus open-source
+- Long-term solution: LLMs designed for social science
+    - Transparent training data
+    - Interpretable architecture
+    - Privacy protected
+    - Less restricted but controlled output
+
+# Coming next
+- Project workshop on Thursday
+- Computer vision next week (and Thanksgiving break)
+
+
+
+
+
+
+
+
+
+
